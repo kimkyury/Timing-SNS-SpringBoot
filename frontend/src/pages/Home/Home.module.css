@@ -1,0 +1,10 @@
+.container{
+    display: grid;
+    grid-template-rows: 10vh 73vh;
+}
+.Home_timelapse{
+    border: 1px solid orange;
+}
+.Home_main{
+    border: 1px solid red;
+}
