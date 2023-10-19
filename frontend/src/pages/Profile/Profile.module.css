@@ -1,0 +1,14 @@
+.container{
+    display: grid;
+    grid-template-rows: 15vh 35vh 30vh;
+}
+.user_info{
+    border: 1px solid green;
+}
+
+.proccessing_timelapse{
+    border: 1px solid orange;
+}
+.my_timelapse{
+    border: 1px solid red;
+}
