@@ -19,6 +19,8 @@ function Router() {
       <Route path="/search" element={<Search />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/create" element={<Create />} />
+      <Route path="/create" element={<Create />} />
+
 
       {/* test */}
       <Route path="/test" element={<Test />} />
