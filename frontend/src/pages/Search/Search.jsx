@@ -5,7 +5,7 @@ function Search() {
 
 
   return (
-      <div>
+      <div className={styles.container}>
         search
       </div>
   );
