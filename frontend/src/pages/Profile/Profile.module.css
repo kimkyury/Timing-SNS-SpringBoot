@@ -1,14 +1,17 @@
 .container{
-    display: grid;
-    grid-template-rows: 15vh 35vh 30vh;
+    display: flex;
+    flex-direction: column;
 }
 .user_info{
     border: 1px solid green;
+    height: 20vh;
 }
 
 .proccessing_timelapse{
     border: 1px solid orange;
+    height: 20vh;
 }
 .my_timelapse{
     border: 1px solid red;
+    height: 40vh;
 }
