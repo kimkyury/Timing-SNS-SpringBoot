@@ -63,6 +63,8 @@
     height: 80px;
     display: flex;
     flex-direction: column;
+    border-block-end: solid;
+    writing-mode: horizontal-tb;
 }
 .commentbox{
     display: flex;
@@ -72,6 +74,8 @@
     font-weight: bold;
     margin-right: 5px;
 }
+.seemore{
+    text-align: center;
+}
 .commentcontent{
-
 }
