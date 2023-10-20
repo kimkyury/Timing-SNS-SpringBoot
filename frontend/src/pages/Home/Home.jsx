@@ -11,6 +11,8 @@ function Home() {
         </div>
         <div className={styles.Home_main}>
           <MainFeed/>
+          <MainFeed/>
+          <MainFeed/>
 
         </div>
         

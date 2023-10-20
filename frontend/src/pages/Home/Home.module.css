@@ -3,10 +3,8 @@
     flex-direction: column;
 }
 .Home_timelapse{
-    height: 20vh;
     border: 1px solid orange;
 }
 .Home_main{
-    height: 63ch;
     border: 1px solid red;
 }
