@@ -58,6 +58,12 @@
 }
 .hash{
     margin-right: 10px;
+    border-radius: 10px;
+    padding: 3px;
+    background-color: #008000;
+    color:white;
+    text-align: center;
+    align-self: center;
 }
 .commentContainer{
     height: 80px;

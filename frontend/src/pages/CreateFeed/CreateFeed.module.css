@@ -1,0 +1,10 @@
+.boxname{
+    font-size: 30px;
+    font-weight: bold;
+    text-align: start;
+}
+
+.btn{
+    color: white;
+    background-color: green;
+}
