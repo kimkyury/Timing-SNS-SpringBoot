@@ -6,6 +6,7 @@ import Like from "../pages/Like/Like";
 import Search from "../pages/Search/Search";
 import Profile from "../pages/Profile/Profile";
 import Create from "../pages/CreateFeed/CreateFeed"
+import UserProfile from "../components/UserProfile/USerProfile";
 
 //test
 import Test from "../components/Feed/MainFeed"
@@ -23,7 +24,7 @@ function Router() {
 
 
       {/* test */}
-      <Route path="/test" element={<Test />} />
+      <Route path="/test" element={<UserProfile />} />
 
     </Routes>
   );
