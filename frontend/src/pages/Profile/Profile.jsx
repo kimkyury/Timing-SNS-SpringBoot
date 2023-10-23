@@ -1,11 +1,12 @@
 import TimeLapse from "../../components/TimeLapse/TimeLapse"
 import styles from "./Profile.module.css"
+import UserProfile from "../../components/UserProfile/USerProfile"
 
 function Profile() {
 
     return (
         <div className={styles.container}>
-          <div className={styles.user_info}>user_info</div>
+          <div className={styles.user_info}><UserProfile/></div>
           <div className={styles.proccessing_timelapse}>
             <TimeLapse/>
           </div>

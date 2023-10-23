@@ -28,7 +28,7 @@ function Footer() {
     <div>
         <div className={styles.footer}>
         {currentUrl === "/" ? (
-          <HomeRoundedIcon />
+          <HomeRoundedIcon/>
         ) : (
           <HomeOutlinedIcon
             onClick={() => {

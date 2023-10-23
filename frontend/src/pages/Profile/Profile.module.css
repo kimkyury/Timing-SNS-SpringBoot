@@ -3,13 +3,12 @@
     flex-direction: column;
 }
 .user_info{
-    border: 1px solid green;
-    height: 20vh;
+    height: 140px;
+    margin-top: 10px;
 }
 
 .proccessing_timelapse{
-    border: 1px solid orange;
-    height: 20vh;
+    height: 140px;
 }
 .my_timelapse{
     border: 1px solid red;
