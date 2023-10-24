@@ -1,32 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { PURGE } from "redux-persist";
-
+import { createSlice } from '@reduxjs/toolkit';
+import { PURGE } from 'redux-persist';
 
 const initialState = {
-  accessToken: "",
-  refreshToken: "",
-  name: "",
-  userId: "",
-  image: "",
+    accessToken: '',
+    refreshToken: '',
+    name: '',
+    userId: '',
+    image: '',
 };
 
 const authSlice = createSlice({
-  name: "auth",
-  initialState,
-  reducers: {
-    setAuth: (state, action) => {
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
-      state.name = action.payload.name;
-      state.userId = action.payload.userId;
-      state.image = action.payload.image;
+    name: 'auth',
+    initialState,
+    reducers: {
+        setAuth: (state, action) => {
+            state.accessToken = action.payload.accessToken;
+            state.refreshToken = action.payload.refreshToken;
+            state.name = action.payload.name;
+            state.userId = action.payload.userId;
+            state.image = action.payload.image;
+        },
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(PURGE, () => {
-      return initialState;
-    });
-  },
+    extraReducers: (builder) => {
+        builder.addCase(PURGE, () => {
+            return initialState;
+        });
+    },
 });
 
 export const { setAuth } = authSlice.actions;

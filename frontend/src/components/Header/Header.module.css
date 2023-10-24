@@ -1,25 +1,26 @@
-.header{
+.header {
     position: fixed;
-    top:0;
+    top: 0;
     width: 360px;
     height: 60px;
     box-shadow: 0 0 0 1px black inset;
     border-radius: 0px 0px 30px 30px;
     display: flex;
     background-color: white;
+    z-index: 10;
 }
-.backbox{
+.backbox {
     width: 50px;
-    color:black;
+    color: black;
 }
-.back{
-    width: 40px!important;
-    height: 40px!important;
+.back {
+    width: 40px !important;
+    height: 40px !important;
 }
 
-.title{
+.title {
     width: 260px;
     font-size: 30px;
-    color:black;
+    color: black;
     font-weight: bold;
 }
