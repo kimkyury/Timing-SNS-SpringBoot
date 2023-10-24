@@ -1,10 +1,5 @@
 function Time() {
+    return <div>Time</div>;
+}
 
-    return (
-        <div>
-          Time
-        </div>
-    )
-  }
-  
-  export default Time
+export default Time;
