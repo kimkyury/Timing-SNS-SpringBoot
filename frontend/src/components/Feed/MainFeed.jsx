@@ -9,6 +9,7 @@ import dog from '../../assets/dog.jpg';
 function Feed() {
     const navigate = useNavigate();
     const state = {
+        pk: 1,
         profileimage: `${dog}`,
         name: 'kim',
         id: '@abcd',
@@ -19,11 +20,17 @@ function Feed() {
         share: 1000,
         hash: ['#개', '#댕댕이', '#시바', '#산책'],
         comments: [
-            { name: '시바', comment: '뭐' },
-            { name: '씨바', comment: 'ㅋㅋㅋ' },
-            { name: '치바', comment: 'ㅎㅎㅎㅎ' },
-            { name: '치바', comment: 'ㅎㅎㅎㅎ' },
-            { name: '치바', comment: 'ㅎㅎㅎㅎ' },
+            { name: '시바', comment: '뭐', profileimage: `${dog}` },
+            { name: '씨바', comment: 'ㅋㅋㅋ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
+            { name: '치바', comment: 'ㅎㅎㅎㅎ', profileimage: `${dog}` },
         ],
     };
     const maxVisibleComments = 2;
@@ -40,6 +47,10 @@ function Feed() {
     }
     function gotoDetailFeed() {
         navigate(`/create`);
+    }
+
+    function gotoDetailComment() {
+        navigate(`/detailcomment/${state.pk}`, { state });
     }
     function formatK(count) {
         if (count >= 100000) {
@@ -102,7 +113,9 @@ function Feed() {
                 ))}
                 {hiddenCommentsCount > 0 && (
                     <div className={styles.seemore}>
-                        <div className={styles.commentcontent}>+ {hiddenCommentsCount} 댓글 더 보기...</div>
+                        <div className={styles.commentcontent} onClick={gotoDetailComment}>
+                            + {hiddenCommentsCount} 댓글 더 보기...
+                        </div>
                     </div>
                 )}
             </div>
