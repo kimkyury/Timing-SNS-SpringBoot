@@ -26,3 +26,8 @@
     top: 0;
     right: 0;
 }
+.myfeedcontainerName {
+    text-align: start;
+    font-size: 20px;
+    font-weight: bold;
+}

@@ -2,6 +2,7 @@ import styles from './DetailComment.module.css';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Etc from '../../components/Etc/Etc';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import dog from '../../assets/dog.jpg';
 function DetailComment() {
     const location = useLocation();
@@ -21,8 +22,16 @@ function DetailComment() {
             setComments(updatedComments);
             setNewComment(''); // 댓글 추가 후 새 댓글 상태 초기화
         }
-        console.log(comments);
     }
+    function handleDeleteComment(commentIndex) {
+        const commentToDelete = comments[commentIndex];
+        if (commentToDelete.name === user.id) {
+            const updatedComments = [...comments];
+            updatedComments.splice(commentIndex, 1);
+            setComments(updatedComments);
+        }
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.nameContainer}>
@@ -61,6 +70,7 @@ function DetailComment() {
                             <div className={styles.commentname}>@{v.name}</div>
                             <div className={styles.commentcontent}>{v.comment}</div>
                         </div>
+                        {user.id == v.name ? <CloseOutlinedIcon onClick={() => handleDeleteComment(i)} /> : ''}
                     </div>
                 ))}
             </div>
