@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,7 +25,7 @@ public class SecurityConfig {
     private final OAuth2UserService oAuth2UserService;
 
     private final String[] WHITE_LIST_URL = {
-        "/h2-console",
+        "/h2-console/**",
         "/v2/api-docs",
         "/v3/api-docs",
         "/v3/api-docs/**",
@@ -39,6 +40,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable)
+            .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(FrameOptionsConfig::disable))
             .httpBasic(HttpBasicConfigurer::disable)
             .formLogin(FormLoginConfigurer::disable)
             .cors(Customizer.withDefaults())
@@ -51,14 +53,14 @@ public class SecurityConfig {
                     userInfoEndpointConfig -> userInfoEndpointConfig.userService(
                         oAuth2UserService)))
             .authorizeHttpRequests(request -> request.requestMatchers(CorsUtils::isPreFlightRequest)
-                                                     .permitAll()
-                                                     .requestMatchers(WHITE_LIST_URL)
-                                                     .permitAll()
-                                                     .requestMatchers("/api/v1/ping")
-                                                     .permitAll()
+                .permitAll()
+                .requestMatchers(WHITE_LIST_URL)
+                .permitAll()
+                .requestMatchers("/api/v1/ping")
+                .permitAll()
 
-                                                     .anyRequest()
-                                                     .authenticated());
+                .anyRequest()
+                .authenticated());
 
         return http.build();
     }
