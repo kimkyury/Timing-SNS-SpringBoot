@@ -6,9 +6,9 @@ import Like from '../pages/Like/Like';
 import Search from '../pages/Search/Search';
 import Profile from '../pages/Profile/Profile';
 import Create from '../pages/CreateFeed/CreateFeed';
-
+import DetailComment from '../pages/DetailComment/DetailComment';
 //test
-import Test from '../components/Etc/Etc';
+import Test from '../components/SearchBar/SearchBar';
 
 function Router() {
     return (
@@ -19,7 +19,7 @@ function Router() {
             <Route path="/search" element={<Search />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/create" element={<Create />} />
-            <Route path="/create" element={<Create />} />
+            <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
 
             {/* test */}
             <Route path="/test" element={<Test />} />
