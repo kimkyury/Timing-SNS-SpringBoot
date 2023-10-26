@@ -19,14 +19,17 @@ function MyFeed() {
     };
 
     return (
-        <div className={styles.image_container}>
-            {Array.isArray(state.content) &&
-                state.content.map((v, i) => (
-                    <div key={i} className={styles.imagebox}>
-                        <img src={v.image} style={{ filter: v.isPublic ? 'blur(5px)' : '' }} />
-                        {v.isPublic && <LockOutlinedIcon className={styles.lock} />}
-                    </div>
-                ))}
+        <div className={styles.myfeedcontainerName}>
+            나의 피드
+            <div className={styles.image_container}>
+                {Array.isArray(state.content) &&
+                    state.content.map((v, i) => (
+                        <div key={i} className={styles.imagebox}>
+                            <img src={v.image} style={{ filter: v.isPublic ? 'blur(5px)' : '' }} />
+                            {v.isPublic && <LockOutlinedIcon className={styles.lock} />}
+                        </div>
+                    ))}
+            </div>
         </div>
     );
 }

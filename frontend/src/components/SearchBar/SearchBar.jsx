@@ -1,5 +1,7 @@
 import styles from './SearchBar.module.css';
 import { useEffect, useState } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 function SearchBar() {
     const wholeTextArray = ['apple', 'banana', 'coding', 'javascript', '원티드', '프리온보딩', '프론트엔드'];
     const [inputValue, setInputValue] = useState('');
@@ -45,16 +47,19 @@ function SearchBar() {
     useEffect(showDropDownList, [inputValue]);
     return (
         <div className={styles.WholeBox}>
-            <div className={styles.inputbox}>
+            <div className={`${ishaveinputvalue ? styles.inputbox : styles.inputbox2}`}>
+                <SearchIcon className={styles.search_icon} />
                 <input
                     type="text"
                     className={styles.searchInput}
                     value={inputValue}
                     onChange={changeInputValue}
                     onKeyUp={handleDropDownKey}
+                    placeholder="Search"
                 />
+
                 <div className={styles.DeleteButton} onClick={() => setInputValue('')}>
-                    &times;
+                    <CloseOutlinedIcon />
                 </div>
             </div>
             {ishaveinputvalue && (
