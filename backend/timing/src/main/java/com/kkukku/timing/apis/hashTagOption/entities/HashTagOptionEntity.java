@@ -1,4 +1,4 @@
-package com.kkukku.timing.apis.test.entities;
+package com.kkukku.timing.apis.hashTagOption.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
