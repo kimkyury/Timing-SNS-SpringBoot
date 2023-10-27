@@ -32,6 +32,15 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
 
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      access-token:
+        expiration: 900
+      refresh-token:
+        expiration: 604800
+
 ---
 spring:
   config:
@@ -53,11 +62,17 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         show_sql: true
-  data:
-    redis:
-      host: ${LOCAL_REDIS_HOST}
-      port: ${LOCAL_REDIS_PORT}
-      password: ${LOCAL_REDIS_PASSWORD}
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: ${LOCAL_KAKAO_REDIRECT_URI}
+  redis:
+    host: ${LOCAL_REDIS_HOST}
+    port: ${LOCAL_REDIS_PORT}
+    password: ${LOCAL_REDIS_PASSWORD}
+
 ---
 spring:
   config:
@@ -68,11 +83,16 @@ spring:
     username: ${MARIADB_USERNAME}
     password: ${MARIADB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
   jpa:
     generate-ddl: false
     show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
