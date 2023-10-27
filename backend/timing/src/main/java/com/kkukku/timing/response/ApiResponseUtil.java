@@ -26,6 +26,10 @@ public class ApiResponseUtil {
             HttpStatus.valueOf(code.getStatus()));
     }
 
+    public static ResponseEntity<Void> createSuccessResponse() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     public static <T> ResponseEntity<T> createSuccessResponse(T data) {
         return ResponseEntity.ok()
                              .body(data);
