@@ -28,9 +28,9 @@ public class S3Service {
         return fileName;
     }
 
-    public String uploadFileByChallenge(Long categoryId, MultipartFile file) {
+    public String uploadFileByChallenge(Long challengeId, MultipartFile file) {
         String fileName =
-            categoryId + "/" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            challengeId + "/" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
         uploadFile(file, fileName);
         return fileName;
     }
