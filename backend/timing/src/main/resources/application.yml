@@ -32,6 +32,16 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
 
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY}
+      secret-key: ${AWS_S3_SECRET_KEY}
+    region:
+      static: ${AWS_S3_REGION}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+
 ---
 spring:
   config:
@@ -53,11 +63,10 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         show_sql: true
-  data:
-    redis:
-      host: ${LOCAL_REDIS_HOST}
-      port: ${LOCAL_REDIS_PORT}
-      password: ${LOCAL_REDIS_PASSWORD}
+  redis:
+    host: ${LOCAL_REDIS_HOST}
+    port: ${LOCAL_REDIS_PORT}
+    password: ${LOCAL_REDIS_PASSWORD}
 ---
 spring:
   config:
