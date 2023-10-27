@@ -12,6 +12,13 @@ public class ApiResponseUtil {
             HttpStatus.valueOf(code.getStatus()));
     }
 
+    public static ResponseEntity<ErrorResponse> createErrorResponse(
+        ErrorCode code, String message) {
+        return new ResponseEntity<>(ErrorResponse.of(code, message),
+            HttpStatus.valueOf(code.getStatus()));
+    }
+
+
     public static <T> ResponseEntity<ErrorResponse> createErrorResponse(
         ErrorCode code, BindingResult bindingResult) {
         return new ResponseEntity<>(
