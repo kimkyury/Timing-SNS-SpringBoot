@@ -22,6 +22,11 @@ public class ErrorResponse {
     }
 
     @Builder
+    protected ErrorResponse(final ErrorCode code, final String message) {
+        this.message = message;
+    }
+
+    @Builder
     protected ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
         this.message = code.getMessage();
         this.errors = errors;
@@ -29,6 +34,10 @@ public class ErrorResponse {
 
     public static ErrorResponse of(final ErrorCode code) {
         return new ErrorResponse(code);
+    }
+
+    public static ErrorResponse of(final ErrorCode code, final String message) {
+        return new ErrorResponse(code, message);
     }
 
     public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult) {
