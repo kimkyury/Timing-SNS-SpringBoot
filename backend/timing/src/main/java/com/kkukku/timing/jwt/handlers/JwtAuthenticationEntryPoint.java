@@ -1,5 +1,6 @@
 package com.kkukku.timing.jwt.handlers;
 
+import com.kkukku.timing.response.codes.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         AuthenticationException authException) throws IOException, ServletException {
 
         response.setCharacterEncoding("utf-8");
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-            "Jwt token unauthorized. Check login status!");
+        response.sendError(ErrorCode.TOKEN_UNAUTHORIZED.getStatus(),
+            ErrorCode.TOKEN_UNAUTHORIZED.getMessage());
     }
 }

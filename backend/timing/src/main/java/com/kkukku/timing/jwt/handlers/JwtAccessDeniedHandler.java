@@ -1,5 +1,6 @@
 package com.kkukku.timing.jwt.handlers;
 
+import com.kkukku.timing.response.codes.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         AccessDeniedException accessDeniedException) throws IOException {
 
         response.setCharacterEncoding("utf-8");
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Jwt token access denied");
+        response.sendError(ErrorCode.TOKEN_ACCESS_DENIED.getStatus(),
+            ErrorCode.TOKEN_ACCESS_DENIED.getMessage());
     }
 }
