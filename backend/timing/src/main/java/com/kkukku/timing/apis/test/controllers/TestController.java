@@ -1,9 +1,9 @@
 package com.kkukku.timing.apis.test.controllers;
 
-import static com.kkukku.timing.response.ApiResponseUtil.createErrorResponse;
-import static com.kkukku.timing.response.ApiResponseUtil.createSuccessResponse;
+import static com.kkukku.timing.response.ApiResponseUtil.success;
 
 import com.amazonaws.services.s3.model.S3Object;
+import com.kkukku.timing.response.ApiResponseUtil;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,7 +39,7 @@ public class TestController {
     public ResponseEntity<String> uploadFile(@RequestPart("image") MultipartFile image) {
 
         String fileName = s3Service.uploadFileProcedure(image);
-        return createSuccessResponse("Saved fileName: " + fileName);
+        return success("Saved fileName: " + fileName);
     }
 
     @GetMapping("/file")
@@ -47,7 +47,7 @@ public class TestController {
 
         Optional<S3Object> s3ObjectOptional = Optional.ofNullable(s3Service.getFile(fileName));
         if (s3ObjectOptional.isEmpty()) {
-            return createErrorResponse(ErrorCode.NOT_FOUND);
+            return ApiResponseUtil.error(ErrorCode.NOT_FOUND);
         }
 
         S3Object s3Object = s3ObjectOptional.get();
