@@ -6,8 +6,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class OAuth2AuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     @Override
