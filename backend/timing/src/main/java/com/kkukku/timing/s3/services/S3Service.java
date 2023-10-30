@@ -20,7 +20,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String BUCKET_NAME;
 
-    private AmazonS3 amazonS3;
+    private final AmazonS3 amazonS3;
 
     public String uploadFileProcedure(MultipartFile file) {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
