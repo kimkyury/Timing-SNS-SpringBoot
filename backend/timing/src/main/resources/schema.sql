@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS members (
                                        email varchar(255) NOT NULL,
     profile_image_url varchar(255) DEFAULT NULL,
     nickname varchar(255) DEFAULT NULL,
-    birthyear int COMMENT 'YYYY',
-    gender tinyint COMMENT '0:male, 1:female',
+    birth_year int COMMENT 'YYYY',
+    gender char(1) COMMENT 'M:male, F:female',
     PRIMARY KEY (id),
     CONSTRAINT UNIQUE_KEY_email UNIQUE (email)
     );

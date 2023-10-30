@@ -1,4 +1,4 @@
-package com.kkukku.timing.redis;
+package com.kkukku.timing.redis.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
