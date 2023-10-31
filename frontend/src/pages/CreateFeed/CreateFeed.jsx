@@ -33,7 +33,7 @@ function CreateFeed() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker className={styles.selectdate} />
             </LocalizationProvider>
-            <div className={styles.boxname}>#태그</div>
+            <div className={styles.boxname}>해쉬</div>
             <div className={styles.tagInputContainer}>
                 <Input
                     type="text"

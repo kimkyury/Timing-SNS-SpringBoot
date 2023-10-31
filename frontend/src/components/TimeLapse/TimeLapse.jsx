@@ -1,14 +1,14 @@
 import styles from './TimeLapse.module.css';
 import { useNavigate } from 'react-router-dom';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import dog from '../../assets/dog2.jpg';
 function TimeLapse() {
     const state = {
         categoryList: [
-            { percent: 10, name: 'test1' },
-            { percent: 50, name: 'test2' },
-            { percent: 70, name: 'test3' },
+            { percent: 10, name: 'test1', img: `${dog}` },
+            { percent: 50, name: 'test2', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
         ],
     };
     const navigate = useNavigate();
@@ -17,18 +17,25 @@ function TimeLapse() {
     }
     return (
         <div className={styles.container}>
-            <div className={styles.timeContainerName}>진행중인 타입랩스</div>
             <div className={styles.timeContainer}>
                 {Array.isArray(state.categoryList) &&
                     state.categoryList.map((v, i) => (
                         <div key={i} className={styles.TimeLapse}>
-                            <CircularProgressbar
+                            <CircularProgressbarWithChildren
                                 value={v.percent}
-                                text={`${v.percent}%`}
                                 strokeWidth="10"
                                 styles={buildStyles({ pathColor: 'red', textColor: 'black' })}
-                            />
-                            <div>{v.name}</div>
+                            >
+                                <img
+                                    src={v.img}
+                                    style={{
+                                        width: '48px',
+                                        height: '48px',
+                                        borderRadius: '30px',
+                                        objectFit: 'cover',
+                                    }}
+                                />
+                            </CircularProgressbarWithChildren>
                         </div>
                     ))}
                 <div className={styles.TimeLapse} onClick={CreateFeed}>
@@ -38,9 +45,6 @@ function TimeLapse() {
                         strokeWidth="10"
                         styles={buildStyles({ pathColor: 'red', textColor: 'black', textSize: '50px' })}
                     />
-                    <div>
-                        <AddOutlinedIcon />
-                    </div>
                 </div>
             </div>
         </div>

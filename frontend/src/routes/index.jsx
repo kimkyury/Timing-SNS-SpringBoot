@@ -7,9 +7,8 @@ import Search from '../pages/Search/Search';
 import Profile from '../pages/Profile/Profile';
 import Create from '../pages/CreateFeed/CreateFeed';
 import DetailComment from '../pages/DetailComment/DetailComment';
-//test
+import Tree from '../components/Tree/TreeGraph';
 import Test from '../components/SearchBar/SearchBar';
-//Jeonghui
 import Jeonghui from '../pages/Jeonghui/Jeonghui';
 import ChooseObject from '../pages/Jeonghui/ChooseObject';
 import DoChallenge from '../pages/Jeonghui/DoChallenge';

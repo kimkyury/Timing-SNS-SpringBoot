@@ -1,12 +1,12 @@
 .container {
     display: flex;
+    background-color: white;
 }
 .imageContainer {
     height: 90px;
     width: 90px;
     object-fit: cover;
     border-radius: 50px;
-    border: 3px solid black;
 }
 
 .imagebox {
@@ -22,7 +22,6 @@
 }
 
 .upper {
-    height: 80px;
     display: flex;
 }
 
@@ -30,10 +29,8 @@
     height: 60px;
     width: 240px;
     text-align: start;
-    margin-left: 15px;
-    white-space: wrap; /* 텍스트가 너무 길어도 줄 바꿈을 하지 않음 */
-    overflow: hidden; /* 내용이 너무 길 때 넘치는 부분을 가려줍니다. */
-    text-overflow: ellipsis; /* 내용이 너무 길 때 "..."으로 표시합니다. */
+    margin-left: 10px;
+    display: flex;
 }
 
 .articlebox {
@@ -41,9 +38,10 @@
     font-size: 20px;
     text-align: center;
     align-self: center;
-    margin-left: 10px;
 }
-
+.name {
+    font-weight: bold;
+}
 .btnbox {
     width: 180px;
     align-self: center;
@@ -52,4 +50,17 @@
 .btn {
     width: 80px;
     font-size: 10px;
+}
+.innerlower {
+    display: flex;
+}
+.innerhead {
+    margin-right: 5px;
+    font-family: 'Lobster', sans-serif;
+    font-size: 20px;
+}
+.innerfooter {
+    margin-right: 10px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 20px;
 }

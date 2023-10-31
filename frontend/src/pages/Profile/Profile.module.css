@@ -9,8 +9,12 @@
 
 .proccessing_timelapse {
     height: 140px;
-    margin-bottom: 30px;
 }
 .my_timelapse {
     height: fit-content;
+}
+.timeContainerName {
+    text-align: start;
+    font-size: 20px;
+    font-weight: bold;
 }
