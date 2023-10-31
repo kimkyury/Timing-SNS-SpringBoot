@@ -1,29 +1,11 @@
 .header {
     /* position: fixed; */
-    top: 0;
-    width: 360px;
-    height: 70px;
-    display: flex;
-    background-color: white;
-    z-index: 10;
-}
-.backbox {
-    width: 50px;
-    color: black;
-}
-.back {
-    width: 40px !important;
-    height: 40px !important;
+    width: 100%;
+    /* display: flex; */
+    /* z-index: 10; */
 }
 
 .title {
-    width: 260px;
     font-size: 50px;
-    color: black;
-    font-weight: bold;
-    text-align: start;
-}
-.Logo {
-    object-fit: cover;
-    height: 70px;
+    font-family: 'Kaushan Script', cursive;
 }
