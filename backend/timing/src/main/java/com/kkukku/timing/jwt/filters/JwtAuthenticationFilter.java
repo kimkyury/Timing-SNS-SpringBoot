@@ -31,44 +31,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
+        String jwt = null;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
+        if (authHeader != null && authHeader.startsWith("Bearer")) {
+            jwt = authHeader.substring(7);
         }
 
-        String jwt = authHeader.substring(7);
-        String email = jwtService.extractUsername(jwt);
+        if (jwt != null) {
+            String email = jwtService.extractUsername(jwt);
 
-        if (Optional.ofNullable(email)
-                    .isEmpty()) {
-            response.sendError(ErrorCode.INVALID_TOKEN_SUBJECT.getStatus(),
-                ErrorCode.INVALID_TOKEN_SUBJECT.getMessage());
-            return;
+            if (email == null) {
+                response.sendError(ErrorCode.INVALID_TOKEN_SUBJECT.getStatus(),
+                    ErrorCode.INVALID_TOKEN_SUBJECT.getMessage());
+                return;
+            }
+
+            if (!jwtService.isTokenValid(jwt, email)) {
+                response.sendError(ErrorCode.INVALID_TOKEN.getStatus(),
+                    ErrorCode.INVALID_TOKEN.getMessage());
+                return;
+            }
+
+            String isLogout = redisService.getValue("member:" + email + ":LOGOUT");
+
+            if (Optional.ofNullable(isLogout)
+                        .isEmpty()) {
+                response.sendError(ErrorCode.LOGGED_OUT_MEMBER_TOKEN.getStatus(),
+                    ErrorCode.LOGGED_OUT_MEMBER_TOKEN.getMessage());
+                return;
+            }
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                memberDetailService.loadUserByUsername(email), null,
+                AuthorityUtils.NO_AUTHORITIES);
+
+            SecurityContextHolder.getContext()
+                                 .setAuthentication(authentication);
         }
-
-        if (!jwtService.isTokenValid(jwt, email)) {
-            response.sendError(ErrorCode.INVALID_TOKEN.getStatus(),
-                ErrorCode.INVALID_TOKEN.getMessage());
-            return;
-        }
-
-        String isLogout = redisService.getValue("member:" + email + ":LOGOUT");
-
-        if (Optional.ofNullable(isLogout)
-                    .isEmpty()) {
-            response.sendError(ErrorCode.LOGGED_OUT_MEMBER_TOKEN.getStatus(),
-                ErrorCode.LOGGED_OUT_MEMBER_TOKEN.getMessage());
-            return;
-        }
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-            memberDetailService.loadUserByUsername(email), null,
-            AuthorityUtils.NO_AUTHORITIES);
-
-        SecurityContextHolder.getContext()
-                             .setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
+
 }
