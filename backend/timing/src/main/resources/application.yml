@@ -48,6 +48,8 @@ application:
         expiration: 900
       refresh-token:
         expiration: 604800
+    cors:
+      domain: ${FRONT_DOMAIN_URI}
 
 ---
 spring:
