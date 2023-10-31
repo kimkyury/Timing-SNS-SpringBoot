@@ -1,6 +1,8 @@
 .container {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    margin-bottom: 10px;
 }
 
 .nameContainer {
@@ -27,7 +29,6 @@
     border-radius: 30px;
     align-self: center;
     margin-top: 10px;
-    margin-left: 10px;
     margin-right: 10px;
 }
 .etc {
@@ -35,10 +36,10 @@
     align-self: center;
 }
 .imageContainer {
-    height: 350px;
+    height: 360px;
     width: 360px;
     object-fit: cover;
-    border-radius: 15px;
+    border-radius: 30px;
 }
 .tagContainer {
     height: 40px;
@@ -58,29 +59,59 @@
 .hash {
     margin-right: 10px;
     border-radius: 10px;
-    padding: 3px;
-    background-color: #008000;
-    color: white;
     text-align: center;
     align-self: center;
 }
 .commentContainer {
-    height: 80px;
+    height: 25px;
     display: flex;
     flex-direction: column;
-    border-block-end: solid;
     writing-mode: horizontal-tb;
 }
 .commentbox {
     display: flex;
-    margin-left: 10px;
 }
 .commentname {
     font-weight: bold;
     margin-right: 5px;
+    font-size: 20px;
 }
 .seemore {
     text-align: center;
 }
 .commentcontent {
+    font-size: 20px;
+}
+.btn {
+    padding: 10px;
+    border-radius: 15px;
+}
+.inputbox {
+    width: 230px;
+    height: 30px;
+    font-size: 15px;
+    margin-left: 20px;
+    border: none; /* 테두리를 없애는 부분 */
+    outline: none;
+    border-block-end: solid;
+}
+.imagebox {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    align-self: center;
+}
+.createbox {
+    display: flex;
+    justify-self: center;
+    height: fit-content;
+    margin-top: 10px;
+}
+
+.createComment {
+    text-align: center;
+    justify-self: center;
+    align-self: center;
+    margin-left: 10px;
+    font-size: 15px;
 }

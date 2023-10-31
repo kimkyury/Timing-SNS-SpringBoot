@@ -7,8 +7,9 @@ import Search from '../pages/Search/Search';
 import Profile from '../pages/Profile/Profile';
 import Create from '../pages/CreateFeed/CreateFeed';
 import DetailComment from '../pages/DetailComment/DetailComment';
+import Tree from '../components/Tree/TreeGraph';
 //test
-import Test from '../components/SearchBar/SearchBar';
+import Test from '../pages/Test';
 
 function Router() {
     return (
@@ -22,7 +23,7 @@ function Router() {
             <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
 
             {/* test */}
-            <Route path="/test" element={<Test />} />
+            <Route path="/test" element={<Tree />} />
         </Routes>
     );
 }
