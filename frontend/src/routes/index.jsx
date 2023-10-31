@@ -9,6 +9,10 @@ import Create from '../pages/CreateFeed/CreateFeed';
 import DetailComment from '../pages/DetailComment/DetailComment';
 //test
 import Test from '../components/SearchBar/SearchBar';
+//Jeonghui
+import Jeonghui from '../pages/Jeonghui/Jeonghui';
+import ChooseObject from '../pages/Jeonghui/ChooseObject';
+import DoChallenge from '../pages/Jeonghui/DoChallenge';
 
 function Router() {
     return (
@@ -23,6 +27,10 @@ function Router() {
 
             {/* test */}
             <Route path="/test" element={<Test />} />
+            {/* Jeonghui */}
+            <Route path="/jeonghui" element={<Jeonghui />} />
+            <Route path="/chooseObject" element={<ChooseObject />} />
+            <Route path="/doChallenge" element={<DoChallenge />} />
         </Routes>
     );
 }
