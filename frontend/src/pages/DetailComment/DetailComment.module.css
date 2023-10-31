@@ -48,7 +48,6 @@
 }
 .commentbox {
     display: flex;
-    margin-left: 10px;
     margin-bottom: 10px;
 }
 .commentname {
@@ -76,7 +75,6 @@
     display: flex;
     justify-self: center;
     height: fit-content;
-    margin-left: 10px;
     margin-bottom: 10px;
     margin-top: 10px;
 }

@@ -1,14 +1,16 @@
 .image_container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px; /* 이미지 사이의 간격을 조절하려면 필요에 따라 수정하세요. */
     max-width: 600px; /* 그리드의 최대 너비를 정의합니다. */
     margin: 0 auto; /* 가운데 정렬을 위한 마진 설정. */
 }
 
 .image_container img {
-    width: 100%;
-    height: 200px;
+    width: 105px;
+    height: 120px;
+    margin-top: 20px;
+    margin-left: 5px;
+    border-radius: 25px;
 }
 
 .imagebox {
@@ -23,8 +25,10 @@
 
 .lock {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 25px;
+    right: 15px;
+    width: 30px !important;
+    height: 30px !important;
 }
 .myfeedcontainerName {
     text-align: start;

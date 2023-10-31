@@ -6,3 +6,10 @@
 }
 .Home_main {
 }
+.timeContainerName {
+    text-align: start;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-left: 10px;
+}

@@ -1,8 +1,8 @@
 import styles from './DetailComment.module.css';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Etc from '../../components/Etc/Etc';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import MainFeed from '../../components/Feed/MainFeed';
 import dog from '../../assets/dog.jpg';
 function DetailComment() {
     const location = useLocation();
@@ -34,21 +34,7 @@ function DetailComment() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.nameContainer}>
-                <div>
-                    <img src={state.profileimage} className={styles.profileimage} />
-                </div>
-                <div className={styles.namebox}>
-                    <div className={styles.name}>{state.name}</div>
-                    <div className={styles.id}>{state.id}</div>
-                </div>
-                <div className={styles.etc}>
-                    <Etc />
-                </div>
-            </div>
-            <div className={styles.imageContainer}>
-                <img src={state.image} className={styles.imageContainer} />
-            </div>
+            <MainFeed />
             <div className={styles.createbox}>
                 <img src={user.profile_img} className={styles.imagebox} />
                 <input
