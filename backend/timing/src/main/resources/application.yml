@@ -1,10 +1,9 @@
 spring:
   profiles:
-    active: local
+    active: set1
     group:
       "local": "local"
       "dev": "dev"
-    active: local
   security:
     oauth2:
       client:
@@ -135,6 +134,9 @@ spring:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
     password: ${REDIS_PASSWORD}
+server:
+  port: 8081
+
 ---
 spring:
   config:
@@ -158,3 +160,5 @@ spring:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
     password: ${REDIS_PASSWORD}
+server:
+  port: 8082
