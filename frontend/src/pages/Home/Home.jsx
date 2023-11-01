@@ -5,14 +5,12 @@ import MainFeed from '../../components/Feed/MainFeed';
 function Home() {
     return (
         <div className={styles.container}>
-            <div className={styles.Home_timelapse}>
-                <TimeLapse />
-            </div>
-            <div className={styles.Home_main}>
+            <TimeLapse />
+            {/* <div className={styles.Home_main}>
                 <MainFeed />
                 <MainFeed />
                 <MainFeed />
-            </div>
+            </div> */}
         </div>
     );
 }
