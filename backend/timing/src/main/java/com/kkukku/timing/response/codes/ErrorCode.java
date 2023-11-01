@@ -16,11 +16,18 @@ public enum ErrorCode {
     JACKSON_EXCEPTION(400, "Jackson Core Exception"),
     VALIDATION_ERROR(400, "Validation Exception"),
     MISSING_HEADER(400, "Header data missing"),
+    NOT_FOUND_MEMBER_EMAIL(400, "No user exists with the specified email"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),
+    LOGGED_OUT_MEMBER_TOKEN(401, "Logged out token"),
+    INVALID_TOKEN_SUBJECT(401, "Invalid token: No subject(email) claim"),
+    INVALID_TOKEN(401, "Invalid token"),
+    TOKEN_UNAUTHORIZED(401, "JWT token unauthorized"),
+    MISSING_LOGIN_INFO(401, "Missing login info"),
 
     FORBIDDEN(403, "Forbidden"),
+    TOKEN_ACCESS_DENIED(403, "JWT token access denied"),
 
     NOT_FOUND(404, "Not Found"),
     NULL_POINTER(404, "Null Pointer Exception"),

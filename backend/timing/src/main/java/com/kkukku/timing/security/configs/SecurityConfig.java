@@ -37,6 +37,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final String[] WHITE_LIST_URL = {
+        "/api/v1/auth/reissue",
         "/oauth2/authorization/kakao/**",
         "/h2-console/**",
         "/v2/api-docs",
@@ -48,7 +49,9 @@ public class SecurityConfig {
         "/configuration/security",
         "/swagger-ui/**",
         "/webjars/**",
-        "/swagger-ui.html"};
+        "/swagger-ui.html",
+        "/api/profile"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
