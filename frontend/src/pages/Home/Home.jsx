@@ -1,16 +1,12 @@
 import styles from './Home.module.css';
 import TimeLapse from '../../components/TimeLapse/TimeLapse';
-import MainFeed from '../../components/Feed/MainFeed';
+import MainFeed from '../MainFeed/MainFeed';
 
 function Home() {
     return (
         <div className={styles.container}>
             <TimeLapse />
-            {/* <div className={styles.Home_main}>
-                <MainFeed />
-                <MainFeed />
-                <MainFeed />
-            </div> */}
+            <MainFeed />
         </div>
     );
 }
