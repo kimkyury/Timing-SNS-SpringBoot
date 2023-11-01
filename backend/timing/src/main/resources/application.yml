@@ -1,5 +1,6 @@
 spring:
   profiles:
+    active: local
     group:
       "local": "local"
       "dev": "dev"
@@ -48,8 +49,11 @@ application:
         expiration: 900
       refresh-token:
         expiration: 604800
+    cors:
+      domain: ${FRONT_DOMAIN_URI}
 
 ---
+
 spring:
   config:
     activate:
@@ -82,10 +86,59 @@ spring:
     password: ${LOCAL_REDIS_PASSWORD}
 
 ---
+
 spring:
   config:
     activate:
       on-profile: "dev"
+  datasource:
+    url: ${MARIADB_URL}
+    username: ${MARIADB_USERNAME}
+    password: ${MARIADB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    generate-ddl: false
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+
+# 무중단 배포를 위한 profile 설정
+---
+spring:
+  config:
+    activate:
+      on-profile: set1
+  datasource:
+    url: ${MARIADB_URL}
+    username: ${MARIADB_USERNAME}
+    password: ${MARIADB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    generate-ddl: false
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+---
+spring:
+  config:
+    activate:
+      on-profile: set2
   datasource:
     url: ${MARIADB_URL}
     username: ${MARIADB_USERNAME}
