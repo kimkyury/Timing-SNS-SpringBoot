@@ -2,9 +2,7 @@ import styles from './MyFeed.module.css';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 function MyFeed(data) {
-    console.log(data);
     const state = data;
-    console.log(state.state);
     return (
         <div className={styles.myfeedcontainerName}>
             {/* 나의 피드 */}

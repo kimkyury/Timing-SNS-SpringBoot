@@ -31,6 +31,11 @@ function DetailComment() {
             setComments(updatedComments);
         }
     }
+    function activeEnter(e) {
+        if (e.key === 'Enter') {
+            handleAddComment();
+        }
+    }
 
     return (
         <div className={styles.container}>
@@ -43,6 +48,7 @@ function DetailComment() {
                     placeholder="댓글추가"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
+                    onKeyDown={(e) => activeEnter(e)}
                 />
                 <button onClick={handleAddComment} className={styles.btn}>
                     추가

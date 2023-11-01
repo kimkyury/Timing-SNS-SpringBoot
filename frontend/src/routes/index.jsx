@@ -12,6 +12,7 @@ import Test from '../components/SearchBar/SearchBar';
 import Jeonghui from '../pages/Jeonghui/Jeonghui';
 import ChooseObject from '../pages/Jeonghui/ChooseObject';
 import DoChallenge from '../pages/Jeonghui/DoChallenge';
+import DetailFeed from '../pages/DetailFeed/DetailFeed';
 
 function Router() {
     return (
@@ -23,6 +24,7 @@ function Router() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/create" element={<Create />} />
             <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
+            <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
 
             {/* test */}
             <Route path="/test" element={<Test />} />
