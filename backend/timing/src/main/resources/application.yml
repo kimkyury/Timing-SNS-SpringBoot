@@ -4,6 +4,7 @@ spring:
     group:
       "local": "local"
       "dev": "dev"
+    active: local
   security:
     oauth2:
       client:
