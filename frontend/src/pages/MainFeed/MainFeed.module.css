@@ -1,0 +1,74 @@
+.container {
+    margin: 0 2%;
+}
+
+.profileimage {
+    width: 12vw;
+    height: 12vw;
+    border-radius: 100%;
+    align-self: center;
+}
+.nameContainer {
+    display: flex;
+    margin-bottom: 2%;
+}
+.namebox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 3%;
+}
+.name {
+    font-size: 4vw;
+    font-weight: bold;
+}
+.id {
+    font-size: 3vw;
+    font-weight: bold;
+    color: #7c8c9b;
+}
+
+.imageContainer {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 30px;
+}
+
+.tagContainer {
+    display: flex;
+}
+
+.tagitem {
+    display: flex;
+    margin-right: 3%;
+    align-self: center;
+    font-size: 4vw;
+}
+
+.commentContainer {
+    display: flex;
+    align-items: baseline;
+}
+
+.commentname {
+    font-weight: bold;
+    margin-right: 2%;
+    font-size: 4.5vw;
+}
+
+.commentcontent {
+    font-size: 4.5vw;
+}
+
+.hashTagContainer {
+    display: flex;
+    font-weight: bold;
+    font-size: 3.5vw;
+}
+.hash {
+    margin-right: 10px;
+    text-align: center;
+    align-self: center;
+}
