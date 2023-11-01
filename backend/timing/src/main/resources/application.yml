@@ -52,6 +52,10 @@ application:
     cors:
       domain: ${FRONT_DOMAIN_URI}
 
+management:
+  endpoint:
+    health:
+      show-details: always
 ---
 
 spring:
