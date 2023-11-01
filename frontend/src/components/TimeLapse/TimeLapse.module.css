@@ -1,24 +1,42 @@
 .container {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    /* overflow: auto; */
+    /* flex-direction: column; */
+    /* width: fit-content; */
+    /* margin-bottom: 20px; */
+    margin: 3% 0;
+}
+
+/* .container {
+    overflow: auto;
+    display: flex;
+
+    align-items: baseline;
+} */
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.timeLaps {
+    width: 18vw;
+    height: 18vw;
+    margin: 0 3%;
+}
+
+.circularContainer {
+    width: 18vw;
     display: flex;
     flex-direction: column;
-    width: fit-content;
-    margin-bottom: 20px;
+    align-items: center;
 }
 
-.timeContainerName {
-    text-align: start;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.timeContainer {
-    display: flex;
-    margin-top: 15px;
-}
-
-.TimeLapse {
-    width: 60px;
-    height: 60px;
-    margin-left: 10px;
-    margin-right: 10px;
+.timeLapsImage {
+    width: 15vw;
+    height: 15vw;
+    border-radius: 100%;
 }

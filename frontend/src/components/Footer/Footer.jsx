@@ -25,45 +25,43 @@ function Footer() {
     }, [currentUrl]);
 
     return (
-        <div>
-            <div className={styles.footer}>
-                {currentUrl === '/' ? (
-                    <HomeRoundedIcon />
-                ) : (
-                    <HomeOutlinedIcon
-                        onClick={() => {
-                            navigate('/');
-                        }}
-                    />
-                )}
-                {currentUrl === '/like' ? (
-                    <FavoriteRoundedIcon />
-                ) : (
-                    <FavoriteBorderRoundedIcon
-                        onClick={() => {
-                            navigate('/like');
-                        }}
-                    />
-                )}
-                {currentUrl === '/search' ? (
-                    <PageviewRoundedIcon />
-                ) : (
-                    <PageviewOutlinedIcon
-                        onClick={() => {
-                            navigate('/search');
-                        }}
-                    />
-                )}
-                {currentUrl === '/profile' ? (
-                    <PersonRoundedIcon />
-                ) : (
-                    <PersonOutlineOutlinedIcon
-                        onClick={() => {
-                            navigate('/profile');
-                        }}
-                    />
-                )}
-            </div>
+        <div className={styles.footer}>
+            {currentUrl === '/' ? (
+                <HomeRoundedIcon />
+            ) : (
+                <HomeOutlinedIcon
+                    onClick={() => {
+                        navigate('/');
+                    }}
+                />
+            )}
+            {currentUrl === '/like' ? (
+                <FavoriteRoundedIcon />
+            ) : (
+                <FavoriteBorderRoundedIcon
+                    onClick={() => {
+                        navigate('/like');
+                    }}
+                />
+            )}
+            {currentUrl === '/search' ? (
+                <PageviewRoundedIcon />
+            ) : (
+                <PageviewOutlinedIcon
+                    onClick={() => {
+                        navigate('/search');
+                    }}
+                />
+            )}
+            {currentUrl === '/profile' ? (
+                <PersonRoundedIcon />
+            ) : (
+                <PersonOutlineOutlinedIcon
+                    onClick={() => {
+                        navigate('/profile');
+                    }}
+                />
+            )}
         </div>
     );
 }
