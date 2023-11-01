@@ -51,6 +51,9 @@ function Feed() {
     function gotoDetailComment() {
         navigate(`/detailcomment/${state.pk}`, { state });
     }
+    function gotoDetailFeed() {
+        navigate(`/detailfeed/${state.pk}`, { state });
+    }
     function formatK(count) {
         if (count >= 100000) {
             return (count / 1000000).toFixed(1) + 'm';
@@ -73,7 +76,7 @@ function Feed() {
                 </div>
             </div>
             <div className={styles.imageContainer}>
-                <img src={state.image} className={styles.imageContainer} />
+                <img src={state.image} className={styles.imageContainer} onClick={gotoDetailFeed} />
             </div>
             <div className={styles.tagContainer}>
                 <div className={styles.tagitem}>

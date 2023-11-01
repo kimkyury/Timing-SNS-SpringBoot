@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import styles from './CreateFeed.module.css';
 import Input from '@mui/joy/Input';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Textarea from '@mui/joy/Textarea';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 function CreateFeed() {
     const [tags, setTags] = useState([]);
     const [currentTag, setCurrentTag] = useState('');
-
+    const [value, onChange] = useState(new Date());
     const handleTagInputChange = (event) => {
         setCurrentTag(event.target.value);
     };
@@ -29,10 +28,7 @@ function CreateFeed() {
     return (
         <div className={styles.container}>
             <div className={styles.boxname}>시작일</div>
-            {/* <Input type="date" /> */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker className={styles.selectdate} />
-            </LocalizationProvider>
+            <Calendar onChange={onChange} value={value} className={styles.calender} />
             <div className={styles.boxname}>해쉬</div>
             <div className={styles.tagInputContainer}>
                 <Input

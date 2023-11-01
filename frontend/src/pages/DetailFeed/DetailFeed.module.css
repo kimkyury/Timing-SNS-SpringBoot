@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin-bottom: 10px;
+}
+.imageContainer {
+    height: 360px;
+    width: 360px;
+    object-fit: cover;
+    border-radius: 30px;
+    margin-top: 30px;
+}
+
+.etcbox {
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-evenly;
+}
+.etcinner {
+    display: flex;
+    align-items: center;
+}
+.etcimg {
+    width: 30px !important;
+    height: 30px !important;
+}
