@@ -4,7 +4,7 @@ import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } fro
 import 'react-circular-progressbar/dist/styles.css';
 import dog from '../../assets/dog2.jpg';
 import { useEffect, useState } from 'react';
-import { element } from 'prop-types';
+
 function TimeLapse() {
     const navigate = useNavigate();
     const [timeLaps, setTimeLaps] = useState([]);
@@ -14,9 +14,16 @@ function TimeLapse() {
         const state = [
             { percent: 10, name: 'test1', img: `${dog}` },
             { percent: 50, name: 'test2', img: `${dog}` },
-            // { percent: 70, name: 'test3', img: `${dog}` },
-            // { percent: 70, name: 'test3', img: `${dog}` },
-            // { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
+            { percent: 70, name: 'test3', img: `${dog}` },
         ];
 
         setTimeLaps(state);
@@ -24,47 +31,21 @@ function TimeLapse() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.timeContainer}>
-                {timeLaps.map((element, index) => (
-                    <div key={index} className={styles.TimeLapse}>
+            {timeLaps.map((element, index) => (
+                <div key={index} className={styles.timeLaps}>
+                    <div className={styles.circularContainer}>
                         <CircularProgressbarWithChildren
                             value={element.percent}
                             strokeWidth="10"
                             styles={buildStyles({ pathColor: 'red', textColor: 'black' })}
                         >
-                            <img
-                                src={element.img}
-                                style={{
-                                    width: '48px',
-                                    height: '48px',
-                                    borderRadius: '30px',
-                                    objectFit: 'cover',
-                                }}
-                            />
+                            <img src={element.img} className={styles.timeLapsImage} />
                         </CircularProgressbarWithChildren>
                     </div>
-                ))}
-                {/* {Array.isArray(state.categoryList) &&
-                    state.categoryList.map((v, i) => (
-                        <div key={i} className={styles.TimeLapse}>
-                            <CircularProgressbarWithChildren
-                                value={v.percent}
-                                strokeWidth="10"
-                                styles={buildStyles({ pathColor: 'red', textColor: 'black' })}
-                            >
-                                <img
-                                    src={v.img}
-                                    style={{
-                                        width: '48px',
-                                        height: '48px',
-                                        borderRadius: '30px',
-                                        objectFit: 'cover',
-                                    }}
-                                />
-                            </CircularProgressbarWithChildren>
-                        </div>
-                    ))} */}
-                <div className={styles.TimeLapse} onClick={() => navigate(`/create`)}>
+                </div>
+            ))}
+            <div className={styles.timeLaps} onClick={() => navigate(`/create`)}>
+                <div className={styles.timeLaps}>
                     <CircularProgressbar
                         value="40"
                         text="+"
