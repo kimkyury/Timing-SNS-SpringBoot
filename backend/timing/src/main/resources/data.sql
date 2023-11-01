@@ -1,6 +1,6 @@
 INSERT INTO members (email, profile_image_url, nickname, birthyear, gender, is_delete)
-VALUES ('test@com', '/test.png', '테스터', 2000, '1', 0),
-       ('test2@com', '/test.png', '테스터2', 1998, '0', 0);
+VALUES ('test@com', '/test.png', '테스터', 2000, 'F', 0),
+       ('test2@com', '/test.png', '테스터2', 1998, 'M', 0);
 
 INSERT INTO hash_tag_options (content)
 VALUES ('운동'),
