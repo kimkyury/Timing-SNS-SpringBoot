@@ -5,6 +5,7 @@
 
 .inputbox {
     display: flex;
+
     flex-direction: row;
     padding: 16px !important;
     border: 1px solid black;
