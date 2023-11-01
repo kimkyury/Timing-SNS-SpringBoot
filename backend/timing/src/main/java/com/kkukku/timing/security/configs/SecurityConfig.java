@@ -50,7 +50,8 @@ public class SecurityConfig {
         "/swagger-ui/**",
         "/webjars/**",
         "/swagger-ui.html",
-        "/api/profile"
+        "/api/profile",
+            "/api/v1/test/ping"
     };
 
     @Bean
