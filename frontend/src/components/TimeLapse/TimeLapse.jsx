@@ -10,17 +10,10 @@ function TimeLapse() {
     const [timeLaps, setTimeLaps] = useState([]);
 
     useEffect(() => {
-        // 여기서 timeLaps 가져올꺼임
+        // 여기서 axios로 timeLaps 가져올꺼임
         const state = [
             { percent: 10, name: 'test1', img: `${dog}` },
             { percent: 50, name: 'test2', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
             { percent: 70, name: 'test3', img: `${dog}` },
             { percent: 70, name: 'test3', img: `${dog}` },
             { percent: 70, name: 'test3', img: `${dog}` },
