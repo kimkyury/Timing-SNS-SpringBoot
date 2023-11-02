@@ -4,12 +4,12 @@
   padding: 2%;
 }
 .user_info {
-  height: 140px;
+  height: 25%;
   margin-top: 30px;
 }
 
 .proccessing_timelapse {
-  height: 140px;
+  height: 25%;
 }
 .my_timelapse {
   height: fit-content;
