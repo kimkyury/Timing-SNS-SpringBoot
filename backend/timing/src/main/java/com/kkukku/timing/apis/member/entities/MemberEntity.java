@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.member.entities;
 
+import com.kkukku.timing.apis.member.requests.MemberRegisterRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +32,7 @@ public class MemberEntity {
 
     private String nickname;
 
-    private Integer birthYear;
+    private Integer birthyear;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -43,4 +44,12 @@ public class MemberEntity {
     public MemberEntity(String email) {
         this.email = email;
     }
+
+    public void registerInfo(MemberRegisterRequest registerRequest, String profileImageUrl) {
+        this.nickname = registerRequest.getNickname();
+        this.birthyear = registerRequest.getBirthyear();
+        this.gender = registerRequest.getGender();
+        this.profileImageUrl = profileImageUrl;
+    }
+
 }
