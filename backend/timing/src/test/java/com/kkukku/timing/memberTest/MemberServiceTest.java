@@ -7,6 +7,7 @@ import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.entities.MemberEntity.Gender;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.apis.member.requests.MemberRegisterRequest;
+import com.kkukku.timing.apis.member.responses.MemberDetailResponse;
 import com.kkukku.timing.apis.member.services.MemberService;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -102,6 +103,13 @@ public class MemberServiceTest {
     @DisplayName("유저의 정보 조회")
     void test2() {
 
+        MemberDetailResponse memberDetailResponse = memberService.getMemberInfo("kkr@com");
+        MemberEntity member = memberRepository.findById(1)
+                                              .get();
+
+        assertEquals("canReadNickname", memberDetailResponse.getNickname(), member.getNickname());
+        assertEquals("canReadProfile", memberDetailResponse.getProfileImageUrl(),
+            member.getProfileImageUrl());
     }
 
     @Test
@@ -110,9 +118,5 @@ public class MemberServiceTest {
 
     }
 
-    @Test
-    @DisplayName("탈퇴된 유저의 정보 조회")
-    void testGetUserInfo() {
 
-    }
 }
