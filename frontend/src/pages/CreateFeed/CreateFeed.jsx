@@ -3,7 +3,9 @@ import styles from './CreateFeed.module.css';
 import Input from '@mui/joy/Input';
 import Textarea from '@mui/joy/Textarea';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import moment from 'moment';
+
+import './Calendar.css';
 function CreateFeed() {
     const [tags, setTags] = useState([]);
     const [currentTag, setCurrentTag] = useState('');
@@ -29,6 +31,7 @@ function CreateFeed() {
         <div className={styles.container}>
             <div className={styles.boxname}>시작일</div>
             <Calendar onChange={onChange} value={value} className={styles.calender} />
+            <div>{moment(value).format('YYYY년 MM월 DD일')} </div>
             <div className={styles.boxname}>해쉬</div>
             <div className={styles.tagInputContainer}>
                 <Input
@@ -44,7 +47,7 @@ function CreateFeed() {
                     }}
                 />
                 <button onClick={handleTagAdd} className={styles.btn}>
-                    ADD
+                    추가
                 </button>
             </div>
             <div className={styles.tagList}>
@@ -58,8 +61,8 @@ function CreateFeed() {
                 ))}
             </div>
             <div className={styles.boxname}>달성목표</div>
-            <Textarea minRows={4} />
-            <button className={styles.btn}>제출</button>
+            <Textarea minRows={4} className={styles.contentbox} />
+            <button className={styles.summitbtn}>챌린지 시작하기</button>
         </div>
     );
 }

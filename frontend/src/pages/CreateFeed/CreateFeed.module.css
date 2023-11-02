@@ -1,12 +1,21 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin-bottom: 10px;
+    padding: 2%;
+}
 .boxname {
     font-size: 30px;
     font-weight: bold;
     text-align: start;
+    margin-bottom: 3%;
 }
 
 .btn {
-    color: white;
-    background-color: green;
+    width: 18%;
+    height: 40px;
+    padding: 0;
 }
 
 .selectdate {
@@ -37,16 +46,21 @@
     margin-left: 5px;
 }
 .inputbox {
-    width: 270px;
-    height: 30px;
-    border-radius: 10px;
+    width: 80%;
+    height: 40px !important;
+    border-radius: 100px !important;
+    background-color: #efefef !important;
+    margin-bottom: 5%;
 }
 
 .tagInputContainer {
     display: flex;
+    align-content: center;
 }
 .calender {
     border-radius: 30px;
+    width: 100% !important;
+    height: fit-content;
 }
 .dot {
     height: 8px;
@@ -55,4 +69,16 @@
     border-radius: 50%;
     display: flex;
     margin-left: 1px;
+}
+.summitbtn {
+    width: 60%;
+    align-self: center;
+    background-color: #97d3ff;
+    color: white;
+}
+.contentbox {
+    width: 100%;
+    border-radius: 40px !important;
+    background-color: #efefef !important;
+    margin-bottom: 5%;
 }

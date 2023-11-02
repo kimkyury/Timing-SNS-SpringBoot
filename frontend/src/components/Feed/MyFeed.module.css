@@ -1,16 +1,15 @@
 .image_container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
     max-width: 600px; /* 그리드의 최대 너비를 정의합니다. */
     margin: 0 auto; /* 가운데 정렬을 위한 마진 설정. */
 }
 
 .image_container img {
-    width: 105px;
+    width: 120px;
     height: 120px;
-    margin-top: 20px;
-    margin-left: 5px;
-    border-radius: 25px;
+    border-radius: 30px;
 }
 
 .imagebox {
@@ -25,8 +24,8 @@
 
 .lock {
     position: absolute;
-    top: 25px;
-    right: 15px;
+    top: 10px;
+    right: 10px;
     width: 30px !important;
     height: 30px !important;
 }
