@@ -4,19 +4,8 @@
     flex-direction: row;
     overflow-x: auto;
     white-space: nowrap;
-    /* overflow: auto; */
-    /* flex-direction: column; */
-    /* width: fit-content; */
-    /* margin-bottom: 20px; */
     margin: 3% 0;
 }
-
-/* .container {
-    overflow: auto;
-    display: flex;
-
-    align-items: baseline;
-} */
 
 .container::-webkit-scrollbar {
     display: none;
@@ -39,4 +28,55 @@
     width: 15vw;
     height: 15vw;
     border-radius: 100%;
+}
+
+.finish {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 3;
+}
+
+.finishContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+    background-color: white;
+    opacity: 1;
+    width: 70vw;
+    z-index: 4;
+    padding: 5%;
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.buttonContainer {
+    display: flex;
+    margin-top: 4%;
+}
+
+.buttonContainer button {
+    border-radius: 40px;
+    width: 30vw;
+    font-size: 5vw;
+    margin: 0 10%;
+    border: none;
+    outline: none;
+}
+
+.continueTimeLaps {
+    color: #ffffff;
+    background-color: #979bff;
+}
+
+.discontinueTimeLaps {
+    color: #ffffff;
+    background-color: #ff7a7a;
 }
