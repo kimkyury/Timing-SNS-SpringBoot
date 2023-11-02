@@ -1,12 +1,14 @@
-import styles from './DetailComment.module.css';
+import styles from './MainFeed.module.css';
 import Feed from '../../components/Feed/Feed';
 
-function DetailComment() {
+function MainFeed() {
     return (
         <div className={styles.container}>
+            <Feed />
+            <Feed />
             <Feed />
         </div>
     );
 }
 
-export default DetailComment;
+export default MainFeed;

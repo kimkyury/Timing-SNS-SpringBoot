@@ -1,25 +1,10 @@
-.header{
-    position: fixed;
-    top:0;
-    width: 360px;
-    height: 60px;
-    box-shadow: 0 0 0 1px black inset;
-    border-radius: 0px 0px 30px 30px;
-    display: flex;
-    background-color: white;
-}
-.backbox{
-    width: 50px;
-    color:black;
-}
-.back{
-    width: 40px!important;
-    height: 40px!important;
+.header {
+
+    /* width: 100%; */
+    margin: 0 2%;
 }
 
-.title{
-    width: 260px;
-    font-size: 30px;
-    color:black;
-    font-weight: bold;
+.title {
+    font-size: 15vw;
+    font-family: 'Kaushan Script', cursive;
 }

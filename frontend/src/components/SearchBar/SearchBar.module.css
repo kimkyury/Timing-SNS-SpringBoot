@@ -1,0 +1,70 @@
+.WholeBox {
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.inputbox {
+    display: flex;
+
+    flex-direction: row;
+    padding: 16px !important;
+    border: 1px solid black;
+    border-radius: 40px 40px 0px 0px;
+    z-index: 1;
+    background-color: white;
+}
+.inputbox2 {
+    display: flex;
+    flex-direction: row;
+    padding: 16px !important;
+    border: 1px solid black;
+    border-radius: 40px;
+    z-index: 1;
+    background-color: white;
+    box-shadow: 0 3px 3px rgb(0, 0, 0, 0.3);
+}
+
+.searchInput {
+    flex: 1 0 0;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+.DeleteButton {
+    cursor: pointer;
+    align-self: center;
+}
+
+.DropDownBox {
+    display: block;
+    margin: 0 auto;
+    padding: 8px 0;
+    background-color: white;
+    border: 1px solid black;
+    border-top: none;
+    border-radius: 0 0 40px 40px;
+    box-shadow: 0 3px 3px rgb(0, 0, 0, 0.3);
+    list-style-type: none;
+}
+
+.DropDownItem {
+    height: 60px;
+    font-size: 25px;
+    margin-top: 10px;
+}
+
+.search_icon {
+    margin-right: 10px;
+    background-color: black;
+    color: white;
+    border-radius: 30px;
+    width: 40px !important;
+    height: 40px !important;
+}
+
+.blank {
+    height: 50px;
+}

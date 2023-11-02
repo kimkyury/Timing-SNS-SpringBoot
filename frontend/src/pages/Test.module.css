@@ -1,0 +1,32 @@
+.tree {
+    width: 20px;
+    height: 100px;
+    position: relative;
+    background-color: brown;
+    margin: 20px auto;
+}
+
+.trunk {
+    width: 20px;
+    height: 40px;
+    background-color: brown;
+}
+
+.leaf {
+    width: 40px;
+    height: 40px;
+    background-color: green;
+    position: absolute;
+    bottom: 40px; /* 잎이 나무 상단에 위치 */
+    animation: leafGrow 0.5s ease; /* 애니메이션 추가 */
+}
+
+/* 잎의 성장 애니메이션 */
+@keyframes leafGrow {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
