@@ -37,53 +37,59 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final String[] WHITE_LIST_URL = {
-        "/api/v1/auth/reissue",
-        "/oauth2/authorization/kakao/**",
-        "/h2-console/**",
-        "/v2/api-docs",
-        "/v3/api-docs",
-        "/v3/api-docs/**",
-        "/swagger-resources",
-        "/swagger-resources/**",
-        "/configuration/ui",
-        "/configuration/security",
-        "/swagger-ui/**",
-        "/webjars/**",
-        "/swagger-ui.html",
-        "/api/profile"
+            "/api/v1/auth/reissue",
+            "/oauth2/authorization/kakao/**",
+            "/h2-console/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html",
+            "/api/profile",
+            "/api/v1/test/ping",
+            "/actuator/health"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable)
-            .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(
-                FrameOptionsConfig::disable))
-            .httpBasic(HttpBasicConfigurer::disable)
-            .formLogin(FormLoginConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .sessionManagement(
-                configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2Login(oauth2Configurer -> oauth2Configurer
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler)
-                .userInfoEndpoint(
-                    userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                        oAuth2UserService)))
-            .logout(logout ->
-                logout.logoutUrl("/api/v1/auth/logout")
-                      .addLogoutHandler(oAuth2LogoutHandler)
-                      .logoutSuccessHandler(
-                          (request, response, authentication) -> SecurityContextHolder.clearContext()))
-            .authorizeHttpRequests(request -> request.requestMatchers(CorsUtils::isPreFlightRequest)
-                                                     .permitAll()
-                                                     .requestMatchers(WHITE_LIST_URL)
-                                                     .permitAll()
-                                                     .anyRequest()
-                                                     .authenticated())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling(
-                exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                      .accessDeniedHandler(jwtAccessDeniedHandler));
+                .headers(
+                        httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(
+                                FrameOptionsConfig::disable))
+                .httpBasic(HttpBasicConfigurer::disable)
+                .formLogin(FormLoginConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .sessionManagement(
+                        configurer -> configurer.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS))
+                .oauth2Login(oauth2Configurer -> oauth2Configurer
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler)
+                        .userInfoEndpoint(
+                                userInfoEndpointConfig -> userInfoEndpointConfig.userService(
+                                        oAuth2UserService)))
+                .logout(logout ->
+                        logout.logoutUrl("/api/v1/auth/logout")
+                                .addLogoutHandler(oAuth2LogoutHandler)
+                                .logoutSuccessHandler(
+                                        (request, response, authentication) -> SecurityContextHolder.clearContext()))
+                .authorizeHttpRequests(
+                        request -> request.requestMatchers(CorsUtils::isPreFlightRequest)
+                                .permitAll()
+                                .requestMatchers(WHITE_LIST_URL)
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(jwtAccessDeniedHandler));
 
         return http.build();
     }
