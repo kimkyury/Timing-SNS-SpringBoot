@@ -29,18 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class TestController {
 
     private final S3Service s3Service;
-    private final RedisProperties redisProperties;
 
     @GetMapping("/ping")
     public String ping() {
-<<<<<<< Updated upstream
         return "pong";
-=======
-        System.out.println(redisProperties.getHost());
-        System.out.println(redisProperties.getPort());
-        System.out.println(redisProperties.getPassword());
-        return "pong2";
->>>>>>> Stashed changes
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
