@@ -16,13 +16,17 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest(properties = "spring.profiles.active=local")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MemberServiceTest {
 
     @Autowired
@@ -72,8 +76,9 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Order(1)
     @DisplayName("최초 로그인 유저의 정보 수정")
-    void test1() {
+    void shouldUpdateMemberWhenInitLogin() {
         memberRepository.save(memberEntity);
         Integer memberId = memberRepository.findByEmail(memberEmail)
                                            .get()
@@ -100,8 +105,9 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Order(2)
     @DisplayName("유저의 정보 조회")
-    void testGetUserInfo() {
+    void shouldGetMemberInfo() {
 
         MemberDetailResponse memberDetailResponse = memberService.getMemberInfo("kkr@com");
         MemberEntity member = memberRepository.findById(1)
@@ -113,8 +119,9 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Order(3)
     @DisplayName("유저의 탈퇴")
-    void testDeleteUser() {
+    void ShouldUpdateMemberIsDelete() {
 
         memberService.deleteMember(1);
         MemberEntity member = memberRepository.findById(1)
