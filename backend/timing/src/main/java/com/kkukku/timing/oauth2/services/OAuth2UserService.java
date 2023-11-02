@@ -1,6 +1,6 @@
 package com.kkukku.timing.oauth2.services;
 
-import com.kkukku.timing.apis.members.services.MemberService;
+import com.kkukku.timing.apis.member.services.MemberService;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> originAttributes = oAuth2User.getAttributes();
         String email = ((Map<String, Object>) originAttributes.get("kakao_account")).get("email")
                                                                                     .toString();
-        
+
         memberService.saveIfNotExist(email);
 
         String userNameAttributeName = userRequest.getClientRegistration()
