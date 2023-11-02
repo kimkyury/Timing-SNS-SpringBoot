@@ -41,24 +41,29 @@ public class MemberController {
         return ApiResponseUtil.success();
     }
 
-    @Operation(summary = "Member의 본인 정보 조회", tags = {"1. Member"})
-    @GetMapping(value = "/")
-    public ResponseEntity<MemberDetailResponse> getOwnMemberInfo() {
 
-        String memberEmail = SecurityUtil.getLoggedInMemberEmail();
-        MemberDetailResponse memberDetailResponse = memberService.getMemberInfo(memberEmail);
+    @Operation(summary = "Member의 멤버 정보 조회", tags = {"1. Member"})
+    @GetMapping(value = "/")
+    public ResponseEntity<MemberDetailResponse> getMemberInfo(
+        @RequestParam(name = "email", required = false) String otherEmail) {
+
+        String queryEmail = (otherEmail != null) ? otherEmail : getLoggedInMemberEmail();
+        MemberDetailResponse memberDetailResponse = memberService.getMemberInfo(queryEmail);
 
         return ApiResponseUtil.success(memberDetailResponse);
     }
 
-    @Operation(summary = "Member의 타 멤버 정보 조회", tags = {"1. Member"})
-    @GetMapping(value = "/")
-    public ResponseEntity<MemberDetailResponse> getOtherMemberInfo(
-        @RequestParam(name = "email", required = false) String memberEmail) {
-
-        MemberDetailResponse memberDetailResponse = memberService.getMemberInfo(memberEmail);
-
-        return ApiResponseUtil.success(memberDetailResponse);
+    private String getLoggedInMemberEmail() {
+        return SecurityUtil.getLoggedInMemberEmail();
     }
 
+    @Operation(summary = "Member의 탈퇴(isDelete True)", tags = {"1. Member"})
+    @PatchMapping(value = "/")
+    public ResponseEntity<Void> deleteMember() {
+
+        Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
+        memberService.deleteMember(memberId);
+
+        return ApiResponseUtil.success();
+    }
 }
