@@ -1,4 +1,4 @@
-package com.kkukku.timing.MemberTest;
+package com.kkukku.timing.memberTest;
 
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
