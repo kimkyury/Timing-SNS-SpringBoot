@@ -1,6 +1,6 @@
-package com.kkukku.timing.apis.members.repositories;
+package com.kkukku.timing.apis.member.repositories;
 
-import com.kkukku.timing.apis.members.entities.MemberEntity;
+import com.kkukku.timing.apis.member.entities.MemberEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
