@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS snapshots;
 DROP TABLE IF EXISTS members;
 DROP TABLE IF EXISTS hash_tag_options;
 
+
 CREATE TABLE IF NOT EXISTS hash_tag_options (
                                                 id INT NOT NULL AUTO_INCREMENT,
                                                 content VARCHAR(255) NOT NULL,

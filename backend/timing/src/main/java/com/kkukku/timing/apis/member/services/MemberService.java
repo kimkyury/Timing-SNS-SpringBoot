@@ -1,7 +1,7 @@
-package com.kkukku.timing.apis.members.services;
+package com.kkukku.timing.apis.member.services;
 
-import com.kkukku.timing.apis.members.entities.MemberEntity;
-import com.kkukku.timing.apis.members.repositories.MemberRepository;
+import com.kkukku.timing.apis.member.entities.MemberEntity;
+import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
