@@ -6,8 +6,4 @@ import org.junit.jupiter.api.Test;
 
 class TimingApplicationTests {
 
-    @Test
-    void contextLoads() {
-        assertEquals(42, Integer.sum(19, 23));
-    }
 }
