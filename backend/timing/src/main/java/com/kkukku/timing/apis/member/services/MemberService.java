@@ -47,11 +47,16 @@ public class MemberService {
         String nickname = memberEntity.getNickname();
         String profileImageUrl = memberEntity.getProfileImageUrl();
 
-        MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
+        return new MemberDetailResponse(
             nickname, profileImageUrl
         );
-
-        return memberDetailResponse;
     }
 
+    public void deleteMember(Integer memberId) {
+        memberRepository.findById(memberId)
+                        .ifPresent(selectMember -> {
+                            selectMember.delete();
+                            memberRepository.save(selectMember);
+                        });
+    }
 }
