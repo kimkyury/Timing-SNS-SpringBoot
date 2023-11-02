@@ -1,13 +1,12 @@
 DROP TABLE IF EXISTS likes;
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS feed_hash_tags;
 DROP TABLE IF EXISTS feeds;
-DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS challenge_hash_tags;
-DROP TABLE IF EXISTS challenges;
 DROP TABLE IF EXISTS snapshots;
+DROP TABLE IF EXISTS challenges;
 DROP TABLE IF EXISTS members;
 DROP TABLE IF EXISTS hash_tag_options;
-
 
 CREATE TABLE IF NOT EXISTS hash_tag_options (
                                                 id INT NOT NULL AUTO_INCREMENT,
