@@ -1,6 +1,7 @@
 INSERT INTO members (email, profile_image_url, nickname, birthyear, gender, is_delete)
-VALUES ('test@com', '/test.png', '테스터', 2000, 'F', 0),
-       ('test2@com', '/test.png', '테스터2', 1998, 'M', 0);
+VALUES ('kkr@com', '/test.png', '김규리', 2000, 'F', 0),
+       ('unit@com', '/test.png', '이동규', 1998, 'M', 0),
+       ('tan@com', '/test.png', '귤', 2001, 'F', 1);
 
 INSERT INTO hash_tag_options (content)
 VALUES ('운동'),
@@ -9,8 +10,8 @@ VALUES ('운동'),
        ('저녁');
 
 INSERT INTO challenges (member_id, started_at, ended_at, goal_contents, object_url)
-VALUES (1, '2023-10-01', '2023-10-22', '테스트목표', ''),
-       (1, '2023-10-02', '2023-10-23', '테스트목표2', ''),
+VALUES (1, '2023-10-01', '2023-10-22', '강아지랑 산책하기', ''),
+       (1, '2023-10-02', '2023-10-23', '덤벨 운동하기', ''),
        (1, '2023-10-03', '2023-10-24', NULL, '');
 
 INSERT INTO challenge_hash_tags (hash_tag_options_id, challenge_id)
@@ -25,7 +26,7 @@ VALUES (2, '/test.png', '2023-10-03'),
 
 INSERT INTO feeds (member_id, parent_id, root_id, started_at, ended_at, goal_contents,
                    thumbnail_url, timelapse_url, is_private, is_delete)
-VALUES (1, NULL, NULL, '2023-10-02', '2023-10-23', '테스트목표', '/test.png', '/test.mp4', 1, 0);
+VALUES (1, NULL, NULL, '2023-10-02', '2023-10-23', '매일 짐밥 먹기', '/test.png', '/test.mp4', 1, 0);
 
 INSERT INTO feed_hash_tags (hash_tag_options_id, feed_id)
 VALUES (2, 1),
