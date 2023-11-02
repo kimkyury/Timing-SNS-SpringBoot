@@ -1,70 +1,63 @@
-.WholeBox {
-  padding: 10px;
-  margin-top: 20px;
+.searchBar {
+    margin: 3% 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+    background-color: #efefef;
+    height: 5vh;
+    padding: 0 2vw;
 }
 
-.inputbox {
-  display: flex;
-
-  flex-direction: row;
-  padding: 16px !important;
-  border: 2px solid black;
-  border-radius: 40px 40px 0px 0px;
-  z-index: 1;
-  background-color: white;
-}
-.inputbox2 {
-  display: flex;
-  flex-direction: row;
-  padding: 16px !important;
-  border: 2px solid black;
-  border-radius: 40px;
-  z-index: 1;
-  background-color: white;
-  box-shadow: 0 3px 3px rgb(0, 0, 0, 0.3);
+.searchIcon {
+    color: #bac0ca;
 }
 
 .searchInput {
-  flex: 1 0 0;
-  margin: 0;
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  font-size: 16px;
-}
-.DeleteButton {
-  cursor: pointer;
-  align-self: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    margin: 0 2%;
 }
 
-.DropDownBox {
-  display: block;
-  margin: 0 auto;
-  padding: 8px 30px;
-  background-color: white;
-  border: 2px solid black;
-  border-top: none;
-  border-radius: 0 0 40px 40px;
-  box-shadow: 0 3px 3px rgb(0, 0, 0, 0.3);
-  list-style-type: none;
+.deleteButton {
+    color: #bac0ca;
+    cursor: pointer;
 }
 
-.DropDownItem {
-  height: 60px;
-  font-size: 25px;
-  margin-top: 10px;
+.profileimage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 4vw;
+    width: 10vw;
+    height: 10vw;
+    border-radius: 100%;
+    align-self: center;
+    background-color: #efefef;
 }
-
-.search_icon {
-  margin-right: 10px;
-  background-color: black;
-  color: white;
-  border-radius: 30px;
-  width: 40px !important;
-  height: 40px !important;
+.nameContainer {
+    display: flex;
+    margin-bottom: 2%;
 }
-
-.blank {
-  height: 50px;
+.namebox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 3%;
+}
+.name {
+    font-size: 4vw;
+    font-weight: bold;
+}
+.id {
+    font-size: 3vw;
+    font-weight: bold;
+    color: #7c8c9b;
 }
