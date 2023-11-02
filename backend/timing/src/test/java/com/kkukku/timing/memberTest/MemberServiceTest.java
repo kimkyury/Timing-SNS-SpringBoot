@@ -101,7 +101,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("유저의 정보 조회")
-    void test2() {
+    void testGetUserInfo() {
 
         MemberDetailResponse memberDetailResponse = memberService.getMemberInfo("kkr@com");
         MemberEntity member = memberRepository.findById(1)
@@ -116,7 +116,12 @@ public class MemberServiceTest {
     @DisplayName("유저의 탈퇴")
     void testDeleteUser() {
 
+        memberService.deleteMember(1);
+        MemberEntity member = memberRepository.findById(1)
+                                              .get();
+
+        assertEquals("isDeleteTrue", true, member.isDelete());
+
+
     }
-
-
 }

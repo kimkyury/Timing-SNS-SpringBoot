@@ -37,6 +37,9 @@ public class MemberEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean isDelete;
+
     public enum Gender {
         M, F;
     }
@@ -52,4 +55,7 @@ public class MemberEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
+    public void delete() {
+        isDelete = true;
+    }
 }
