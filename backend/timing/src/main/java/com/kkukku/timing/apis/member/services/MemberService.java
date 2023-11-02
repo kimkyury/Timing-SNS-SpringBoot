@@ -3,6 +3,7 @@ package com.kkukku.timing.apis.member.services;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.apis.member.requests.MemberRegisterRequest;
+import com.kkukku.timing.apis.member.responses.MemberDetailResponse;
 import com.kkukku.timing.s3.services.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,4 +38,20 @@ public class MemberService {
                                 memberRepository.save(selectMember);
                             });
     }
+
+    public MemberDetailResponse getMemberInfo(String memberEmail) {
+
+        MemberEntity memberEntity = memberRepository.findByEmail(memberEmail)
+                                                    .get();
+
+        String nickname = memberEntity.getNickname();
+        String profileImageUrl = memberEntity.getProfileImageUrl();
+
+        MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
+            nickname, profileImageUrl
+        );
+
+        return memberDetailResponse;
+    }
+
 }
