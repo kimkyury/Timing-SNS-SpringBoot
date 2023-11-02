@@ -1,85 +1,101 @@
 import styles from './SearchBar.module.css';
 import { useEffect, useState } from 'react';
+import FeedList from '../Feed/FeedList';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import dog from '../../assets/dog.jpg';
+import dog2 from '../../assets/dog2.jpg';
+
 function SearchBar() {
-    const wholeTextArray = ['apple', 'banana', 'coding', 'javascript', '원티드', '프리온보딩', '프론트엔드'];
     const [inputValue, setInputValue] = useState('');
-    const [ishaveinputvalue, setishaveinputvalue] = useState(false);
-    const [dropDownList, setDropDownList] = useState(wholeTextArray);
-    const [dropDownItemIndex, setDropDownItemIndex] = useState(-1);
+    const [state, setState] = useState([]);
+    const [wordList, setWordList] = useState([]);
 
-    const showDropDownList = () => {
-        if (inputValue === '') {
-            setishaveinputvalue(false);
-            setDropDownList([]);
+    useEffect(() => {
+        const state = [
+            { image: `${dog}`, isPublic: true },
+            { image: `${dog}`, isPublic: false },
+            { image: `${dog}`, isPublic: false },
+            { image: `${dog}`, isPublic: false },
+            { image: `${dog}`, isPublic: false },
+            { image: `${dog}`, isPublic: true },
+            { image: `${dog}`, isPublic: false },
+            { image: `${dog}`, isPublic: true },
+            { image: `${dog}`, isPublic: false },
+            { image: `${dog}`, isPublic: false },
+        ];
+        setState(state);
+    }, []);
+
+    useEffect(() => {
+        if (inputValue.length != 0) {
+            // 예상 단어 가져오기
+            const result = [
+                { word: '축구', count: 120 },
+                { word: '하성호', count: 120 },
+                { word: '첼시', count: 120 },
+                { word: '첼시 승', count: 1203123 },
+                { word: '첼시 우승', count: 120 },
+            ];
+            setWordList(result);
         } else {
-            const choosenTextList = wholeTextArray.filter((textItem) => textItem.includes(inputValue));
-            setDropDownList(choosenTextList);
+            setWordList([]);
         }
+    }, [inputValue]);
+
+    const searchWord = () => {
+        // 검색 단어에 맞는 피드 가져오기
+        const state = [
+            { image: `${dog2}`, isPublic: true },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: true },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: true },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: false },
+            { image: `${dog2}`, isPublic: false },
+        ];
+        setState(state);
+        setInputValue('');
     };
 
-    const changeInputValue = (event) => {
-        setInputValue(event.target.value);
-        setishaveinputvalue(true);
-    };
-
-    const clickDropDownItem = (clickedItem) => {
-        setInputValue(clickedItem);
-        setishaveinputvalue(false);
-    };
-
-    const handleDropDownKey = (event) => {
-        //input에 값이 있을때만 작동
-        if (ishaveinputvalue) {
-            if (event.key === 'ArrowDown' && dropDownList.length - 1 > dropDownItemIndex) {
-                setDropDownItemIndex(dropDownItemIndex + 1);
-            }
-
-            if (event.key === 'ArrowUp' && dropDownItemIndex >= 0) setDropDownItemIndex(dropDownItemIndex - 1);
-            if (event.key === 'Enter' && dropDownItemIndex >= 0) {
-                clickDropDownItem(dropDownList[dropDownItemIndex]);
-                setDropDownItemIndex(-1);
-            }
-        }
-    };
-
-    useEffect(showDropDownList, [inputValue]);
     return (
-        <div className={styles.WholeBox}>
-            <div className={`${ishaveinputvalue ? styles.inputbox : styles.inputbox2}`}>
-                <SearchIcon className={styles.search_icon} />
+        <>
+            <div className={styles.searchBar}>
+                <SearchIcon className={styles.searchIcon} />
                 <input
                     type="text"
                     className={styles.searchInput}
                     value={inputValue}
-                    onChange={changeInputValue}
-                    onKeyUp={handleDropDownKey}
-                    placeholder="Search"
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="검색"
                 />
-
-                <div className={styles.DeleteButton} onClick={() => setInputValue('')}>
+                <div className={styles.deleteButton} onClick={() => setInputValue('')}>
                     <CloseOutlinedIcon />
                 </div>
             </div>
-            {ishaveinputvalue && (
-                <ul className={styles.DropDownBox}>
-                    {dropDownList.length === 0 && <li>no match</li>}
-                    {dropDownList.map((dropDownItem, dropDownIndex) => {
-                        return (
-                            <li
-                                key={dropDownIndex}
-                                onClick={() => clickDropDownItem(dropDownItem)}
-                                onMouseOver={() => setDropDownItemIndex(dropDownIndex)}
-                                className={styles.DropDownItem}
-                            >
-                                {dropDownItem}
-                            </li>
-                        );
-                    })}
-                </ul>
+            <div>
+                {wordList.map((v, i) => (
+                    <div key={i} className={styles.nameContainer} onClick={() => searchWord(v.word)}>
+                        <div className={styles.profileimage}>#</div>
+                        <div className={styles.namebox}>
+                            <div className={styles.name}>#{v.word}</div>
+                            <div className={styles.id}>게시글 {v.count}</div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {inputValue.length == 0 && (
+                <div>
+                    <FeedList state={state.filter((content) => content.isPublic == false)} />
+                </div>
             )}
-        </div>
+        </>
     );
 }
 

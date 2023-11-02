@@ -19,6 +19,7 @@ function DetailFeed() {
             id: '@헬린이',
             image: `${dog}`,
             isLiked: false,
+            isPublic: true,
             likes: 1234567,
             comment: 765432,
             share: 1000,

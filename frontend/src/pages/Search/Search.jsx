@@ -1,5 +1,4 @@
-import React, { useRef } from 'react';
-import styles from './Search.module.css'; // Search 모듈의 스타일
+import styles from './Search.module.css';
 import SearchBar from '../../components/SearchBar/SearchBar';
 
 function Search() {
