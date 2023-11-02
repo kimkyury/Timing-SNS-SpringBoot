@@ -1,14 +1,14 @@
 .container {
-    width: 100%;
-    display: inline-flex;
-    flex-direction: row;
-    overflow-x: auto;
-    white-space: nowrap;
-    /* overflow: auto; */
-    /* flex-direction: column; */
-    /* width: fit-content; */
-    /* margin-bottom: 20px; */
-    margin: 3% 0;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  overflow-x: auto;
+  white-space: nowrap;
+  /* overflow: auto; */
+  /* flex-direction: column; */
+  /* width: fit-content; */
+  /* margin-bottom: 20px; */
+  margin: 3% 0;
 }
 
 /* .container {
@@ -19,24 +19,24 @@
 } */
 
 .container::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .timeLaps {
-    width: 18vw;
-    height: 18vw;
-    margin: 0 3%;
+  width: 18vw;
+  height: 18vw;
+  margin: 0 3.5%;
 }
 
 .circularContainer {
-    width: 18vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 18vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .timeLapsImage {
-    width: 15vw;
-    height: 15vw;
-    border-radius: 100%;
+  width: 15vw;
+  height: 15vw;
+  border-radius: 100%;
 }
