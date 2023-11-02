@@ -1,6 +1,6 @@
 package com.kkukku.timing.security.entities;
 
-import com.kkukku.timing.apis.members.entities.MemberEntity;
+import com.kkukku.timing.apis.member.entities.MemberEntity;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
