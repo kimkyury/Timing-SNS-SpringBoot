@@ -55,6 +55,8 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
 
+    // actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 }
 
