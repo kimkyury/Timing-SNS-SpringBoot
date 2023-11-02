@@ -32,7 +32,7 @@ public class TestController {
 
     @GetMapping("/ping")
     public String ping() {
-        return "pong2";
+        return "pong3";
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
