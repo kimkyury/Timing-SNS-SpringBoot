@@ -1,4 +1,4 @@
-package com.kkukku.timing.apis.members.entities;
+package com.kkukku.timing.apis.member.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,13 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "members")
 @Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberEntity {
 
@@ -35,14 +36,8 @@ public class MemberEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor
     public enum Gender {
-        MALE("M"),
-        FEMALE("F");
-
-        private String gender;
+        M, F;
     }
 
     public MemberEntity(String email) {
