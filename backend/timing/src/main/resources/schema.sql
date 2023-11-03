@@ -54,7 +54,7 @@ CREATE TABLE feeds (
                        root_id BIGINT NOT NULL,
                        started_at DATE NOT NULL,
                        ended_at DATE NOT NULL,
-                       goal_contents VARCHAR(255),
+                       goal_content VARCHAR(255),
                        thumbnail_url VARCHAR(255) NOT NULL,
                        timelapse_url VARCHAR(255) NOT NULL,
                        is_private BOOLEAN NOT NULL DEFAULT TRUE,
