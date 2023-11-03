@@ -44,8 +44,10 @@ public class MemberEntity {
         M, F;
     }
 
-    public MemberEntity(String email) {
+    public MemberEntity(String email, String profileImageUrl, String nickname) {
         this.email = email;
+        this.profileImageUrl = profileImageUrl;
+        this.nickname = nickname;
     }
 
     public void registerInfo(MemberRegisterRequest registerRequest, String profileImageUrl) {
