@@ -16,19 +16,20 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
 
-    public void saveIfNotExist(String email) {
+    public void saveIfNotExist(String email, String profileImageUrl, String nickname) {
         if (memberRepository.findByEmail(email)
                             .isPresent()) {
             return;
         }
 
-        memberRepository.save(new MemberEntity(email));
+        memberRepository.save(new MemberEntity(email, profileImageUrl, nickname));
     }
 
     public void registerMember(Integer memberId, MemberRegisterRequest memberRegisterRequest,
         MultipartFile multipartFile) {
 
         String profileImageUrl = s3Service.uploadFileProcedure(multipartFile);
+        System.out.println(profileImageUrl);
 
         memberRepository.findById(memberId)
                         .ifPresent(
