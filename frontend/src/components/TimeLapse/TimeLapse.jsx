@@ -2,7 +2,8 @@ import styles from './TimeLapse.module.css';
 import { useNavigate } from 'react-router-dom';
 import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import dog from '../../assets/dog2.jpg';
+import dog from '../../assets/dog.jpg';
+import dog2 from '../../assets/dog2.jpg';
 import { useEffect, useState } from 'react';
 
 function TimeLapse() {
@@ -12,19 +13,25 @@ function TimeLapse() {
 
     useEffect(() => {
         // 여기서 axios로 timeLaps 가져올꺼임
+
         const state = [
-            { percent: 10, name: 'test1', img: `${dog}` },
-            { percent: 50, name: 'test2', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
-            { percent: 70, name: 'test3', img: `${dog}` },
+            { id: 1, percent: 0, img: `${dog}` },
+            { id: 1, percent: 50, img: `${dog}` },
+            { id: 2, percent: 0, img: `${dog2}` },
+            { id: 2, percent: 70, img: `${dog2}` },
+            { id: 1, percent: 70, img: `${dog}` },
         ];
 
         setTimeLaps(state);
     }, []);
 
-    const finishTimeLaps = () => {
-        setIsFinished(!isFinished);
+    const takePhoto = (index) => {
+        navigate(`/jeonghui`, { state: timeLaps[index] });
+        // if (timeLaps[index].percent == 0) {
+        //     navigate(`/jeonghui`, { state: timeLaps[index] });
+        // } else {
+        //     navigate(`/doChallenge`);
+        // }
     };
 
     const continueTimeLaps = () => {
@@ -41,7 +48,7 @@ function TimeLapse() {
         <div className={styles.container}>
             {timeLaps.map((element, index) => (
                 <div key={index} className={styles.timeLaps}>
-                    <div className={styles.circularContainer} onClick={finishTimeLaps}>
+                    <div className={styles.circularContainer} onClick={() => takePhoto(index)}>
                         <CircularProgressbarWithChildren
                             value={element.percent}
                             strokeWidth="10"

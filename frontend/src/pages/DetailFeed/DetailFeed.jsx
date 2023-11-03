@@ -10,7 +10,7 @@ function DetailFeed() {
     const [state, setState] = useState(null);
 
     useEffect(() => {
-        const user = { id: '@헬린이', profile_img: `${dog}` };
+        const user = { id: '@헬린이1', profile_img: `${dog}` };
         setUser(user);
         const state = {
             pk: 1,
