@@ -1,39 +1,42 @@
-INSERT INTO members (email, profile_image_url, nickname, birthyear, gender, is_delete)
-VALUES ('kkr@com', '/test.png', '김규리', 2000, 'F', 0),
-       ('unit@com', '/test.png', '이동규', 1998, 'M', 0),
-       ('tan@com', '/test.png', '귤', 2001, 'F', 1);
+INSERT INTO hash_tag_options
+VALUES (1, '운동'),
+       (2, '요리'),
+       (3, '취미'),
+       (4, '저녁');
 
-INSERT INTO hash_tag_options (content)
-VALUES ('운동'),
-       ('요리'),
-       ('취미'),
-       ('저녁');
+INSERT INTO members
+VALUES (1, 'kkr@com', '/test.png', '테스터', 0),
+       (2, 'unit@com', '/test.png', '테스터2', 0);
 
-INSERT INTO challenges (member_id, started_at, ended_at, goal_contents, object_url)
-VALUES (1, '2023-10-01', '2023-10-22', '강아지랑 산책하기', ''),
-       (1, '2023-10-02', '2023-10-23', '덤벨 운동하기', ''),
-       (1, '2023-10-03', '2023-10-24', NULL, '');
+INSERT INTO challenges
+VALUES (1, 1, '2023-10-01', '2023-10-22', '강아지와 산책', '/test.png'),
+       (2, 1, '2023-10-02', '2023-10-23', '하체 운동하기', '/test.png'),
+       (3, 1, '2023-10-03', '2023-10-24', NULL, '/test.png');
 
-INSERT INTO challenge_hash_tags (hash_tag_options_id, challenge_id)
-VALUES (3, 2),
-       (1, 3);
+INSERT INTO challenge_hash_tags
+VALUES (3, 3, 2),
+       (4, 1, 3);
 
-INSERT INTO snapshots (challenge_id, image_url, created_at)
-VALUES (2, '/test.png', '2023-10-03'),
-       (2, '/test.png', '2023-10-04'),
-       (2, '/test.png', '2023-10-05'),
-       (2, '/test.png', '2023-10-06');
+INSERT INTO snapshots
+VALUES (1, 2, '/test.png', '2023-10-03'),
+       (2, 2, '/test.png', '2023-10-04'),
+       (3, 2, '/test.png', '2023-10-05'),
+       (4, 2, '/test.png', '2023-10-06');
 
-INSERT INTO feeds (member_id, parent_id, root_id, started_at, ended_at, goal_contents,
-                   thumbnail_url, timelapse_url, is_private, is_delete)
-VALUES (1, NULL, NULL, '2023-10-02', '2023-10-23', '매일 짐밥 먹기', '/test.png', '/test.mp4', 1, 0);
+INSERT INTO feeds
+VALUES (1, 1, NULL, NULL, '2023-10-02', '2023-10-23', '테스트목표', '/test.png', '/test.mp4', 1, 0,
+        '잘 살고있죠?', NULL, '2023-10-23 12:06:43');
 
-INSERT INTO feed_hash_tags (hash_tag_options_id, feed_id)
-VALUES (2, 1),
-       (4, 1);
 
-INSERT INTO comments (feed_id, member_id, content)
-VALUES (1, 1, '인증이에요');
+INSERT INTO comments
+VALUES (1, 1, 1, '인증이에요', '2023-11-03 12:04:07');
 
-INSERT INTO likes (feed_id, member_id)
-VALUES (1, 2);
+INSERT INTO feed_hash_tags
+VALUES (1, 2, 1),
+       (2, 4, 1);
+
+
+INSERT INTO likes
+VALUES (2, 1, 2);
+
+
