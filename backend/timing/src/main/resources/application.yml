@@ -23,6 +23,8 @@ spring:
             client-name: kakao
             scope:
               - account_email
+              - profile_image
+              - profile_nickname
 
 springdoc:
   packages-to-scan: com.kkukku.timing.apis
