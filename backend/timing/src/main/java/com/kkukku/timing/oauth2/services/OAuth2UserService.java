@@ -24,10 +24,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         Map<String, Object> originAttributes = oAuth2User.getAttributes();
-        String email = ((Map<String, Object>) originAttributes.get("kakao_account")).get("email")
-                                                                                    .toString();
+        Map<String, Object> kakaoAccount = (Map<String, Object>) originAttributes.get(
+            "kakao_account");
+        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-        memberService.saveIfNotExist(email);
+        String email = kakaoAccount.get("email")
+                                   .toString();
+        String profileImageUrl = profile.get("profile_image_url")
+                                        .toString();
+        String nickname = profile.get("nickname")
+                                 .toString();
+
+        memberService.saveIfNotExist(email, profileImageUrl, nickname);
 
         String userNameAttributeName = userRequest.getClientRegistration()
                                                   .getProviderDetails()
