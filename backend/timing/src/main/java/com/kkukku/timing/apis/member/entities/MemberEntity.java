@@ -3,8 +3,6 @@ package com.kkukku.timing.apis.member.entities;
 import com.kkukku.timing.apis.member.requests.MemberRegisterRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,17 +30,8 @@ public class MemberEntity {
 
     private String nickname;
 
-    private Integer birthyear;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean isDelete;
-
-    public enum Gender {
-        M, F;
-    }
 
     public MemberEntity(String email, String profileImageUrl, String nickname) {
         this.email = email;
@@ -52,8 +41,6 @@ public class MemberEntity {
 
     public void registerInfo(MemberRegisterRequest registerRequest, String profileImageUrl) {
         this.nickname = registerRequest.getNickname();
-        this.birthyear = registerRequest.getBirthyear();
-        this.gender = registerRequest.getGender();
         this.profileImageUrl = profileImageUrl;
     }
 
