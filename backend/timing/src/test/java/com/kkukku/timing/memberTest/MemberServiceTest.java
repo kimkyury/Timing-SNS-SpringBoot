@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 import com.kkukku.timing.apis.member.entities.MemberEntity;
-import com.kkukku.timing.apis.member.entities.MemberEntity.Gender;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.apis.member.requests.MemberRegisterRequest;
 import com.kkukku.timing.apis.member.responses.MemberDetailResponse;
@@ -48,8 +47,8 @@ public class MemberServiceTest {
     @BeforeEach
     void setUp() {
         // 가정된 회원 데이터
-        memberEmail = "test3@com";
-        memberEntity = new MemberEntity(memberEmail);
+        memberEmail = "test@com";
+        memberEntity = new MemberEntity(memberEmail, "test.png", "TESTER");
     }
 
 
@@ -83,9 +82,7 @@ public class MemberServiceTest {
                                            .getId();
 
         MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
-            "테스트",
-            2000,
-            Gender.F
+            "테스트"
         );
         MockMultipartFile multipartFile = getSampleImage();
         memberService.registerMember(memberId, memberRegisterRequest, multipartFile);
@@ -95,9 +92,6 @@ public class MemberServiceTest {
 
         assertEquals("isSmaNickname", memberRegisterRequest.getNickname(),
             updatedMember.getNickname());
-        assertEquals("isSmaNickname", memberRegisterRequest.getGender(), updatedMember.getGender());
-        assertEquals("isSmaNickname", memberRegisterRequest.getBirthyear(),
-            updatedMember.getBirthyear());
         assertNotNull("hasProfileURL", updatedMember.getProfileImageUrl());
     }
 
