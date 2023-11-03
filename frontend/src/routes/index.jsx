@@ -14,6 +14,7 @@ import ChooseObject from "../pages/Jeonghui/ChooseObject";
 import DoChallenge from "../pages/Jeonghui/DoChallenge";
 import DetailFeed from "../pages/DetailFeed/DetailFeed";
 import Login from "../pages/Login/Login";
+import UpdateReview from "../pages/UpdateReview/UpdateReview";
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function Router() {
       <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
       <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
       <Route path="/login" element={<Login />} />
+      <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
 
       {/* test */}
       <Route path="/test" element={<Test />} />
