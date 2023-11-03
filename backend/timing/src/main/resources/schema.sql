@@ -16,9 +16,9 @@ CREATE TABLE hash_tag_options (
 CREATE TABLE members (
                          id INT PRIMARY KEY AUTO_INCREMENT,
                          email VARCHAR(255) NOT NULL UNIQUE,
-                         profile_image_url VARCHAR(255),
-                         nickname VARCHAR(255),
-                         is_delete BOOLEAN DEFAULT FALSE
+                         profile_image_url VARCHAR(255) NOT NULL,
+                         nickname VARCHAR(255) NOT NULL,
+                         is_delete BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE challenges (
@@ -35,7 +35,7 @@ CREATE TABLE snapshots (
                            id BIGINT PRIMARY KEY AUTO_INCREMENT,
                            challenge_id BIGINT NOT NULL,
                            image_url VARCHAR(255) NOT NULL,
-                           created_at DATE NOT NULL,
+                           created_at DATETIME NOT NULL DEFAULT now(),
                            FOREIGN KEY (challenge_id) REFERENCES challenges(id) ON DELETE CASCADE
 );
 
@@ -60,8 +60,8 @@ CREATE TABLE feeds (
                        is_private BOOLEAN NOT NULL DEFAULT TRUE,
                        is_delete BOOLEAN NOT NULL DEFAULT FALSE,
                        review VARCHAR(255),
-                       updated_at TIMESTAMP NOT NULL DEFAULT now(),
-                       created_at TIMESTAMP NOT NULL DEFAULT now(),
+                       updated_at DATETIME NOT NULL DEFAULT now(),
+                       created_at DATETIME NOT NULL DEFAULT now(),
                        FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
                        FOREIGN KEY (parent_id) REFERENCES feeds(id) ON DELETE SET NULL,
                        FOREIGN KEY (root_id) REFERENCES feeds(id)
@@ -80,7 +80,7 @@ CREATE TABLE comments (
                           feed_id BIGINT NOT NULL,
                           member_id INT NOT NULL,
                           content VARCHAR(255),
-                          created_at TIMESTAMP NOT NULL,
+                          created_at TIMESTAMP NOT NULL DEFAULT now(),
                           FOREIGN KEY (feed_id) REFERENCES feeds(id) ON DELETE CASCADE,
                           FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
