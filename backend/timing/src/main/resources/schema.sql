@@ -51,20 +51,20 @@ CREATE TABLE feeds (
                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
                        member_id INT NOT NULL,
                        parent_id BIGINT,
-                       root_id BIGINT,
+                       root_id BIGINT NOT NULL,
                        started_at DATE NOT NULL,
                        ended_at DATE NOT NULL,
                        goal_contents VARCHAR(255),
-                       thumbnail_url VARCHAR(255),
+                       thumbnail_url VARCHAR(255) NOT NULL,
                        timelapse_url VARCHAR(255) NOT NULL,
-                       is_private BOOLEAN DEFAULT TRUE,
-                       is_delete BOOLEAN DEFAULT FALSE,
+                       is_private BOOLEAN NOT NULL DEFAULT TRUE,
+                       is_delete BOOLEAN NOT NULL DEFAULT FALSE,
                        review VARCHAR(255),
-                       updated_at TIMESTAMP,
-                       created_at TIMESTAMP NOT NULL,
+                       updated_at TIMESTAMP NOT NULL DEFAULT now(),
+                       created_at TIMESTAMP NOT NULL DEFAULT now(),
                        FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
                        FOREIGN KEY (parent_id) REFERENCES feeds(id) ON DELETE SET NULL,
-                       FOREIGN KEY (root_id) REFERENCES feeds(id) ON DELETE SET NULL
+                       FOREIGN KEY (root_id) REFERENCES feeds(id)
 );
 
 CREATE TABLE feed_hash_tags (
