@@ -29,6 +29,7 @@ public class MemberService {
         MultipartFile multipartFile) {
 
         String profileImageUrl = s3Service.uploadFileProcedure(multipartFile);
+        System.out.println(profileImageUrl);
 
         memberRepository.findById(memberId)
                         .ifPresent(
