@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MemberRegisterRequest {
+public class MemberUpdateRequest {
 
     @NotNull(message = "Nickname cannot be null")
     @NotEmpty(message = "Nickname cannot be Empty")
