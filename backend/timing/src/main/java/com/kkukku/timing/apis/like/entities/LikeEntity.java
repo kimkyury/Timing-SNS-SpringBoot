@@ -12,12 +12,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(name = "likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicInsert
 public class LikeEntity {
 
     @Id
