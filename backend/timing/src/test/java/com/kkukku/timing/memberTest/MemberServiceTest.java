@@ -11,10 +11,12 @@ import com.kkukku.timing.apis.member.requests.MemberRegisterRequest;
 import com.kkukku.timing.apis.member.responses.MemberDetailResponse;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.s3.services.S3Service;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -41,16 +43,34 @@ public class MemberServiceTest {
     @MockBean
     private S3Service s3Service;
 
+    private static String testS3Url;
+    private static String testEmail;
+    private static String testNickname;
     private MemberEntity memberEntity;
-    private String memberEmail;
+    private Integer testId;
+
+    @BeforeAll
+    static void init() {
+        testS3Url = "http://example.com/myfile";
+        testEmail = "test@com";
+        testNickname = "TESTER";
+    }
 
     @BeforeEach
     void setUp() {
         // 가정된 회원 데이터
-        memberEmail = "test@com";
-        memberEntity = new MemberEntity(memberEmail, "test.png", "TESTER");
-    }
+        memberRepository.findByEmail(testEmail)
+                        .ifPresent(memberRepository::delete);
 
+        memberEntity = new MemberEntity(testEmail, "test.png", testNickname);
+        memberRepository.save(memberEntity);
+
+        testId = memberRepository.findByEmail(testEmail)
+                                 .get()
+                                 .getId();
+
+
+    }
 
     public MockMultipartFile getSampleImage() {
         Path path = Paths.get("src/test/resources/Chirachino.jpg");
@@ -70,14 +90,38 @@ public class MemberServiceTest {
 
     @Test
     @Order(1)
-    @DisplayName("최초 로그인 유저의 정보 수정")
-    void shouldUpdateMemberWhenInitLogin() {
+    @DisplayName("최초 로그인 유저의 닉네임 수정")
+    void shouldUpdateNickname() {
+
+        // given
+        File file = new File("path/to/your/file.jpg");
+        when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(
+            "http://example.com/myfile.jpg");
+
+        MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest("테스트");
+        MockMultipartFile multipartFile = getSampleImage();
+
+        // when
+        memberService.registerMember(testId, memberRegisterRequest, multipartFile);
+
+        // then
+        MemberEntity updatedMember = memberRepository.findByEmail(testEmail)
+                                                     .get();
+        assertEquals("isSmaNickname", memberRegisterRequest.getNickname(),
+            updatedMember.getNickname());
+        assertNotNull("hasProfileURL", updatedMember.getProfileImageUrl());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("최초 로그인 유저의 프로필 이미지 수정")
+    void shouldUpdateProfileImg() {
 
         when(s3Service.uploadFileProcedure(any(MultipartFile.class)))
-            .thenReturn("http://example.com/myfile");
+            .thenReturn(testS3Url);
 
         memberRepository.save(memberEntity);
-        Integer memberId = memberRepository.findByEmail(memberEmail)
+        Integer memberId = memberRepository.findByEmail(testEmail)
                                            .get()
                                            .getId();
 
@@ -87,7 +131,7 @@ public class MemberServiceTest {
         MockMultipartFile multipartFile = getSampleImage();
         memberService.registerMember(memberId, memberRegisterRequest, multipartFile);
 
-        MemberEntity updatedMember = memberRepository.findByEmail(memberEmail)
+        MemberEntity updatedMember = memberRepository.findByEmail(testEmail)
                                                      .get();
 
         assertEquals("isSmaNickname", memberRegisterRequest.getNickname(),
