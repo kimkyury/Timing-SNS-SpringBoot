@@ -6,6 +6,7 @@ import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
+import com.kkukku.timing.apis.hashtag.repositories.HashTagOptionRepository;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -29,6 +30,9 @@ public class ChallengeServiceTest {
 
     @Autowired
     private ChallengeRepository challengeRepository;
+
+    @Autowired
+    private HashTagOptionRepository hashTagOptionRepository;
 
     @Autowired
     private ChallengeService challengeService;
@@ -56,7 +60,8 @@ public class ChallengeServiceTest {
 
         // given
         List<String> hashTags = new ArrayList<>();
-        hashTags.add("아침");
+        String hashTagStr = "아침";
+        hashTags.add(hashTagStr);
         String createGoalContent = "그런 목표가 있습니다.";
         ChallengeCreateRequest challengeCreateRequest = new ChallengeCreateRequest(
             LocalDate.now(), hashTags, createGoalContent);
@@ -67,7 +72,9 @@ public class ChallengeServiceTest {
         // then
         ChallengeEntity createChallenge = challengeRepository.findByMemberId(testMemberId)
                                                              .getLast();
+        boolean isExistHashTag1 = hashTagOptionRepository.existsByContent(hashTagStr);
         assertEquals("createGoalContent", createGoalContent, createChallenge.getGoalContent());
+        assertEquals("isExistHashTag", true, isExistHashTag1);
 
     }
 
@@ -76,13 +83,6 @@ public class ChallengeServiceTest {
     @Order(2)
     @DisplayName("Challenge 생성 시, 새로운 hashTag 생성")
     void souldCreateHashtag() {
-
-        List<String> hashTags = new ArrayList<>();
-        hashTags.add("아침");
-        String createGoalContent = "그런 목표가 있습니다.";
-        ChallengeCreateRequest challengeCreateRequest = new ChallengeCreateRequest(
-            LocalDate.now(), hashTags, createGoalContent);
-
 
     }
 
