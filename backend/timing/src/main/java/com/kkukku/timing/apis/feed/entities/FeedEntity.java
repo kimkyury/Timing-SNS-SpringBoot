@@ -16,12 +16,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(name = "feeds")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicInsert
 public class FeedEntity {
 
     @Id
@@ -62,10 +60,10 @@ public class FeedEntity {
 
     private String review;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false)
     private LocalDateTime createdAt;
 
     @PreUpdate
