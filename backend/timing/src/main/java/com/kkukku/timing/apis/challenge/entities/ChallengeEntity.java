@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.challenge.entities;
 
+import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +25,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChallengeEntity {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +44,9 @@ public class ChallengeEntity {
     @Setter
     private String objectUrl;
 
+    @Column(nullable = false, insertable = false)
+    private String thumbnailUrl;
+
     public ChallengeEntity(MemberEntity member, LocalDate startedAt, String goalContent) {
         this.member = member;
         this.startedAt = startedAt;
@@ -55,6 +58,15 @@ public class ChallengeEntity {
         this.member = member;
         this.startedAt = startedAt;
         this.endedAt = calculateEndDate(startedAt);
+    }
+
+    public static ChallengeEntity create(MemberEntity member,
+        ChallengeCreateRequest challengeCreateRequest) {
+        return new ChallengeEntity(
+            member,
+            challengeCreateRequest.getStartedAt(),
+            challengeCreateRequest.getGoalContent()
+        );
     }
 
     private LocalDate calculateEndDate(LocalDate startDate) {

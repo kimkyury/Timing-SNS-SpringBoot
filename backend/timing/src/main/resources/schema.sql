@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS hash_tag_options;
 
 CREATE TABLE hash_tag_options (
                                   id INT PRIMARY KEY AUTO_INCREMENT,
-                                  content VARCHAR(255) NOT NULL
+                                  content VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE members (
@@ -28,6 +28,7 @@ CREATE TABLE challenges (
                             ended_at DATE NOT NULL,
                             goal_content VARCHAR(255),
                             object_url VARCHAR(255),
+                            thumbnail_url VARCHAR(255) NOT NULL DEFAULT '/default_thumbnail.png',
                             FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
