@@ -55,7 +55,7 @@ public class MemberService {
 
         MemberEntity memberEntity = memberRepository.findByEmail(memberEmail)
                                                     .orElseThrow(() -> new CustomException(
-                                                        ErrorCode.NOT_FOUND_MEMBER_EMAIL));
+                                                        ErrorCode.NOT_EXIST_MEMBER_EMAIL));
 
         String nickname = memberEntity.getNickname();
         String profileImageUrl = memberEntity.getProfileImageUrl();
@@ -67,18 +67,15 @@ public class MemberService {
 
     public void deleteMember(Integer memberId) {
 
-        MemberEntity memberEntity = memberRepository.findById(memberId)
-                                                    .orElseThrow(() -> new CustomException(
-                                                        ErrorCode.NOT_FOUND_MEMBER_EMAIL));
-
+        MemberEntity memberEntity = getMemberEntityById(memberId);
         memberEntity.delete();
         memberRepository.save(memberEntity);
-
     }
 
     public MemberEntity getMemberById(Integer id) {
         return memberRepository.findById(id)
                                .orElseThrow(() -> new CustomException(
-                                   ErrorCode.NOT_FOUND_MEMBER_EMAIL));
+                                   ErrorCode.NOT_EXIST_MEMBER_EMAIL));
     }
+    
 }

@@ -1,5 +1,6 @@
-package com.kkukku.timing.apis.hashTagOption.entities;
+package com.kkukku.timing.apis.hashtag.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +17,8 @@ public class HashTagOptionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String content;
 
     public HashTagOptionEntity(String content) {
