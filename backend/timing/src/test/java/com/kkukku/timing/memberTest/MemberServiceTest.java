@@ -70,6 +70,7 @@ public class MemberServiceTest {
 
     }
 
+
     public MockMultipartFile getSampleImage() {
         Path path = Paths.get("src/test/resources/Chirachino.jpg");
         String name = "file";
