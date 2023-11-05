@@ -1,7 +1,11 @@
 package com.kkukku.timing.apis.hashtag.services;
 
-import static org.springframework.test.util.AssertionErrors.assertEquals;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.repositories.HashTagOptionRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -27,22 +31,53 @@ public class HashTagOptionServiceTest {
     @Test
     @Transactional
     @Order(1)
-    @DisplayName("Challenge 생성 시, 새로운 hashTag 생성")
+    @DisplayName("해시태그는 새로운 Content에 한해서 생성시킨다")
     void souldCreateHashtag() {
 
         List<String> hashTags = new ArrayList<>();
-        String hashTag1 = "아침";
-        String hashTag2 = "점심";
-        hashTags.add(hashTag1);
-        hashTags.add(hashTag2);
+        String newHashTag1 = "아침";
+        String newHashTag2 = "점심";
+        String existHashTag = "운동";
+        hashTags.add(newHashTag1);
+        hashTags.add(newHashTag2);
 
         hashTagOptionService.createHashTagOptions(hashTags);
 
-        boolean isExistHashTag1 = hashTagOptionRepository.existsByContent(hashTag1);
-        boolean isExistHashTag2 = hashTagOptionRepository.existsByContent(hashTag2);
-        assertEquals("isExistHashTag1", true, isExistHashTag1);
-        assertEquals("isExistHashTag2", true, isExistHashTag2);
+        boolean isExistHashTag1 = hashTagOptionRepository.existsByContent(newHashTag1);
+        boolean isExistHashTag2 = hashTagOptionRepository.existsByContent(newHashTag2);
+        Long duplicatedHashTagOptionId = hashTagOptionRepository.findByContent(existHashTag)
+                                                                .get()
+                                                                .getId();
+        Long maxId = hashTagOptionRepository.findMaxId()
+                                            .get();
+        assertTrue(isExistHashTag1);
+        assertTrue(isExistHashTag2);
+        assertNotEquals(maxId, duplicatedHashTagOptionId);
+    }
 
+    @Test
+    @Transactional
+    @Order(1)
+    @DisplayName("content에 대하여 대응되는 HashTagOption들을 가져온다")
+    void shouldGetAllHashTagOptionByChallenge() {
+
+        // given
+        List<String> searchContents = new ArrayList<>();
+        searchContents.add("운동");
+        searchContents.add("취미");
+
+        // when
+        List<HashTagOptionEntity> actualHashTagOptionList = hashTagOptionService.getHashTagOption(
+            searchContents);
+
+        // then
+        List<Long> expectedHashTagOptionIdList = new ArrayList<>();
+        expectedHashTagOptionIdList.add(1L);
+        expectedHashTagOptionIdList.add(3L);
+        List<HashTagOptionEntity> expectedhashTagOptionList = hashTagOptionRepository.findAllById(
+            expectedHashTagOptionIdList);
+
+        assertEquals(expectedhashTagOptionList, actualHashTagOptionList);
     }
 
 }

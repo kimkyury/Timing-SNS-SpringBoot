@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS hash_tag_options;
 
 CREATE TABLE hash_tag_options (
                                   id INT PRIMARY KEY AUTO_INCREMENT,
-                                  content VARCHAR(255) NOT NULL
+                                  content VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE members (

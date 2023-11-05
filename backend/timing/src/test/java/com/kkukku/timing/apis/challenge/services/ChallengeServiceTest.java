@@ -1,9 +1,8 @@
-package com.kkukku.timing.apis.challenge.service;
+package com.kkukku.timing.apis.challenge.services;
 
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
-import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.hashtag.repositories.ChallengeHashTagRepository;
 import com.kkukku.timing.apis.hashtag.repositories.HashTagOptionRepository;
 import com.kkukku.timing.s3.services.S3Service;

@@ -16,7 +16,9 @@ VALUES (1, '2023-10-01', '2023-10-22', '강아지와 산책', '/test.png'),
 
 INSERT INTO challenge_hash_tags (hash_tag_option_id, challenge_id)
 VALUES (3, 2),
-       (1, 3);
+       (1, 3),
+       (1, 1),
+       (3, 1);
 
 INSERT INTO snapshots(challenge_id, image_url, created_at)
 VALUES (2, '/test.png', '2023-10-03'),
