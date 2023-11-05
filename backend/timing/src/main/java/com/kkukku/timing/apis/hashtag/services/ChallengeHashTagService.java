@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 public class ChallengeHashTagService {
 
     private final ChallengeHashTagRepository challengeHashTagRepository;
-    private final ChallengeService challengeService;
-    private final HashTagOptionService hashTagOptionService;
 
     public void createChallengeHashTag(ChallengeEntity challenge,
         List<HashTagOptionEntity> hashTagOptionList) {
