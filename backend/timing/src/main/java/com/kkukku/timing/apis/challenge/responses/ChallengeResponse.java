@@ -17,9 +17,9 @@ public class ChallengeResponse {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    class Challenge {
+    public static class Challenge {
 
-        private String imgUrl;
+        private String thumbnailUrl;
         private int countDays;
         private int maxDays;
 
