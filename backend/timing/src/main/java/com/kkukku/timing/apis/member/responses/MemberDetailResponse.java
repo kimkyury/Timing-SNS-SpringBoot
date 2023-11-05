@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberDetailResponse {
 
+    private String email;
     private String nickname;
     private String profileImageUrl;
-
+    private boolean isDelete;
 }

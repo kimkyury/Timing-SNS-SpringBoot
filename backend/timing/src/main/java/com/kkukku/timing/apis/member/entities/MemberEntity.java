@@ -1,15 +1,16 @@
 package com.kkukku.timing.apis.member.entities;
 
-import com.kkukku.timing.apis.member.requests.MemberRegisterRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -26,8 +27,10 @@ public class MemberEntity {
     @Column(nullable = false)
     private String email;
 
+    @Setter
     private String profileImageUrl;
 
+    @Setter
     private String nickname;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
@@ -39,12 +42,10 @@ public class MemberEntity {
         this.nickname = nickname;
     }
 
-    public void registerInfo(MemberRegisterRequest registerRequest, String profileImageUrl) {
-        this.nickname = registerRequest.getNickname();
-        this.profileImageUrl = profileImageUrl;
-    }
-
     public void delete() {
-        isDelete = true;
+        this.email = String.valueOf(UUID.randomUUID());
+        this.nickname = "탈퇴한 사용자";
+        this.profileImageUrl = "/default_profile.png";
+        this.isDelete = true;
     }
 }

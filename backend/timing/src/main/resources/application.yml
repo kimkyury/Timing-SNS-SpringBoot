@@ -18,7 +18,6 @@ spring:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
             client-authentication-method: client_secret_post
-            redirect-uri: ${KAKAO_REDIRECT_URI}
             authorization-grant-type: authorization_code
             client-name: kakao
             scope:
@@ -43,6 +42,7 @@ cloud:
       static: ${AWS_S3_REGION}
     s3:
       bucket: ${AWS_S3_BUCKET}
+      url: ${AWS_S3_URL}
 application:
   security:
     jwt:
