@@ -1,17 +1,20 @@
 package com.kkukku.timing.apis.challenge.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.hashtag.repositories.ChallengeHashTagRepository;
 import com.kkukku.timing.apis.hashtag.repositories.HashTagOptionRepository;
+import com.kkukku.timing.apis.member.entities.MemberEntity;
+import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -30,6 +33,9 @@ public class ChallengeServiceTest {
     private ChallengeRepository challengeRepository;
 
     @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
     private HashTagOptionRepository hashTagOptionRepository;
 
     @Autowired
@@ -41,18 +47,6 @@ public class ChallengeServiceTest {
     @MockBean
     private S3Service s3Service;
 
-    private static Integer testMemberId;
-
-    @BeforeAll
-    static void init() {
-        testMemberId = 3; // 만들어진 Challenge가 없는 회원
-    }
-
-    @BeforeEach
-    void setUp() {
-
-    }
-
     @Test
     @Transactional
     @Order(1)
@@ -60,6 +54,9 @@ public class ChallengeServiceTest {
     void shouldCreateChallengeWithGoalContent() {
 
         // given
+        Integer testMemberId = 1;
+        MemberEntity testMember = memberRepository.findById(testMemberId)
+                                                  .get();
         List<String> hashTags = new ArrayList<>();
         String hashTagStr = "아침";
         hashTags.add(hashTagStr);
@@ -68,25 +65,42 @@ public class ChallengeServiceTest {
             LocalDate.now(), hashTags, createGoalContent);
 
         // when
-        challengeService.createChallenge(testMemberId, challengeCreateRequest);
+        challengeService.saveChallenge(testMember, challengeCreateRequest);
 
         // then
-        ChallengeEntity createChallenge = challengeRepository.findByMemberId(testMemberId)
+        ChallengeEntity actualChallenge = challengeRepository.findByMemberId(testMemberId)
                                                              .getLast();
-
-//        boolean isExistHashTag1 = hashTagOptionRepository.existsByContent(hashTagStr);
-//
-//        Optional<hashTagOptionRepository.findByContent(hashTagStr);
-//        boolean isExistChallengeHashTag1 = challengeHashTagRepository.existsByChallengeIdAndHashTagOptionId( hashTagStr);
-//
-//        assertEquals("createGoalContent", createGoalContent, createChallenge.getGoalContent());
-//        assertEquals("isExistHashTagOption", true, isExistHashTag1);
-//        assertEqulas("isExistChallengeHashTag", true, )
+        assertEquals(createGoalContent, actualChallenge.getGoalContent());
     }
 
     @Test
     @Transactional
     @Order(2)
+    @DisplayName("goalContent 없는 Challenge 생성")
+    void shouldCreateChallengeWithoutGoalContent() {
+
+        // given
+        Integer testMemberId = 1;
+        MemberEntity testMember = memberRepository.findById(testMemberId)
+                                                  .get();
+        List<String> hashTags = new ArrayList<>();
+        String hashTagStr = "아침";
+        hashTags.add(hashTagStr);
+        ChallengeCreateRequest challengeCreateRequest = new ChallengeCreateRequest(
+            LocalDate.now(), hashTags, null);
+
+        // when
+        challengeService.saveChallenge(testMember, challengeCreateRequest);
+
+        // then
+        ChallengeEntity actualChallenge = challengeRepository.findByMemberId(testMemberId)
+                                                             .getLast();
+        assertNull(actualChallenge.getGoalContent());
+    }
+
+    @Test
+    @Transactional
+    @Order(3)
     @DisplayName("특정 유저의 모든 챌린지 보기")
     void souldCreateHashtag() {
 

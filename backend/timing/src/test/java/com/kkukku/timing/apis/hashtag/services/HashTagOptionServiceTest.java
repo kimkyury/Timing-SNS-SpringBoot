@@ -57,7 +57,7 @@ public class HashTagOptionServiceTest {
 
     @Test
     @Transactional
-    @Order(1)
+    @Order(2)
     @DisplayName("content에 대하여 대응되는 HashTagOption들을 가져온다")
     void shouldGetAllHashTagOptionByChallenge() {
 

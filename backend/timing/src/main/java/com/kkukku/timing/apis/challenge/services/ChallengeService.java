@@ -8,7 +8,6 @@ import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +19,27 @@ public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final HashTagOptionService hashTagOptionService;
 
-    public void createChallenge(Integer memberId, ChallengeCreateRequest challengeCreateRequest) {
+    public void createChallengeProcedure(Integer memberId,
+        ChallengeCreateRequest challengeCreateRequest) {
 
         MemberEntity member = memberService.getMemberById(memberId);
-        List<String> hashTags = challengeCreateRequest.getHashTags();
-        hashTagOptionService.createHashTagOptions(hashTags);
 
-        ChallengeEntity challenge;
-        if (challengeCreateRequest.getGoalContent() == null) {
-            challenge = new ChallengeEntity(
-                member,
-                challengeCreateRequest.getStartedAt()
-            );
-        } else {
-            challenge = new ChallengeEntity(
-                member,
-                challengeCreateRequest.getStartedAt(),
-                challengeCreateRequest.getGoalContent()
-            );
-        }
-        Long savedChallengeId = challengeRepository.save(challenge)
-                                                   .getId();
+        hashTagOptionService.createHashTagOptions(challengeCreateRequest.getHashTags());
 
+        ChallengeEntity savedChallenge = saveChallenge(member, challengeCreateRequest);
+
+        // 1. 존재하지 않는 hashTagOption 생성
+        // 2. 전체 hashTagOption Entity 가져오기
+        // 3. Chellange 새로 생성
+        // 4. 2번과 3번의 결과를 통해 ChallengeHashTag 생성
+
+    }
+
+    public ChallengeEntity saveChallenge(MemberEntity member,
+        ChallengeCreateRequest challengeCreateRequest) {
+
+        ChallengeEntity challenge = ChallengeEntity.create(member, challengeCreateRequest);
+        return challengeRepository.save(challenge);
     }
 
 
