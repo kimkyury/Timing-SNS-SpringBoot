@@ -58,26 +58,18 @@ public class ChallengeService {
                                .map(c -> {
                                    String thumbnailUrl =
                                        s3Service.getS3StartUrl() + c.getThumbnailUrl();
-
-                                   System.out.println(c.getStartedAt() + " " + LocalDate.now()
-                                                                                        .minusDays(
-                                                                                            1));
-                                   int countDays = diffDay(c.getStartedAt(), LocalDate.now()
-                                                                                      .minusDays(
-                                                                                          1));
+                                   int countDays = diffDay(c.getStartedAt(),
+                                       LocalDate.now()
+                                                .minusDays(1));
                                    int maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
-
-                                   System.out.println("result: " + countDays + " " + maxDays);
-                                   return new Challenge(thumbnailUrl, countDays,
-                                       maxDays);
+                                   return new Challenge(thumbnailUrl, countDays, maxDays);
                                })
                                .toList());
     }
 
 
     public int diffDay(LocalDate startedAt, LocalDate yesterday) {
+
         return (int) ChronoUnit.DAYS.between(startedAt, yesterday);
-
     }
-
 }
