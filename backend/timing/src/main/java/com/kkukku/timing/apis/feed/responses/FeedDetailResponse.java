@@ -29,11 +29,11 @@ public class FeedDetailResponse {
     private List<FeedHashTagResponse> hashTags;
     private Long commentCount;
     private Long likeCount;
-    private Long shareCount;
+    private Integer shareCount;
 
     public FeedDetailResponse(FeedEntity feed, Boolean isLiked,
         List<FeedHashTagResponse> hashTags,
-        Long commentCount, Long likeCount, Long shareCount, S3Service s3Service) {
+        Long commentCount, Long likeCount, Integer shareCount, S3Service s3Service) {
         this.id = feed.getId();
 
         MemberEntity writer = feed.getMember();
