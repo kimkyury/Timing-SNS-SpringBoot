@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,9 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @Operation(summary = "Member의 정보수정", tags = {
+    @Operation(summary = "Member 정보 수정", tags = {
         "1. Member"}, description = "(Only Nickname ||  Only profileImage || Both) 가능합니다. ")
-    @PatchMapping(value = "/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateMember(
         @Valid @RequestPart(required = false) MemberUpdateRequest memberUpdateRequest,
         @Valid @RequestPart(required = false, name = "profileImage") MultipartFile profileImage) {
@@ -41,8 +42,9 @@ public class MemberController {
     }
 
 
-    @Operation(summary = "Member의 멤버 정보 조회", tags = {"1. Member"})
-    @GetMapping(value = "/")
+    @Operation(summary = "Member 조회", tags = {
+        "1. Member"}, description = "Query를 통해 다른 Member의 정보를 조회 가능합니다. (쿼리 없을 시 본인 정보 조회)")
+    @GetMapping(value = "")
     public ResponseEntity<MemberDetailResponse> getMemberDetail(
         @RequestParam(name = "email", required = false) String otherEmail) {
 
@@ -57,7 +59,7 @@ public class MemberController {
     }
 
     @Operation(summary = "Member의 탈퇴(isDelete True)", tags = {"1. Member"})
-    @PatchMapping(value = "/")
+    @DeleteMapping(value = "")
     public ResponseEntity<Void> deleteMember() {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
