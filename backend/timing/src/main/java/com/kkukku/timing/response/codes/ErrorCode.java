@@ -19,6 +19,7 @@ public enum ErrorCode {
     NOT_EXIST_MEMBER_EMAIL(400, "No user exists with the specified email"),
     NOT_EXIST_CHALLENGE(400, "Not exist Challenge"),
     NOT_EXIST_HASHTAG_OPTION(400, "Not exist HashTagOption"),
+    NOT_EXIST_FEED(400, "Not exist feed"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),
