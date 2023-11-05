@@ -28,6 +28,7 @@ CREATE TABLE challenges (
                             ended_at DATE NOT NULL,
                             goal_content VARCHAR(255),
                             object_url VARCHAR(255),
+                            thumbnail_url VARCHAR(255) NOT NULL DEFAULT '/default_thumbnail.png',
                             FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
