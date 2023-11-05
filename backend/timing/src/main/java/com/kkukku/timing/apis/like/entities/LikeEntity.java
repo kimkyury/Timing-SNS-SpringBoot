@@ -1,5 +1,6 @@
-package com.kkukku.timing.apis.hashTagOption.entities;
+package com.kkukku.timing.apis.like.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,16 +10,23 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "hash_tag_options")
+@Table(name = "likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class HashTagOptionEntity {
+public class LikeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
 
-    public HashTagOptionEntity(String content) {
-        this.content = content;
+    @Column(nullable = false)
+    private Long feedId;
+
+    @Column(nullable = false)
+    private Integer memberId;
+
+    public LikeEntity(Long feedId, Integer memberId) {
+        this.feedId = feedId;
+        this.memberId = memberId;
     }
+    
 }

@@ -16,7 +16,9 @@ public enum ErrorCode {
     JACKSON_EXCEPTION(400, "Jackson Core Exception"),
     VALIDATION_ERROR(400, "Validation Exception"),
     MISSING_HEADER(400, "Header data missing"),
-    NOT_FOUND_MEMBER_EMAIL(400, "No user exists with the specified email"),
+    NOT_EXIST_MEMBER_EMAIL(400, "No user exists with the specified email"),
+    NOT_EXIST_CHALLENGE(400, "Not exist Challenge"),
+    NOT_EXIST_HASHTAG_OPTION(400, "Not exist HashTagOption"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),
@@ -30,6 +32,8 @@ public enum ErrorCode {
     TOKEN_ACCESS_DENIED(403, "JWT token access denied"),
 
     NOT_FOUND(404, "Not Found"),
+
+
     NULL_POINTER(404, "Null Pointer Exception"),
 
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
