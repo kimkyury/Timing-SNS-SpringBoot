@@ -72,12 +72,10 @@ public class MemberService {
         memberRepository.save(memberEntity);
     }
 
-
-    public MemberEntity getMemberEntityById(Integer memberId) {
-
-        return memberRepository.findById(memberId)
+    public MemberEntity getMemberById(Integer id) {
+        return memberRepository.findById(id)
                                .orElseThrow(() -> new CustomException(
                                    ErrorCode.NOT_EXIST_MEMBER_EMAIL));
     }
-
+    
 }

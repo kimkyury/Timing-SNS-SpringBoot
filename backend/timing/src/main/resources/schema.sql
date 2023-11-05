@@ -79,8 +79,8 @@ CREATE TABLE comments (
                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
                           feed_id BIGINT NOT NULL,
                           member_id INT NOT NULL,
-                          content VARCHAR(255),
-                          created_at TIMESTAMP NOT NULL DEFAULT now(),
+                          content VARCHAR(255) NOT NULL,
+                          created_at DATETIME NOT NULL DEFAULT now(),
                           FOREIGN KEY (feed_id) REFERENCES feeds(id) ON DELETE CASCADE,
                           FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
