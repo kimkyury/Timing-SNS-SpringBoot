@@ -35,15 +35,15 @@ public class LikeServiceTest {
     @Test
     void saveLikeTest() {
         Long feedId = 2L;
-        Long before = likeService.getCommentCountByFeedId(feedId);
+        Long before = likeService.getLikeCountByFeedId(feedId);
 
         likeService.saveLike(feedId);
-        Long after = likeService.getCommentCountByFeedId(feedId);
+        Long after = likeService.getLikeCountByFeedId(feedId);
 
         assertEquals(before + 1, after, () -> "Once liked test");
 
         likeService.saveLike(feedId);
-        after = likeService.getCommentCountByFeedId(feedId);
+        after = likeService.getLikeCountByFeedId(feedId);
 
         assertEquals(before + 1, after, () -> "Twice liked test");
     }
@@ -52,15 +52,15 @@ public class LikeServiceTest {
     void deleteLikeTest() {
         Long feedId = 2L;
         likeService.saveLike(2L);
-        Long before = likeService.getCommentCountByFeedId(feedId);
+        Long before = likeService.getLikeCountByFeedId(feedId);
 
         likeService.deleteLike(2L);
-        Long after = likeService.getCommentCountByFeedId(feedId);
+        Long after = likeService.getLikeCountByFeedId(feedId);
 
         assertEquals(before - 1, after, () -> "Once disliked test");
 
         likeService.deleteLike(2L);
-        after = likeService.getCommentCountByFeedId(feedId);
+        after = likeService.getLikeCountByFeedId(feedId);
 
         assertEquals(before - 1, after, () -> "Twice disliked test");
     }

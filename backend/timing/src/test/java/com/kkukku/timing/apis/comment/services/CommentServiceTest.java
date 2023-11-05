@@ -2,7 +2,7 @@ package com.kkukku.timing.apis.comment.services;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-import com.kkukku.timing.apis.comment.entities.CommentEntity;
+import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.security.services.MemberDetailService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,7 @@ public class CommentServiceTest {
         }
 
         for (int i = 0; i < 10; i++) {
-            List<CommentEntity> comments = commentService.getCommentsByFeedId(feedId, i + 1,
+            List<CommentResponse> comments = commentService.getCommentsByFeedId(feedId, i + 1,
                 pageSize);
 
             assertEquals("Check only 10 rows", pageSize, comments.size());

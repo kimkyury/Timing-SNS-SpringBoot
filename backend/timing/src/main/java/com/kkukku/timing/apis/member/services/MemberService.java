@@ -53,9 +53,7 @@ public class MemberService {
 
     public MemberDetailResponse getMemberInfo(String memberEmail) {
 
-        MemberEntity memberEntity = memberRepository.findByEmail(memberEmail)
-                                                    .orElseThrow(() -> new CustomException(
-                                                        ErrorCode.NOT_EXIST_MEMBER_EMAIL));
+        MemberEntity memberEntity = getMemberByEmail(memberEmail);
 
         memberEntity.saveProfileImgUrlWithS3(s3Service);
 
@@ -70,6 +68,12 @@ public class MemberService {
 
     public MemberEntity getMemberById(Integer id) {
         return memberRepository.findById(id)
+                               .orElseThrow(() -> new CustomException(
+                                   ErrorCode.NOT_EXIST_MEMBER_EMAIL));
+    }
+
+    public MemberEntity getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
                                .orElseThrow(() -> new CustomException(
                                    ErrorCode.NOT_EXIST_MEMBER_EMAIL));
     }
