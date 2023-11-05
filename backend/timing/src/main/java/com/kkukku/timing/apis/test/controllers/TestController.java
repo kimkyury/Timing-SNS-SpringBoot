@@ -9,7 +9,6 @@ import com.kkukku.timing.s3.services.S3Service;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -38,7 +37,7 @@ public class TestController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestPart("image") MultipartFile image) {
 
-        String fileName = s3Service.uploadFileProcedure(image);
+        String fileName = s3Service.uploadFile(image);
         return success("Saved fileName: " + fileName);
     }
 
