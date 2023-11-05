@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,9 @@ public class MemberEntity {
     }
 
     public void delete() {
-        isDelete = true;
+        this.email = String.valueOf(UUID.randomUUID());
+        this.nickname = "탈퇴한 사용자";
+        this.profileImageUrl = "/default_profile.png";
+        this.isDelete = true;
     }
 }

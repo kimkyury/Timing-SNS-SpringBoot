@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +89,7 @@ public class MemberServiceTest {
 
     @Test
     @Order(1)
-    @DisplayName("최초 로그인 유저의 닉네임 수정")
+    @DisplayName("유저의 Nickname 수정되어야 한다")
     void shouldUpdateNickname() {
 
         // given
@@ -108,7 +109,7 @@ public class MemberServiceTest {
 
     @Test
     @Order(2)
-    @DisplayName("최초 로그인 유저의 프로필 이미지 수정")
+    @DisplayName("유저의 profileImageUrl 수정되어야 한다")
     void shouldUpdateProfileImg() {
 
         String updatedProfileUrl = "http://example.com/profile.png";
@@ -126,7 +127,7 @@ public class MemberServiceTest {
 
     @Test
     @Order(3)
-    @DisplayName("최초 로그인 유저의 닉네임과 프로필 이미지 수정")
+    @DisplayName("유저의 Nickname, ProfileImageUrl 수정되어야 한다")
     void shouldUpdateNicknameAndProfileImg() {
 
         String updatedProfileUrl = "http://example.com/profile.png";
@@ -141,14 +142,13 @@ public class MemberServiceTest {
                                                      .get();
         assertEquals("isUpdatedNickname", updatedNickname, updatedMember.getNickname());
         assertEquals("isUpdatedNickname", updatedProfileUrl, updatedMember.getProfileImageUrl());
-
     }
 
     @Test
     @Order(4)
-    @DisplayName("유저의 정보 조회")
+    @DisplayName("유저의 정보가 조회되어야 한다")
     void shouldGetMemberInfo() {
-        
+
         String searchMemberEmail = "kkr@com";
         MemberEntity searchedMember = memberRepository.findByEmail(searchMemberEmail)
                                                       .get();
@@ -167,15 +167,20 @@ public class MemberServiceTest {
 
     @Test
     @Order(5)
-    @DisplayName("유저의 탈퇴")
+    @DisplayName("유저 탈퇴시, 탈퇴 필드 변경과 관련 Field가 초기화되어야 한다")
     void ShouldUpdateMemberIsDelete() {
 
+        MemberEntity originalMember = memberRepository.findById(1)
+                                                      .get();
+
         memberService.deleteMember(1);
-        MemberEntity member = memberRepository.findById(1)
-                                              .get();
 
-        assertEquals("isDeleteTrue", true, member.isDelete());
-
+        MemberEntity deletedMember = memberRepository.findById(1)
+                                                     .get();
+        Assertions.assertTrue(deletedMember.isDelete());
+        Assertions.assertEquals("탈퇴한 사용자", deletedMember.getNickname());
+        Assertions.assertEquals("/default_profile.png", deletedMember.getProfileImageUrl());
+        Assertions.assertNotEquals(originalMember.getEmail(), deletedMember.getEmail());
 
     }
 }
