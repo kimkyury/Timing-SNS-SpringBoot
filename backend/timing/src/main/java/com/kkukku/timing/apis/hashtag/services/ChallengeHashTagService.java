@@ -2,7 +2,6 @@ package com.kkukku.timing.apis.hashtag.services;
 
 
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
-import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.hashtag.entities.ChallengeHashTagEntity;
 import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.repositories.ChallengeHashTagRepository;
