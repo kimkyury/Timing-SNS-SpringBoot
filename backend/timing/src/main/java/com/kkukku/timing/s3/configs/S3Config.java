@@ -19,9 +19,6 @@ public class S3Config {
     @Value("${cloud.aws.credentials.secret-key}")
     private String secretKey;
 
-    @Value("${AWS_S3_URL}")
-    private String s3StartUrl;
-
     @Value("${cloud.aws.region.static}")
     private String region;
 
