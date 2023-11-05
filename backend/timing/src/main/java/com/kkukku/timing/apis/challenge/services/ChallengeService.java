@@ -3,6 +3,8 @@ package com.kkukku.timing.apis.challenge.services;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
+import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
+import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
 import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.services.MemberService;
@@ -19,29 +21,28 @@ public class ChallengeService {
     private final MemberService memberService;
     private final ChallengeRepository challengeRepository;
     private final HashTagOptionService hashTagOptionService;
+    private final ChallengeHashTagService challengeHashTagService;
 
-    public void createChallenge(Integer memberId, ChallengeCreateRequest challengeCreateRequest) {
+    public void createChallengeProcedure(Integer memberId,
+        ChallengeCreateRequest challengeCreateRequest) {
 
         MemberEntity member = memberService.getMemberById(memberId);
-        List<String> hashTags = challengeCreateRequest.getHashTags();
-        hashTagOptionService.createHashTagOptions(hashTags);
 
-        ChallengeEntity challenge;
-        if (challengeCreateRequest.getGoalContent() == null) {
-            challenge = new ChallengeEntity(
-                member,
-                challengeCreateRequest.getStartedAt()
-            );
-        } else {
-            challenge = new ChallengeEntity(
-                member,
-                challengeCreateRequest.getStartedAt(),
-                challengeCreateRequest.getGoalContent()
-            );
-        }
-        Long savedChallengeId = challengeRepository.save(challenge)
-                                                   .getId();
+        hashTagOptionService.createHashTagOptions(challengeCreateRequest.getHashTags());
 
+        ChallengeEntity savedChallenge = saveChallenge(member, challengeCreateRequest);
+
+        List<HashTagOptionEntity> hashTagOptions = hashTagOptionService.getHashTagOption(
+            challengeCreateRequest.getHashTags());
+
+        challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptions);
+    }
+
+    public ChallengeEntity saveChallenge(MemberEntity member,
+        ChallengeCreateRequest challengeCreateRequest) {
+
+        ChallengeEntity challenge = ChallengeEntity.create(member, challengeCreateRequest);
+        return challengeRepository.save(challenge);
     }
 
 
