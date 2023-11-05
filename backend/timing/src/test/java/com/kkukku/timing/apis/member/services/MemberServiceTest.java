@@ -156,12 +156,12 @@ public class MemberServiceTest {
         MemberDetailResponse memberDetailResponse = memberService.getMemberInfo(searchMemberEmail);
 
         MemberDetailResponse expectedMemberDetailResponse = new MemberDetailResponse(
-            searchedMember.getEmail(),
-            searchedMember.getNickname(),
-            searchedMember.getProfileImageUrl(),
-            searchedMember.isDelete()
-        );
-        assertEquals("canReadNickname", memberDetailResponse, expectedMemberDetailResponse);
+            searchedMember);
+        expectedMemberDetailResponse.setProfileImageUrl(
+            s3Service.getS3StartUrl() + searchedMember.getProfileImageUrl());
+        System.out.println(expectedMemberDetailResponse);
+
+        assertEquals("canReadNickname", expectedMemberDetailResponse, memberDetailResponse);
 
     }
 
@@ -177,7 +177,7 @@ public class MemberServiceTest {
 
         MemberEntity deletedMember = memberRepository.findById(1)
                                                      .get();
-        Assertions.assertTrue(deletedMember.isDelete());
+        Assertions.assertTrue(deletedMember.getIsDelete());
         Assertions.assertEquals("탈퇴한 사용자", deletedMember.getNickname());
         Assertions.assertEquals("/default_profile.png", deletedMember.getProfileImageUrl());
         Assertions.assertNotEquals(originalMember.getEmail(), deletedMember.getEmail());
