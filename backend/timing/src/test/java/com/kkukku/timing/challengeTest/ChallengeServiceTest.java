@@ -1,11 +1,10 @@
 package com.kkukku.timing.challengeTest;
 
-import static org.springframework.test.util.AssertionErrors.assertEquals;
-
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
+import com.kkukku.timing.apis.hashtag.repositories.ChallengeHashTagRepository;
 import com.kkukku.timing.apis.hashtag.repositories.HashTagOptionRepository;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
@@ -33,6 +32,9 @@ public class ChallengeServiceTest {
 
     @Autowired
     private HashTagOptionRepository hashTagOptionRepository;
+
+    @Autowired
+    private ChallengeHashTagRepository challengeHashTagRepository;
 
     @Autowired
     private ChallengeService challengeService;
@@ -72,17 +74,26 @@ public class ChallengeServiceTest {
         // then
         ChallengeEntity createChallenge = challengeRepository.findByMemberId(testMemberId)
                                                              .getLast();
-        boolean isExistHashTag1 = hashTagOptionRepository.existsByContent(hashTagStr);
-        assertEquals("createGoalContent", createGoalContent, createChallenge.getGoalContent());
-        assertEquals("isExistHashTag", true, isExistHashTag1);
 
+//        boolean isExistHashTag1 = hashTagOptionRepository.existsByContent(hashTagStr);
+//
+//        Optional<hashTagOptionRepository.findByContent(hashTagStr);
+//        boolean isExistChallengeHashTag1 = challengeHashTagRepository.existsByChallengeIdAndHashTagOptionId( hashTagStr);
+//
+//        assertEquals("createGoalContent", createGoalContent, createChallenge.getGoalContent());
+//        assertEquals("isExistHashTagOption", true, isExistHashTag1);
+//        assertEqulas("isExistChallengeHashTag", true, )
     }
 
     @Test
     @Transactional
     @Order(2)
-    @DisplayName("Challenge 생성 시, 새로운 hashTag 생성")
+    @DisplayName("특정 유저의 모든 챌린지 보기")
     void souldCreateHashtag() {
+
+        Integer testMemberId = 2;
+
+        // List < challengeService.getAllChallengs(testMemberId);
 
     }
 

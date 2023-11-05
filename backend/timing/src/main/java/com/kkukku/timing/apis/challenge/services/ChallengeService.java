@@ -6,6 +6,8 @@ import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.services.MemberService;
+import com.kkukku.timing.exception.CustomException;
+import com.kkukku.timing.response.codes.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,6 @@ public class ChallengeService {
     public void createChallenge(Integer memberId, ChallengeCreateRequest challengeCreateRequest) {
 
         MemberEntity member = memberService.getMemberEntityById(memberId);
-
         List<String> hashTags = challengeCreateRequest.getHashTags();
         hashTagOptionService.createHashTagOptions(hashTags);
 
@@ -38,8 +39,18 @@ public class ChallengeService {
                 challengeCreateRequest.getGoalContent()
             );
         }
+        Long savedChallengeId = challengeRepository.save(challenge)
+                                                   .getId();
 
-        challengeRepository.save(challenge);
+
+    }
+
+
+    public ChallengeEntity getChallengeEntity(Long challengeId) {
+
+        return challengeRepository.findById(challengeId)
+                                  .orElseThrow(() -> new CustomException(
+                                      ErrorCode.NOT_EXIST_CHALLENGE));
     }
 
 }
