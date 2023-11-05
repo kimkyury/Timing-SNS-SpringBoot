@@ -17,7 +17,7 @@ public class ChallengeCreateRequest {
     @Future(message = "startAt은 현재 날짜(를 포함한) 이후여야 합니다.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "Challenge의 시작날짜는 필수 필드입니다.")
-    private LocalDate startAt;
+    private LocalDate startedAt;
 
     @NotNull(message = "최소 1개 이상의 HashTag를 작성해주세요. ")
     private List<String> hashTags;

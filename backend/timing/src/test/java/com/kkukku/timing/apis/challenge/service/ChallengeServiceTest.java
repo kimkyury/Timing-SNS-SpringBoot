@@ -1,4 +1,4 @@
-package com.kkukku.timing.challengeTest;
+package com.kkukku.timing.apis.challenge.service;
 
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;

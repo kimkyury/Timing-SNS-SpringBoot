@@ -1,9 +1,8 @@
-package com.kkukku.timing.hashtagTest;
+package com.kkukku.timing.apis.hashtag.services;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 import com.kkukku.timing.apis.hashtag.repositories.HashTagOptionRepository;
-import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.kkukku.timing.memberTest;
+package com.kkukku.timing.apis.member.services;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -8,7 +8,6 @@ import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.apis.member.requests.MemberUpdateRequest;
 import com.kkukku.timing.apis.member.responses.MemberDetailResponse;
-import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.s3.services.S3Service;
 import java.io.IOException;
 import java.nio.file.Files;
