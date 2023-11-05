@@ -22,7 +22,7 @@ public class ChallengeService {
 
     public void createChallenge(Integer memberId, ChallengeCreateRequest challengeCreateRequest) {
 
-        MemberEntity member = memberService.getMemberEntityById(memberId);
+        MemberEntity member = memberService.getMemberById(memberId);
         List<String> hashTags = challengeCreateRequest.getHashTags();
         hashTagOptionService.createHashTagOptions(hashTags);
 

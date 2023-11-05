@@ -66,10 +66,9 @@ public class MemberService {
     }
 
     public void deleteMember(Integer memberId) {
-
-        MemberEntity memberEntity = getMemberEntityById(memberId);
-        memberEntity.delete();
-        memberRepository.save(memberEntity);
+        MemberEntity member = getMemberById(memberId);
+        member.delete();
+        memberRepository.save(member);
     }
 
     public MemberEntity getMemberById(Integer id) {
@@ -77,5 +76,5 @@ public class MemberService {
                                .orElseThrow(() -> new CustomException(
                                    ErrorCode.NOT_EXIST_MEMBER_EMAIL));
     }
-    
+
 }
