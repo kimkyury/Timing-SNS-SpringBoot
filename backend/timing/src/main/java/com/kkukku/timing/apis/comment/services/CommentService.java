@@ -4,7 +4,10 @@ import com.kkukku.timing.apis.comment.entities.CommentEntity;
 import com.kkukku.timing.apis.comment.repositories.CommentRepository;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.security.utils.SecurityUtil;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,4 +26,12 @@ public class CommentService {
             new CommentEntity(feedId, memberService.getMemberById(
                 SecurityUtil.getLoggedInMemberPrimaryKey()), content));
     }
+
+    public List<CommentEntity> getCommentsByFeedId(Long feedId, Integer page, Integer pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+        return commentRepository.findByFeedId(feedId, pageable)
+                                .getContent();
+    }
+
 }
