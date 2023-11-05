@@ -3,11 +3,14 @@ package com.kkukku.timing.apis.challenge.services;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
+import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
+import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
 import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,7 @@ public class ChallengeService {
     private final MemberService memberService;
     private final ChallengeRepository challengeRepository;
     private final HashTagOptionService hashTagOptionService;
+    private final ChallengeHashTagService challengeHashTagService;
 
     public void createChallengeProcedure(Integer memberId,
         ChallengeCreateRequest challengeCreateRequest) {
@@ -28,11 +32,10 @@ public class ChallengeService {
 
         ChallengeEntity savedChallenge = saveChallenge(member, challengeCreateRequest);
 
-        // 1. 존재하지 않는 hashTagOption 생성
-        // 2. 전체 hashTagOption Entity 가져오기
-        // 3. Chellange 새로 생성
-        // 4. 2번과 3번의 결과를 통해 ChallengeHashTag 생성
+        List<HashTagOptionEntity> hashTagOptions = hashTagOptionService.getHashTagOption(
+            challengeCreateRequest.getHashTags());
 
+        challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptions);
     }
 
     public ChallengeEntity saveChallenge(MemberEntity member,
