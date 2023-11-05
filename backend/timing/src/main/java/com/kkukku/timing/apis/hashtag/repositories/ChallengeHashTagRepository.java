@@ -9,4 +9,6 @@ public interface ChallengeHashTagRepository extends JpaRepository<ChallengeHashT
 
     List<HashTagOptionEntity> findHashTagOptionEntityByChallengeId(Long challengeId);
 
+    boolean existsByChallengeIdAndHashTagOptionId(Long ChallengeId, Long TagOptionId);
+
 }
