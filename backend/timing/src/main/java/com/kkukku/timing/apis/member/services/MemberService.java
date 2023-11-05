@@ -57,11 +57,11 @@ public class MemberService {
                                                     .orElseThrow(() -> new CustomException(
                                                         ErrorCode.NOT_EXIST_MEMBER_EMAIL));
 
-        String nickname = memberEntity.getNickname();
-        String profileImageUrl = memberEntity.getProfileImageUrl();
-
         return new MemberDetailResponse(
-            nickname, profileImageUrl
+            memberEntity.getEmail(),
+            memberEntity.getNickname(),
+            memberEntity.getProfileImageUrl(),
+            memberEntity.isDelete()
         );
     }
 
