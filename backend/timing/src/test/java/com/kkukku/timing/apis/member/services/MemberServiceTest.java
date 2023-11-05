@@ -148,18 +148,25 @@ public class MemberServiceTest {
     @Order(4)
     @DisplayName("유저의 정보 조회")
     void shouldGetMemberInfo() {
+        
+        String searchMemberEmail = "kkr@com";
+        MemberEntity searchedMember = memberRepository.findByEmail(searchMemberEmail)
+                                                      .get();
 
-        MemberDetailResponse memberDetailResponse = memberService.getMemberInfo("kkr@com");
-        MemberEntity member = memberRepository.findById(1)
-                                              .get();
+        MemberDetailResponse memberDetailResponse = memberService.getMemberInfo(searchMemberEmail);
 
-        assertEquals("canReadNickname", memberDetailResponse.getNickname(), member.getNickname());
-        assertEquals("canReadProfile", memberDetailResponse.getProfileImageUrl(),
-            member.getProfileImageUrl());
+        MemberDetailResponse expectedMemberDetailResponse = new MemberDetailResponse(
+            searchedMember.getEmail(),
+            searchedMember.getNickname(),
+            searchedMember.getProfileImageUrl(),
+            searchedMember.isDelete()
+        );
+        assertEquals("canReadNickname", memberDetailResponse, expectedMemberDetailResponse);
+
     }
 
     @Test
-    @Order(3)
+    @Order(5)
     @DisplayName("유저의 탈퇴")
     void ShouldUpdateMemberIsDelete() {
 
