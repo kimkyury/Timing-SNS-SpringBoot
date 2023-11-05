@@ -57,12 +57,9 @@ public class MemberService {
                                                     .orElseThrow(() -> new CustomException(
                                                         ErrorCode.NOT_EXIST_MEMBER_EMAIL));
 
-        return new MemberDetailResponse(
-            memberEntity.getEmail(),
-            memberEntity.getNickname(),
-            memberEntity.getProfileImageUrl(),
-            memberEntity.isDelete()
-        );
+        memberEntity.saveProfileImgUrlWithS3(s3Service);
+
+        return new MemberDetailResponse(memberEntity);
     }
 
     public void deleteMember(Integer memberId) {
