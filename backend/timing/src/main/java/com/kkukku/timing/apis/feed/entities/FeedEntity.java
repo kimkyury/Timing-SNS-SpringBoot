@@ -15,10 +15,12 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "feeds")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FeedEntity {
 
