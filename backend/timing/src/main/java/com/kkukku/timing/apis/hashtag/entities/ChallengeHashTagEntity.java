@@ -13,7 +13,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "challenge_hash_tag")
+@Table(name = "challenge_hash_tags")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChallengeHashTagEntity {
 

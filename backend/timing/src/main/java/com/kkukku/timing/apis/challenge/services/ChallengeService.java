@@ -30,18 +30,17 @@ public class ChallengeService {
         if (challengeCreateRequest.getGoalContent() == null) {
             challenge = new ChallengeEntity(
                 member,
-                challengeCreateRequest.getStartAt()
+                challengeCreateRequest.getStartedAt()
             );
         } else {
             challenge = new ChallengeEntity(
                 member,
-                challengeCreateRequest.getStartAt(),
+                challengeCreateRequest.getStartedAt(),
                 challengeCreateRequest.getGoalContent()
             );
         }
         Long savedChallengeId = challengeRepository.save(challenge)
                                                    .getId();
-
 
     }
 

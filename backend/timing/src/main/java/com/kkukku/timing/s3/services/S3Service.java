@@ -9,6 +9,7 @@ import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
 import java.io.IOException;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,14 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String BUCKET_NAME;
 
+    @Value("${cloud.aws.s3.url}")
+    @Getter
+    private String s3StartUrl;
+
     private final AmazonS3 amazonS3;
 
     public String uploadFile(MultipartFile file) {
+
         String originalFilename = clean(file.getOriginalFilename());
         String safeFilename = originalFilename.replaceAll("\\s+", "_"); // 공백 제거
         String fileName = UUID.randomUUID() + "_" + safeFilename;
@@ -42,10 +48,11 @@ public class S3Service {
     }
 
     public S3Object getFile(String fileName) {
+
         return amazonS3.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
     }
-
-    public static String clean(final String str) {
+    
+    private String clean(final String str) {
         // 널일 경우 빈 문자열 반환, 아닐 경우 빈 문자 제거
         return str == null ? "" : str.trim();
     }
