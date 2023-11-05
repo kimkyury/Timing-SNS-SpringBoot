@@ -44,6 +44,9 @@ public class ChallengeEntity {
     @Setter
     private String objectUrl;
 
+    @Column(nullable = false, insertable = false)
+    private String thumbnailUrl;
+
     public ChallengeEntity(MemberEntity member, LocalDate startedAt, String goalContent) {
         this.member = member;
         this.startedAt = startedAt;
