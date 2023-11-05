@@ -22,7 +22,7 @@ public class MemberDetailService implements UserDetailsService {
         MemberEntity memberEntity = memberRepository.findByEmail(username)
                                                     .orElseThrow(() ->
                                                         new CustomException(
-                                                            ErrorCode.NOT_FOUND_MEMBER_EMAIL));
+                                                            ErrorCode.NOT_EXIST_MEMBER_EMAIL));
 
         return new MemberDetailEntity(memberEntity);
     }
