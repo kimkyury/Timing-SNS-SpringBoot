@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
-import com.kkukku.timing.apis.hashtag.repositories.ChallengeHashTagRepository;
-import com.kkukku.timing.apis.hashtag.repositories.HashTagOptionRepository;
+import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
+import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.s3.services.S3Service;
@@ -20,7 +20,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -36,16 +38,13 @@ public class ChallengeServiceTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private HashTagOptionRepository hashTagOptionRepository;
-
-    @Autowired
-    private ChallengeHashTagRepository challengeHashTagRepository;
-
-    @Autowired
     private ChallengeService challengeService;
 
     @MockBean
     private S3Service s3Service;
+
+    @Value("${cloud.aws.s3.url}")
+    private String s3StartUrl;
 
     @Test
     @Transactional
@@ -102,11 +101,29 @@ public class ChallengeServiceTest {
     @Transactional
     @Order(3)
     @DisplayName("특정 유저의 모든 챌린지 보기")
-    void souldCreateHashtag() {
+    void shouldCreateHashtag() {
 
-        Integer testMemberId = 2;
+        // given
+        Integer testMemberId = 1;
+        Mockito.when(s3Service.getS3StartUrl())
+               .thenReturn(s3StartUrl);
 
-        // List < challengeService.getAllChallengs(testMemberId);
+        // when
+        ChallengeResponse challengeResponse = challengeService.getChallenge(
+            testMemberId);
+
+        // then
+        List<ChallengeEntity> expectedChallenges = challengeRepository.findByMemberId(testMemberId);
+        List<Challenge> actualChallenges = challengeResponse.getChallenges();
+
+        for (int i = 0; i < expectedChallenges.size(); i++) {
+            assertEquals(
+                s3StartUrl + expectedChallenges.get(i)
+                                               .getThumbnailUrl(),
+                actualChallenges.get(i)
+                                .getThumbnailUrl()
+            );
+        }
 
     }
 
