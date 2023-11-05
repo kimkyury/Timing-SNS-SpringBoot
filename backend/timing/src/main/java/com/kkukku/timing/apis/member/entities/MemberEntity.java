@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.member.entities;
 
+import com.kkukku.timing.s3.services.S3Service;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,8 +34,8 @@ public class MemberEntity {
     @Setter
     private String nickname;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean isDelete;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)", insertable = false)
+    private Boolean isDelete;
 
     public MemberEntity(String email, String profileImageUrl, String nickname) {
         this.email = email;
@@ -48,4 +49,9 @@ public class MemberEntity {
         this.profileImageUrl = "/default_profile.png";
         this.isDelete = true;
     }
+
+    public void saveProfileImgUrlWithS3(S3Service s3Service) {
+        this.profileImageUrl = s3Service.getS3StartUrl() + this.profileImageUrl;
+    }
+
 }
