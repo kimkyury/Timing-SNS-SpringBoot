@@ -79,8 +79,94 @@ public class FeedService {
         return feedRepository.findAllByRoot_Id(rootId);
     }
 
-    public Long countInfluencedFeeds(Long id) {
-        return 0L;
+    public List<FeedEntity> getFeedsByMemberId(Integer memberId) {
+        return feedRepository.findAllByMember_Id(memberId);
+    }
+
+    public Integer countInfluencedFeeds(Long id) {
+        List<FeedEntity> feeds = getFeedsByRootId(getFeed(id).getRoot()
+                                                             .getId());
+
+        int size = feeds.size();
+        Integer[] parent = new Integer[size];
+        Integer[] count = new Integer[size];
+
+        for (int i = 0; i < size; i++) {
+            parent[i] = i;
+            count[i] = 0;
+        }
+
+        for (int i = size - 1; i >= 0; i--) {
+            FeedEntity parentFeed = feeds.get(i)
+                                         .getParent();
+
+            if (parentFeed == null) {
+                continue;
+            }
+
+            Integer feedId = i;
+            Integer parentId = binarySearch(feeds, parentFeed.getId());
+
+            union(parent, count, feedId, parentId);
+        }
+
+        return count[binarySearch(feeds, id)];
+    }
+
+    public Integer countAllInfluencedFeeds() {
+        List<FeedEntity> feeds = getFeedsByMemberId(SecurityUtil.getLoggedInMemberPrimaryKey());
+
+        Integer count = 0;
+
+        for (FeedEntity feed : feeds) {
+            count += countInfluencedFeeds(feed.getId());
+        }
+
+        return count;
+    }
+
+    private int find(Integer[] parent, Integer x) {
+        if (parent[x].equals(x)) {
+            return x;
+        }
+        return parent[x] = find(parent, parent[x]);
+    }
+
+    private void union(Integer[] parent, Integer[] count, Integer x, Integer y) {
+        int a = find(parent, x);
+        int b = find(parent, y);
+
+        if (a < b) {
+            parent[b] = parent[a];
+            count[a] += count[b] + 1;
+        } else {
+            parent[a] = parent[b];
+            count[b] += count[a] + 1;
+        }
+    }
+
+    private Integer binarySearch(List<FeedEntity> feeds, Long parentId) {
+        int l = 0;
+        int r = feeds.size() - 1;
+        int mid = 0;
+
+        while (l <= r) {
+            mid = (l + r) / 2;
+            Long id = feeds.get(mid)
+                           .getId();
+
+            if (id.equals(parentId)) {
+                break;
+            }
+
+            if (id > parentId) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+
+        return mid;
     }
 
 }
