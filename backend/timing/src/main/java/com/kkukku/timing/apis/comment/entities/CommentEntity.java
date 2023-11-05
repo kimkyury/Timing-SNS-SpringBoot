@@ -9,19 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicInsert
 public class CommentEntity {
 
     @Id
@@ -35,9 +30,16 @@ public class CommentEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
+    @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false)
     private LocalDateTime createdAt;
+
+    public CommentEntity(Long feedId, MemberEntity member, String content) {
+        this.feedId = feedId;
+        this.member = member;
+        this.content = content;
+    }
 
 }
