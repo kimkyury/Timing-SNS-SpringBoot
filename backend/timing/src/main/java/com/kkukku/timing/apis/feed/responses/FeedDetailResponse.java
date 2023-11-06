@@ -18,7 +18,7 @@ public class FeedDetailResponse {
 
     private Long id;
     private MemberDetailResponse writer;
-    private MemberDetailResponse parent;
+    private MemberDetailResponse parentWriter;
     private LocalDate startedAt;
     private LocalDate endedAt;
     private String goalContent;
@@ -39,12 +39,14 @@ public class FeedDetailResponse {
         MemberEntity writer = feed.getMember();
         writer.saveProfileImgUrlWithS3(s3Service);
 
-        MemberEntity parent = feed.getParent()
-                                  .getMember();
-        parent.saveProfileImgUrlWithS3(s3Service);
+        if (feed.getParent() != null) {
+            MemberEntity parent = feed.getParent()
+                                      .getMember();
+            parent.saveProfileImgUrlWithS3(s3Service);
+            this.parentWriter = new MemberDetailResponse(parent);
+        }
 
         this.writer = new MemberDetailResponse(writer);
-        this.parent = new MemberDetailResponse(parent);
         this.startedAt = feed.getStartedAt();
         this.endedAt = feed.getEndedAt();
         this.goalContent = feed.getGoalContent();

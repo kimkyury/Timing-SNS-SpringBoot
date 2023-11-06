@@ -31,14 +31,14 @@ public class FeedService {
     public List<FeedDetailResponse> getRecommendFeeds() {
         return feedRepository.findRandomFeeds()
                              .stream()
-                             .map(feed -> new FeedDetailResponse(feed, likeService.isLiked(
-                                 feed.getId()),
-                                 feedHashTagService.getHashTagsByFeedId(
-                                     feed.getId()),
-                                 commentService.getCommentCountByFeedId(feed.getId()),
-                                 likeService.getLikeCountByFeedId(feed.getId()),
-                                 countInfluencedFeeds(feed.getId()), s3Service))
+                             .map(feed -> getFeedDetail(feed.getId()))
                              .toList();
+    }
+
+    public FeedDetailResponse getFeedDetail(Long id) {
+        return new FeedDetailResponse(getFeedById(id), likeService.isLiked(id),
+            feedHashTagService.getHashTagsByFeedId(id), commentService.getCommentCountByFeedId(id),
+            likeService.getLikeCountByFeedId(id), countInfluencedFeeds(id), s3Service);
     }
 
     public Long countOwnFeeds() {
@@ -69,7 +69,7 @@ public class FeedService {
                              .toList();
     }
 
-    public FeedEntity getFeed(Long id) {
+    public FeedEntity getFeedById(Long id) {
         return feedRepository.findById(id)
                              .orElseThrow(() -> new CustomException(
                                  ErrorCode.NOT_EXIST_FEED));
@@ -84,8 +84,8 @@ public class FeedService {
     }
 
     public Integer countInfluencedFeeds(Long id) {
-        List<FeedEntity> feeds = getFeedsByRootId(getFeed(id).getRoot()
-                                                             .getId());
+        List<FeedEntity> feeds = getFeedsByRootId(getFeedById(id).getRoot()
+                                                                 .getId());
 
         int size = feeds.size();
         Integer[] parent = new Integer[size];

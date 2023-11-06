@@ -51,6 +51,10 @@ public class MemberEntity {
     }
 
     public void saveProfileImgUrlWithS3(S3Service s3Service) {
+        if (profileImageUrl.startsWith("http")) {
+            return;
+        }
+
         this.profileImageUrl = s3Service.getS3StartUrl() + this.profileImageUrl;
     }
 
