@@ -63,4 +63,14 @@ public class FeedServiceTest {
         }
     }
 
+    @Test
+    public void countInfluencedFeedsTest() {
+        int[] answer = {1, 5, 0, 4, 0, 1, 0, 0};
+
+        for (int i = 0; i < answer.length; i++) {
+            Integer count = feedService.countInfluencedFeeds((long) (i + 1));
+            assertEquals(answer[i], count, "Check influenced feed with data.sql");
+        }
+    }
+
 }
