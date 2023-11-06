@@ -11,9 +11,13 @@ public class FeedOtherResponse {
 
     private Long id;
     private String thumbnailUrl;
+    private Long feedCount;
+    private Integer contributeCount;
 
-    public FeedOtherResponse(FeedEntity feed) {
+    public FeedOtherResponse(FeedEntity feed, Long feedCount, Integer contributeCount) {
         this.id = feed.getId();
         this.thumbnailUrl = feed.getThumbnailUrl();
+        this.feedCount = feedCount;
+        this.contributeCount = contributeCount;
     }
 }
