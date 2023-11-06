@@ -16,7 +16,7 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 
 @Entity
-@Table(name = "shapshots")
+@Table(name = "snapshots")
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
