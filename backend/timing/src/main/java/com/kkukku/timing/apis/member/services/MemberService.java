@@ -64,7 +64,9 @@ public class MemberService {
         MemberEntity member = getMemberById(memberId);
 
         String profileImgUrl = member.getProfileImageUrl();
-        s3Service.deleteFile(profileImgUrl);
+        if (!profileImgUrl.startsWith("http")) {
+            s3Service.deleteFile(profileImgUrl);
+        }
 
         member.delete();
 

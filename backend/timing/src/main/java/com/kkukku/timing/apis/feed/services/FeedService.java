@@ -13,6 +13,7 @@ import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import com.kkukku.timing.security.utils.SecurityUtil;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,11 @@ public class FeedService {
                              .map(feed -> new FeedOtherResponse(feed, countOtherFeeds(email),
                                  countAllInfluencedOtherFeeds(email)))
                              .toList();
+    }
+
+    public FeedEntity getFeedByIdAndMemberId(Long id, Integer memberId) {
+        return feedRepository.findByIdAndMember_Id(id, memberId)
+                             .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FEED));
     }
 
     public FeedEntity getFeedById(Long id) {
@@ -138,6 +144,15 @@ public class FeedService {
         }
 
         return count;
+    }
+
+    @Transactional
+    public void deleteFeed(Long id) {
+        FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
+
+        feed.delete(s3Service);
+
+        feedRepository.save(feed);
     }
 
     private int find(Integer[] parent, Integer x) {
