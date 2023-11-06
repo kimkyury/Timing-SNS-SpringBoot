@@ -12,10 +12,14 @@ public class FeedOwnResponse {
     private Long id;
     private String thumbnailUrl;
     private Boolean isPrivate;
+    private Long feedCount;
+    private Integer contributeCount;
 
-    public FeedOwnResponse(FeedEntity feed) {
+    public FeedOwnResponse(FeedEntity feed, Long feedCount, Integer contributeCount) {
         this.id = feed.getId();
         this.thumbnailUrl = feed.getThumbnailUrl();
         this.isPrivate = feed.getIsPrivate();
+        this.feedCount = feedCount;
+        this.contributeCount = contributeCount;
     }
 }

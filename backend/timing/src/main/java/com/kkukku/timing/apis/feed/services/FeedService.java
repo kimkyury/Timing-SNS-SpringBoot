@@ -50,7 +50,8 @@ public class FeedService {
         return feedRepository.findAllByMember_IdAndIsDeleteIsFalse(
                                  SecurityUtil.getLoggedInMemberPrimaryKey())
                              .stream()
-                             .map(FeedOwnResponse::new)
+                             .map(feed -> new FeedOwnResponse(feed, countOwnFeeds(),
+                                 countAllInfluencedOwnFeeds()))
                              .toList();
     }
 
@@ -65,7 +66,8 @@ public class FeedService {
                                  memberService.getMemberByEmail(email)
                                               .getId())
                              .stream()
-                             .map(FeedOtherResponse::new)
+                             .map(feed -> new FeedOtherResponse(feed, countOtherFeeds(email),
+                                 countAllInfluencedOtherFeeds(email)))
                              .toList();
     }
 
@@ -113,8 +115,21 @@ public class FeedService {
         return count[binarySearch(feeds, id)];
     }
 
-    public Integer countAllInfluencedFeeds() {
+    public Integer countAllInfluencedOwnFeeds() {
         List<FeedEntity> feeds = getFeedsByMemberId(SecurityUtil.getLoggedInMemberPrimaryKey());
+
+        Integer count = 0;
+
+        for (FeedEntity feed : feeds) {
+            count += countInfluencedFeeds(feed.getId());
+        }
+
+        return count;
+    }
+
+    public Integer countAllInfluencedOtherFeeds(String email) {
+        List<FeedEntity> feeds = getFeedsByMemberId(memberService.getMemberByEmail(email)
+                                                                 .getId());
 
         Integer count = 0;
 
