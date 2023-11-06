@@ -10,8 +10,6 @@ import com.kkukku.timing.response.ApiResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +49,7 @@ public class FeedController {
         description = "email이 있으면 다른 사람, email이 없으면 로그인한 유저")
     @GetMapping("")
     public ResponseEntity<?> getSomeoneFeeds(
-        @RequestParam(name = "email", required = false) @Email(message = "Invalid email format") @NotBlank(message = "Email cannot be blank") String email) {
+        @RequestParam(name = "email", required = false) String email) {
         if (email != null) {
             return ApiResponseUtil.success(feedService.getOtherFeeds(email));
         }
