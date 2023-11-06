@@ -2,14 +2,19 @@ package com.kkukku.timing.apis.challenge.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
+import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
+import com.kkukku.timing.apis.challenge.repositories.SnapshotRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
+import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
@@ -19,6 +24,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -43,7 +49,13 @@ public class ChallengeServiceTest {
     private MemberRepository memberRepository;
 
     @Autowired
+    private SnapshotRepository snapshotRepository;
+
+    @Autowired
     private ChallengeService challengeService;
+
+    @Autowired
+    private SnapshotService snapshotService;
 
     @MockBean
     private S3Service s3Service;
@@ -145,5 +157,44 @@ public class ChallengeServiceTest {
                                 .getThumbnailUrl()
             );
         }
+    }
+
+
+    @Test
+    @Transactional
+    @Order(4)
+    @DisplayName("자신의 특정 챌린지가 삭제되어야 한다")
+    void shouldDeleteChallengeWhenOwn() {
+
+        //given
+        Integer memberId = 1;
+        Long targetChallengeId = 2L;
+        List<SnapshotEntity> expectedSnapshots = snapshotService.getAllSnapshotByChallenge(
+            targetChallengeId);
+
+        // when
+        challengeService.deleteChallenge(memberId, targetChallengeId);
+
+        // then
+        Optional<ChallengeEntity> expectedChallenge = challengeRepository.findById(
+            targetChallengeId);
+        assertTrue(expectedChallenge.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Order(5)
+    @DisplayName("자신의 것이 아닌 Challenge는 삭제할 수 없다")
+    void shouldNotDeleteChallengeWhenNotOwn() {
+
+        //given
+        Integer memberId = 2;
+        Long targetChallengeId = 2L;
+        List<SnapshotEntity> expectedSnapshots = snapshotService.getAllSnapshotByChallenge(
+            targetChallengeId);
+
+        assertThrows(CustomException.class, () ->
+            challengeService.deleteChallenge(memberId, targetChallengeId));
+
     }
 }
