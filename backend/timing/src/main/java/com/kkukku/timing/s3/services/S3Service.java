@@ -1,6 +1,7 @@
 package com.kkukku.timing.s3.services;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -47,13 +48,21 @@ public class S3Service {
         return fileName;
     }
 
+    private String clean(final String str) {
+        return str == null ? "" : str.trim(); // NULL 방지
+    }
+
     public S3Object getFile(String fileName) {
 
         return amazonS3.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
     }
-    
-    private String clean(final String str) {
-        // 널일 경우 빈 문자열 반환, 아닐 경우 빈 문자 제거
-        return str == null ? "" : str.trim();
+
+    public void deleteFile(String fileName) {
+        try {
+            amazonS3.deleteObject(new DeleteObjectRequest(BUCKET_NAME, fileName));
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.FAIL_DELETE_FILE_S3);
+        }
     }
+
 }
