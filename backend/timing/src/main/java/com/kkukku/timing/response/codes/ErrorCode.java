@@ -38,7 +38,8 @@ public enum ErrorCode {
     NULL_POINTER(404, "Null Pointer Exception"),
 
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
-    FAIL_SAVE_FILE_S3(500, "Server Error: Fail save file to s3");
+    FAIL_SAVE_FILE_S3(500, "Server Error: Fail save file to s3"),
+    FAIL_DELETE_FILE_S3(500, "Server Error: Fail delete file to S3");
 
     private final int status;
     private final String message;

@@ -30,7 +30,10 @@ public class MemberController {
 
     @Operation(summary = "Member 정보 수정", tags = {
         "1. Member"}, description = "(Only Nickname ||  Only profileImage || Both) 가능합니다. ")
-    @PatchMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "", consumes = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.MULTIPART_FORM_DATA_VALUE
+    })
     public ResponseEntity<Void> updateMember(
         @Valid @RequestPart(required = false) MemberUpdateRequest memberUpdateRequest,
         @Valid @RequestPart(required = false, name = "profileImage") MultipartFile profileImage) {

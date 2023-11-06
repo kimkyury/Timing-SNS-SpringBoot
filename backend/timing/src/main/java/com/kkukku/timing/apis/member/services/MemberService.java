@@ -40,7 +40,7 @@ public class MemberService {
         }
 
         if (multipartFile != null) {
-            String profileImageUrl = s3Service.uploadFile(multipartFile);
+            String profileImageUrl = "/" + s3Service.uploadFile(multipartFile);
             memberRepository.findById(memberId)
                             .ifPresent(
                                 selectMember -> {
@@ -62,7 +62,12 @@ public class MemberService {
 
     public void deleteMember(Integer memberId) {
         MemberEntity member = getMemberById(memberId);
+
+        String profileImgUrl = member.getProfileImageUrl();
+        s3Service.deleteFile(profileImgUrl);
+
         member.delete();
+
         memberRepository.save(member);
     }
 
