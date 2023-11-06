@@ -9,18 +9,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "snapshots")
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Snapshot {
+public class SnapshotEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class Snapshot {
     @Column(nullable = false)
     private String imageUrl;
 
-    @Column(nullable = false)
-    private DateTime createAt;
+    @Column(nullable = false, insertable = false)
+    private LocalDateTime createdAt;
 
 }

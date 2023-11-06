@@ -27,7 +27,7 @@ public class FeedServiceTest {
 
     @BeforeEach
     public void login() {
-        String email = "unit@com";
+        String email = "unit@test.com";
         Authentication authentication = new UsernamePasswordAuthenticationToken(
             memberDetailService.loadUserByUsername(email), null,
             AuthorityUtils.NO_AUTHORITIES);
@@ -53,7 +53,7 @@ public class FeedServiceTest {
     @Test
     public void getOtherFeedsTest() {
         String[] titles = {"http://example.com/thumbnail1.jpg"};
-        List<FeedOtherResponse> feeds = feedService.getOtherFeeds("kkr@com");
+        List<FeedOtherResponse> feeds = feedService.getOtherFeeds("kkr@test.com");
 
         assertEquals(titles.length, feeds.size(), "Check other feeds size with data.sql");
 
