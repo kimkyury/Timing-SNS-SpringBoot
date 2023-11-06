@@ -149,7 +149,7 @@ public class MemberServiceTest {
     @DisplayName("유저의 정보가 조회되어야 한다")
     void shouldGetMemberInfo() {
 
-        String searchMemberEmail = "kkr@com";
+        String searchMemberEmail = "kkr@test.com";
         MemberEntity searchedMember = memberRepository.findByEmail(searchMemberEmail)
                                                       .get();
 
