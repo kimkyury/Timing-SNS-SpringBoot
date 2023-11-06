@@ -1,6 +1,7 @@
 package com.kkukku.timing.apis.challenge.entities;
 
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
+import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +34,10 @@ public class ChallengeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private FeedEntity feed;
+
     @Column(nullable = false)
     private LocalDate startedAt;
 
@@ -46,6 +51,10 @@ public class ChallengeEntity {
 
     @Column(nullable = false, insertable = false)
     private String thumbnailUrl;
+
+    @Setter
+    private String polygonUrl;
+
 
     public ChallengeEntity(MemberEntity member, LocalDate startedAt, String goalContent) {
         this.member = member;
