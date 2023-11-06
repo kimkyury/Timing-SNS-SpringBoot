@@ -30,6 +30,7 @@ public class SnapshotEntity {
     @JoinColumn(name = "challenge_id", nullable = false)
     private ChallengeEntity challenge;
 
+    @Getter
     @Column(nullable = false)
     private String imageUrl;
 
