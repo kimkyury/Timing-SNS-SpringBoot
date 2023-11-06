@@ -12,6 +12,10 @@ import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 
 @SpringBootTest(properties = "spring.profiles.active=local")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -45,6 +50,22 @@ public class ChallengeServiceTest {
 
     @Value("${cloud.aws.s3.url}")
     private String s3StartUrl;
+
+    public MockMultipartFile getSampleImage() {
+        Path path = Paths.get("src/test/resources/Chirachino.jpg");
+        String name = "file";
+        String originalFileName = "Chirachino.jpg";
+        String contentType = "image/jpeg";
+        byte[] content = "".getBytes();
+        try {
+            content = Files.readAllBytes(path);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        return new MockMultipartFile(name, originalFileName, contentType,
+            content);
+    }
 
     @Test
     @Transactional
@@ -101,7 +122,7 @@ public class ChallengeServiceTest {
     @Transactional
     @Order(3)
     @DisplayName("특정 유저의 모든 챌린지 보기")
-    void shouldCreateHashtag() {
+    void shouldGetAllChallengeByMember() {
 
         // given
         Integer testMemberId = 1;
@@ -124,7 +145,5 @@ public class ChallengeServiceTest {
                                 .getThumbnailUrl()
             );
         }
-
     }
-
 }
