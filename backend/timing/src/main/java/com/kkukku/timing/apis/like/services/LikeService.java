@@ -12,7 +12,7 @@ public class LikeService {
 
     private final LikeRepository likeRepository;
 
-    public Long getCommentCountByFeedId(Long feedId) {
+    public Long getLikeCountByFeedId(Long feedId) {
         return likeRepository.countByFeedId(feedId);
     }
 

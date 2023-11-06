@@ -2,7 +2,6 @@ package com.kkukku.timing.apis.hashtag.services;
 
 
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
-import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.hashtag.entities.ChallengeHashTagEntity;
 import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.repositories.ChallengeHashTagRepository;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 public class ChallengeHashTagService {
 
     private final ChallengeHashTagRepository challengeHashTagRepository;
-    private final ChallengeService challengeService;
-    private final HashTagOptionService hashTagOptionService;
 
     public void createChallengeHashTag(ChallengeEntity challenge,
         List<HashTagOptionEntity> hashTagOptionList) {
