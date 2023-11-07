@@ -48,8 +48,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                                                  .toString();
 
         Cookie cookie = new Cookie("refresh-token", refreshToken);
-//        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+//        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setMaxAge(jwtService.getRefreshTokenExpiration()
                                    .intValue());
