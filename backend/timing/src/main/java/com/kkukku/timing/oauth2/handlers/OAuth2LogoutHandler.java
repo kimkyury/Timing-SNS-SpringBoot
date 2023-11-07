@@ -30,11 +30,14 @@ public class OAuth2LogoutHandler implements LogoutHandler {
             jwtService.getAccessTokenExpiration());
 
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
 
-            response.addCookie(cookie);
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setMaxAge(0);
+                cookie.setPath("/");
+
+                response.addCookie(cookie);
+            }
         }
     }
 }
