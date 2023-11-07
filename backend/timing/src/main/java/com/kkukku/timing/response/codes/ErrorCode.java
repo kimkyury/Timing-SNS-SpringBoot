@@ -21,6 +21,7 @@ public enum ErrorCode {
     NOT_EXIST_HASHTAG_OPTION(400, "Not exist HashTagOption"),
     NOT_EXIST_FEED(400, "Not exist feed"),
     THIS_CHALLENGE_IS_NOT_YOURS(400, "This challenge is not your Challenge"),
+    NOT_EXIST_MULTIPART_FILE(400, "Not Exist MultiPart File"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),
@@ -34,7 +35,6 @@ public enum ErrorCode {
     TOKEN_ACCESS_DENIED(403, "JWT token access denied"),
 
     NOT_FOUND(404, "Not Found"),
-
 
     NULL_POINTER(404, "Null Pointer Exception"),
 
