@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.kkukku.timing.response.ApiResponseUtil;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,17 +24,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/test")
-@Tag(name = "Test", description = "Test API")
+@Tag(name = "0. Test", description = "Test API")
 @RequiredArgsConstructor
 public class TestController {
 
     private final S3Service s3Service;
 
+    @Operation(summary = "응답테스트", tags = {"0. Test"})
     @GetMapping("/ping")
     public String ping() {
         return "pong3";
     }
 
+    @Operation(summary = "s3사진 업로드 테스트", tags = {"0. Test"})
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestPart("image") MultipartFile image) {
 
@@ -41,6 +44,7 @@ public class TestController {
         return success("Saved fileName: " + fileName);
     }
 
+    @Operation(summary = "s3사진 가져오기 테스트", tags = {"0. Test"})
     @GetMapping("/file")
     public ResponseEntity<?> getFile(@RequestParam String fileName) {
 
