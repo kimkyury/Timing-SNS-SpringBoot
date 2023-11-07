@@ -1,6 +1,7 @@
 package com.kkukku.timing.apis.feed.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -85,6 +86,23 @@ public class FeedServiceTest {
         feedService.deleteFeed(myFeed);
         assertTrue(feedService.getFeedById(myFeed)
                               .getIsDelete());
+    }
+
+    @Test
+    public void updateFeedTest() {
+        Long notMyFeed = 1L;
+        Long myFeed = 2L;
+        String review = "리뷰";
+        Boolean isPrivate = false;
+
+        assertThrows(CustomException.class,
+            () -> feedService.updateFeed(notMyFeed, review, isPrivate));
+
+        feedService.updateFeed(myFeed, review, isPrivate);
+        assertFalse(feedService.getFeedById(myFeed)
+                               .getIsPrivate());
+        assertTrue(review.equals(feedService.getFeedById(myFeed)
+                                            .getReview()));
     }
 
 }
