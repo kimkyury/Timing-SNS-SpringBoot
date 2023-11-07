@@ -4,8 +4,8 @@ import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
-import com.kkukku.timing.apis.feed.responses.FeedOtherResponse;
-import com.kkukku.timing.apis.feed.responses.FeedOwnResponse;
+import com.kkukku.timing.apis.feed.responses.FeedSummaryResponse;
+import com.kkukku.timing.apis.feed.responses.FeedSummaryWithCountResponse;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
 import com.kkukku.timing.apis.like.services.LikeService;
 import com.kkukku.timing.apis.member.services.MemberService;
@@ -47,13 +47,17 @@ public class FeedService {
             SecurityUtil.getLoggedInMemberPrimaryKey());
     }
 
-    public List<FeedOwnResponse> getOwnFeeds() {
+    public List<FeedSummaryResponse> getOwnSummaryFeeds() {
         return feedRepository.findAllByMember_IdAndIsDeleteIsFalse(
                                  SecurityUtil.getLoggedInMemberPrimaryKey())
                              .stream()
-                             .map(feed -> new FeedOwnResponse(feed, countOwnFeeds(),
-                                 countAllInfluencedOwnFeeds()))
+                             .map(FeedSummaryResponse::new)
                              .toList();
+    }
+
+    public FeedSummaryWithCountResponse getOwnSummaryFeedsWithCount() {
+        return new FeedSummaryWithCountResponse(getOwnSummaryFeeds(), countOwnFeeds(),
+            countAllInfluencedOwnFeeds());
     }
 
     public Long countOtherFeeds(String email) {
@@ -62,14 +66,18 @@ public class FeedService {
                          .getId());
     }
 
-    public List<FeedOtherResponse> getOtherFeeds(String email) {
+    public List<FeedSummaryResponse> getOtherSummaryFeeds(String email) {
         return feedRepository.findAllByMember_IdAndIsDeleteIsFalseAndIsPrivateFalse(
                                  memberService.getMemberByEmail(email)
                                               .getId())
                              .stream()
-                             .map(feed -> new FeedOtherResponse(feed, countOtherFeeds(email),
-                                 countAllInfluencedOtherFeeds(email)))
+                             .map(FeedSummaryResponse::new)
                              .toList();
+    }
+
+    public FeedSummaryWithCountResponse getOtherSummaryFeedsWithCount(String email) {
+        return new FeedSummaryWithCountResponse(getOtherSummaryFeeds(email), countOtherFeeds(email),
+            countAllInfluencedOtherFeeds(email));
     }
 
     public FeedEntity getFeedByIdAndMemberId(Long id, Integer memberId) {
