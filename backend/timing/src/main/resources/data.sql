@@ -11,11 +11,11 @@ VALUES ('kkr@test.com', '/test.png', '테스터', 0),
 
 INSERT INTO challenges (member_id, started_at, ended_at, goal_content, thumbnail_url, object_url,
                         polygon_url)
-VALUES (1, '2023-10-01', '2023-10-22', '강아지와 산책', 'default_thumbnail.png', null, null),
-       (1, '2023-10-02', '2023-10-23', '하체 운동하기', 'default_thumbnail.png', '/test.png',
-        '/test.txt'),
-       (1, '2023-10-03', '2023-10-24', NULL, 'default_thumbnail.png', null, null),
-       (1, '2023-11-01', '2023-11-22', NULL, 'default_thumbnail.png', null, null);
+VALUES (1, '2023-10-01', '2023-10-22', '강아지와 산책', '/default_thumbnail.png', null, null),
+       (1, '2023-10-02', '2023-10-23', '하체 운동하기', '/test_thumbnail.png', '/test_object.png',
+        '/test_polygon.txt'),
+       (1, '2023-10-03', '2023-10-24', NULL, '/default_thumbnail.png', null, null),
+       (1, '2023-11-01', '2023-11-22', NULL, '/default_thumbnail.png', null, null);
 
 INSERT INTO challenge_hash_tags (hash_tag_option_id, challenge_id)
 VALUES (3, 2),
@@ -24,10 +24,10 @@ VALUES (3, 2),
        (3, 1);
 
 INSERT INTO snapshots(challenge_id, image_url, created_at)
-VALUES (2, '/test.png', '2023-10-03'),
-       (2, '/test.png', '2023-10-04'),
-       (2, '/test.png', '2023-10-05'),
-       (2, '/test.png', '2023-10-06');
+VALUES (2, '/test_snapshot.png', '2023-10-03'),
+       (2, '/test_snapshot.png', '2023-10-04'),
+       (2, '/test_snapshot.png', '2023-10-05'),
+       (2, '/test_snapshot.png', '2023-10-06');
 
 INSERT INTO feeds (member_id,
                    root_id,
