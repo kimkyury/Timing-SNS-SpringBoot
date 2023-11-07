@@ -3,33 +3,34 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import dog from '../../assets/dog.jpg';
 function UserProfile() {
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
-    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
-    const [state, setState] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const formatEmail = (t) => {
-        const s = t.indexOf('@');
-        return t.substring(0, s);
-    };
-    const getProfile = () => {
-        axios
-            .get(`${BASE_URL}/api/v1/members`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
-            .then((response) => {
-                console.log(response);
-                setState(response.data);
-                setIsLoading(true);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
-    useEffect(() => {
-        getProfile();
-    }, []);
+  const BASE_URL = `http://k9e203.p.ssafy.io`;
+  const [accessToken, setAccessToken] = useState(
+    sessionStorage.getItem("accessToken")
+  );
+  const [state, setState] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const formatEmail = (t) => {
+    const s = t.indexOf("@");
+    return t.substring(0, s);
+  };
+  const getProfile = () => {
+    axios
+      .get(`${BASE_URL}/api/v1/members`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setState(response.data);
+        setIsLoading(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  useEffect(() => {
+    getProfile();
+  }, []);
 
     return (
         <div>
