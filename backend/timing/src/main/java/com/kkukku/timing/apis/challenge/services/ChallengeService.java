@@ -4,16 +4,21 @@ import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
+import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
+import com.kkukku.timing.apis.feed.entities.FeedEntity;
+import com.kkukku.timing.apis.feed.services.FeedService;
 import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
+import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
 import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -24,13 +29,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChallengeService {
 
+    private final S3Service s3Service;
+    private final FeedService feedService;
     private final MemberService memberService;
-    private final ChallengeRepository challengeRepository;
+    private final SnapshotService snapshotService;
+    private final FeedHashTagService feedHashTagService;
     private final HashTagOptionService hashTagOptionService;
     private final ChallengeHashTagService challengeHashTagService;
-    private final SnapshotService snapshotService;
-    private final S3Service s3Service;
 
+    private final ChallengeRepository challengeRepository;
+
+    @Transactional
     public void createChallengeProcedure(Integer memberId,
         ChallengeCreateRequest challengeCreateRequest) {
 
@@ -49,7 +58,7 @@ public class ChallengeService {
     public ChallengeEntity saveChallenge(MemberEntity member,
         ChallengeCreateRequest challengeCreateRequest) {
 
-        ChallengeEntity challenge = ChallengeEntity.create(member, challengeCreateRequest);
+        ChallengeEntity challenge = ChallengeEntity.of(member, challengeCreateRequest);
         return challengeRepository.save(challenge);
     }
 
@@ -99,7 +108,7 @@ public class ChallengeService {
                                                            () -> new CustomException(
                                                                ErrorCode.NOT_EXIST_CHALLENGE)
                                                        );
-        
+
         LocalDate endedAt = challenge.getEndedAt();
         LocalDate extendEndedAt = endedAt.plusDays(21);
 
@@ -114,5 +123,21 @@ public class ChallengeService {
                            .orElseThrow(
                                () -> new CustomException(ErrorCode.THIS_CHALLENGE_IS_NOT_YOURS));
 
+    }
+
+
+    @Transactional
+    public void relayChallenge(Integer memberId, Long feedId, ChallengeRelayRequest request) {
+
+        FeedEntity feed = feedService.getFeedById(feedId);
+        List<HashTagOptionEntity> hashTagOptionByFeed = feedHashTagService.getHashTagOptionByFeedId(
+            feedId);
+        MemberEntity member = memberService.getMemberById(memberId);
+
+        ChallengeEntity challenge = ChallengeEntity.of(member, request);
+        challenge.setParent(feed);
+        ChallengeEntity savedChallenge = challengeRepository.save(challenge);
+
+        challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptionByFeed);
     }
 }
