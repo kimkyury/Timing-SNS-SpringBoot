@@ -7,311 +7,54 @@ import SmsOutlinedIcon from '@mui/icons-material/SmsOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import dog from '../../assets/dog.jpg';
+import axios from 'axios';
 
-function Feed() {
+const BASE_URL = `http://k9e203.p.ssafy.io`;
+
+function Feed(data) {
     const navigate = useNavigate();
     const location = useLocation();
     const currentUrl = location.pathname;
+    const state = data.state;
 
     const [user, setUser] = useState(null);
-    const [state, setState] = useState([]);
+    const [comment, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
+    const accessToken = sessionStorage.getItem('accessToken');
+
+    const getComment = () => {
+        axios
+            .get(`${BASE_URL}/api/v1/feeds/${state.id}/comments?page=1`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((response) => {
+                console.log(response);
+                setComments(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
     useEffect(() => {
-        const user = {
-            memberId: 12,
-            email: 'doglover18@naver.com',
-            nickname: '김정희',
-            profileImg: `${dog}`,
-        };
-        setUser(user);
-        const state = {
-            id: 1,
-            user: {
-                memberId: 12,
-                email: 'doglover18@naver.com',
-                nickname: '김정희',
-                profileImg: `${dog}`,
-            },
-            parentId: null,
-            rootId: null,
-            goalContent: '몸짱',
-            content: '안녕하세요!!',
-            thumbnailUrl: `${dog}`,
-            isPrivate: true,
-            isLike: true,
-            time: new Date(),
-            hashTag: ['#운동', '#오운완'],
-            likeCount: 1234567,
-            commentCount: 765432,
-            shareCount: 1000,
-            comments: [
-                {
-                    memberId: 12,
-                    name: '김정희',
-                    content: '뭐',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10000,
+        axios
+            .get(`${BASE_URL}/api/v1/members`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
                 },
-                {
-                    memberId: 11,
-
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-                {
-                    memberId: 11,
-                    name: '하성호',
-                    content: 'ㅋㅋㅋ',
-                    profileImg: `${dog}`,
-                    time: new Date() - 10,
-                },
-            ],
-        };
-        setState(state);
+            })
+            .then((response) => {
+                setUser(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        if (currentUrl != '/') {
+            getComment();
+        }
     }, []);
-
-    // useEffect(() => {
-    //     const user = { id: '김정희', profile_img: `${dog}` };
-    //     setUser(user);
-    //     const feed = {
-    //         id: 1,
-    //         user: {
-    //             memberId: 12,
-    //             email: '123@naver.com',
-    //             nickname: '김정희',
-    //             profileImg: 'url',
-    //         },
-    //         parentId: null,
-    //         rootId: null,
-    //         goalContent: '몸짱',
-    //         content: '안녕하세요!!',
-    //         thumbnailUrl: 'url',
-    //         isPrivate: true,
-    //         isLike: true,
-    //         time: new Date(),
-    //         hashTag: ['#운동', '#오운완'],
-    //         likeCount: 1234567,
-    //         commentCount: 765432,
-    //         shareCount: 1000,
-    //         comments: [
-    //             {
-    //                 memberId: 11,
-    //                 nickname: '하성호',
-    //                 content: '뭐',
-    //                 profileImg: `url`,
-    //                 time: new Date(),
-    //             },
-    //         ],
-    //     };
-
-    //     const state = {
-    //         pk: 1,
-    //         profileimage: `${dog}`,
-    //         name: '하성호',
-    //         id: '@헬린이',
-    //         image: `${dog}`,
-    //         isLiked: false,
-    //         isPublic: true,
-    //         likes: 1234567,
-    //         comment: 765432,
-    //         share: 1000,
-    //         time: new Date() - 400,
-    //         hash: ['#개', '#댕댕이', '#시바', '#산책'],
-    //         content: '멍멍',
-    //         comments: [
-    //             {
-    //                 name: '김정희',
-    //                 comment: '뭐',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10000,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //             {
-    //                 name: '하성호',
-    //                 comment: 'ㅋㅋㅋ',
-    //                 profileimage: `${dog}`,
-    //                 time: new Date() - 10,
-    //             },
-    //         ],
-    //     };
-    //     setState(state);
-    // }, []);
 
     const gotoDetailComment = () => {
         if (currentUrl == '/') {
@@ -336,6 +79,9 @@ function Feed() {
         }
     };
     const formatT = (c) => {
+        console.log(c);
+        console.log(new Date());
+        console.log(state.createdAt);
         if (c / 60 < 1) {
             return (c & 60).toFixed(0) + '초전';
         } else if (c / 60 >= 1 && c / 60 / 60 < 1) {
@@ -350,15 +96,23 @@ function Feed() {
     };
     const handleAddComment = () => {
         if (newComment.trim() !== '') {
-            const updatedComments = [...state.comments];
-            updatedComments.push({
-                profileImg: state,
-                memberId: state.user.id,
-                content: newComment,
-                time: new Date(),
-            });
-            state.content = updatedComments;
-            setState(state);
+            axios
+                .post(
+                    `${BASE_URL}/api/v1/feeds/${state.id}/comments`,
+                    { content: newComment },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+                .then(() => {
+                    getComment();
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
             setNewComment(''); // 댓글 추가 후 새 댓글 상태 초기화
         }
     };
@@ -383,10 +137,10 @@ function Feed() {
                 <div className={styles.container}>
                     {/* 게시글 주인 정보 */}
                     <div className={styles.nameContainer}>
-                        <img src={state.user.profileImg} className={styles.profileimage} />
+                        <img src={state.writer.profileImageUrl} className={styles.profileimage} />
                         <div className={styles.namebox}>
-                            <div className={styles.name}>{state.user.nickname}</div>
-                            <div className={styles.id}>{formatEmail(state.user.email)}</div>
+                            <div className={styles.name}>{state.writer.nickname}</div>
+                            <div className={styles.id}>{formatEmail(state.writer.email)}</div>
                         </div>
                     </div>
 
@@ -424,7 +178,7 @@ function Feed() {
                             <></>
                         ) : (
                             <>
-                                {state.length != 0 && user.memberId == state.user.memberId ? (
+                                {state.length != 0 && user != null && user.email == state.writer.email ? (
                                     <EditOutlinedIcon className={styles.editbtn} onClick={gotoEdit} />
                                 ) : (
                                     <></>
@@ -435,33 +189,33 @@ function Feed() {
 
                     {/* 게시글 본문 */}
                     <div className={styles.contentContainer}>
-                        <div className={styles.name}>{state.user.nickname}</div>
-                        <div className={styles.content}>{state.content}</div>
+                        <div className={styles.name}>{state.writer.nickname}</div>
+                        <div className={styles.content}>{state.review}</div>
                     </div>
 
                     {/* 게시글 해시태그 */}
                     <div className={styles.hashTagContainer}>
                         {state.length != 0 &&
-                            state.hashTag.map((v, i) => (
+                            state.hashTags.map((v, i) => (
                                 <div key={i} className={styles.hash}>
-                                    <div>{v}</div>
+                                    <div>{v.content}</div>
                                 </div>
                             ))}
                     </div>
 
                     {/* 게시글 시간 정보 */}
-                    <div>{formatT(new Date() - state.time)}</div>
+                    <div>{formatT(new Date() - state.createdAt)}</div>
 
                     {/* 게시글 댓글 */}
-                    {currentUrl != '/' && state.length != 0 && (
+                    {currentUrl != '/' && comment.length != 0 && (
                         <div className={styles.floatBottom}>
-                            {state.comments.map((v, i) => (
+                            {comment.map((v, i) => (
                                 <div key={i} className={styles.commentContainer}>
-                                    <img src={v.profileImg} className={styles.commentImage} />
+                                    <img src={v.writer.profileImageUrl} className={styles.commentImage} />
                                     <div className={styles.commentbox}>
                                         <div className={styles.commentInfo}>
-                                            <div className={styles.name}>{v.name}</div>
-                                            <div className={styles.time}>{formatT(new Date() - v.time)}</div>
+                                            <div className={styles.name}>{v.writer.nickname}</div>
+                                            <div className={styles.time}>{formatT(new Date() - v.createdAt)}</div>
                                         </div>
                                         <div className={styles.comment}>{v.content}</div>
                                     </div>
@@ -473,7 +227,7 @@ function Feed() {
 
                     {user && (
                         <div className={currentUrl == '/' ? styles.commentContainer : styles.commentContainerFix}>
-                            <img src={user.profileImg} className={styles.commentImage} />
+                            <img src={user.profileImageUrl} className={styles.commentImage} />
                             <input
                                 type="text"
                                 className={styles.commentInput}
