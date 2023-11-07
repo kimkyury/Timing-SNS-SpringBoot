@@ -3,6 +3,7 @@ package com.kkukku.timing.apis.feed.controllers;
 import com.kkukku.timing.apis.comment.requests.CommentSaveRequest;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.comment.services.CommentService;
+import com.kkukku.timing.apis.feed.requests.FeedUpdateRequest;
 import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
 import com.kkukku.timing.apis.feed.services.FeedService;
 import com.kkukku.timing.apis.like.services.LikeService;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,16 +53,24 @@ public class FeedController {
     public ResponseEntity<?> getSomeoneFeeds(
         @RequestParam(name = "email", required = false) String email) {
         if (email != null) {
-            return ApiResponseUtil.success(feedService.getOtherFeeds(email));
+            return ApiResponseUtil.success(feedService.getOtherSummaryFeedsWithCount(email));
         }
 
-        return ApiResponseUtil.success(feedService.getOwnFeeds());
+        return ApiResponseUtil.success(feedService.getOwnSummaryFeedsWithCount());
     }
 
     @Operation(summary = "피드 삭제", tags = {"3. Feed"})
     @DeleteMapping("/{id}")
     public void deleteFeed(@PathVariable Long id) {
         feedService.deleteFeed(id);
+    }
+
+    @Operation(summary = "피드 업데이트", tags = {"3. Feed"},
+        description = "review와 isPrivate 둘 중 하나만 있어도 되고, 하나만 있어도 됩니다.")
+    @PatchMapping("/{id}")
+    public void updateFeed(@PathVariable Long id,
+        @RequestBody FeedUpdateRequest feedUpdateRequest) {
+        feedService.updateFeed(id, feedUpdateRequest.getReview(), feedUpdateRequest.getIsPrivate());
     }
 
     @Operation(summary = "피드 댓글 조회", tags = {
