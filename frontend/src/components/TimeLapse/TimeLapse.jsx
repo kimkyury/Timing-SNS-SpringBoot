@@ -9,24 +9,15 @@ import "react-circular-progressbar/dist/styles.css";
 import dog from "../../assets/dog2.jpg";
 import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
-
+import axios from "axios";
 function TimeLapse() {
   const navigate = useNavigate();
   const [timeLaps, setTimeLaps] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
-
-  useEffect(() => {
-    // 여기서 axios로 timeLaps 가져올꺼임
-    const state = [
-      { percent: 10, name: "test1", img: `${dog}` },
-      { percent: 50, name: "test2", img: `${dog}` },
-      { percent: 70, name: "test3", img: `${dog}` },
-      { percent: 70, name: "test3", img: `${dog}` },
-      { percent: 70, name: "test3", img: `${dog}` },
-    ];
-
-    setTimeLaps(state);
-  }, []);
+  const BASE_URL = `http://k9e203.p.ssafy.io`;
+  const [accessToken, setAccessToken] = useState(
+    sessionStorage.getItem("accessToken")
+  );
 
   const finishTimeLaps = () => {
     setIsFinished(!isFinished);
@@ -48,21 +39,48 @@ function TimeLapse() {
     width: 1600,
     colors: ["#041E43", "#1471BF", "#5BB4DC", "#FC027B", "#66D805"],
   };
+  const getChallenge = () => {
+    axios
+      .get(`${BASE_URL}/api/v1/challenges`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setTimeLaps(response.data.challenges);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  useEffect(() => {
+    getChallenge();
+  }, []);
   return (
     <div className={styles.container}>
-      {timeLaps.map((element, index) => (
-        <div key={index} className={styles.timeLaps}>
-          <div className={styles.circularContainer} onClick={finishTimeLaps}>
-            <CircularProgressbarWithChildren
-              value={element.percent}
-              strokeWidth="10"
-              styles={buildStyles({ pathColor: "red", textColor: "black" })}
-            >
-              <img src={element.img} className={styles.timeLapsImage} />
-            </CircularProgressbarWithChildren>
-          </div>
+      {timeLaps.length != 0 ? (
+        <div>
+          {timeLaps.map((element, index) => (
+            <div key={index} className={styles.timeLaps}>
+              <div
+                className={styles.circularContainer}
+                onClick={finishTimeLaps}
+              >
+                <CircularProgressbarWithChildren
+                  value={element.percent}
+                  strokeWidth="10"
+                  styles={buildStyles({ pathColor: "red", textColor: "black" })}
+                >
+                  <img src={element.img} className={styles.timeLapsImage} />
+                </CircularProgressbarWithChildren>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      ) : (
+        <></>
+      )}
       <div className={styles.timeLaps} onClick={() => navigate(`/create`)}>
         <div className={styles.timeLaps}>
           <CircularProgressbar

@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 const KakaoLogin = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
   const accessToken = searchParams.get("access-token"); // test
 
   useEffect(() => {

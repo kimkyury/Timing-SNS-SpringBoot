@@ -1,40 +1,72 @@
-import styles from './UserProfile.module.css';
-
-import dog from '../../assets/dog.jpg';
+import styles from "./UserProfile.module.css";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import dog from "../../assets/dog.jpg";
 function UserProfile() {
-    const state = {
-        profileimage: `${dog}`,
-        name: '하성호',
-        id: '@abcd',
-        timelabs: 5,
-        contribute: 2100,
-        content: '남자는 등으로 말한다...',
-    };
-    return (
+  const BASE_URL = `http://k9e203.p.ssafy.io`;
+  const [accessToken, setAccessToken] = useState(
+    sessionStorage.getItem("accessToken")
+  );
+  const [state, setState] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const formatEmail = (t) => {
+    const s = t.indexOf("@");
+    return t.substring(0, s);
+  };
+  const getProfile = () => {
+    axios
+      .get(`${BASE_URL}/api/v1/members`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setState(response.data);
+        setIsLoading(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  return (
+    <div>
+      {isLoading ? (
         <div className={styles.container}>
-            <div className={styles.imagebox}>
-                <img src={state.profileimage} className={styles.imageContainer} />
+          <div className={styles.imagebox}>
+            <img
+              src={state.profileImageUrl}
+              className={styles.imageContainer}
+            />
+          </div>
+          <div className={styles.mainContainer}>
+            <div className={styles.upper}>
+              <div className={styles.articlebox}>
+                <div className={styles.name}>{state.nickname}</div>
+                <div>{formatEmail(state.email)}</div>
+              </div>
             </div>
-            <div className={styles.mainContainer}>
-                <div className={styles.upper}>
-                    <div className={styles.articlebox}>
-                        <div className={styles.name}>{state.name}</div>
-                        <div>{state.id}</div>
-                    </div>
-                </div>
-                <div className={styles.lower}>
-                    <div className={styles.innerlower}>
-                        <div className={styles.innerhead}>{state.timelabs}</div>
-                        <div className={styles.innerfooter}>timelabs </div>
-                    </div>
-                    <div className={styles.innerlower}>
-                        <div className={styles.innerhead}>{state.contribute}</div>
-                        <div className={styles.innerfooter}>contribute </div>
-                    </div>
-                </div>
+            <div className={styles.lower}>
+              <div className={styles.innerlower}>
+                <div className={styles.innerhead}>{state.timelabs}</div>
+                <div className={styles.innerfooter}>timelabs </div>
+              </div>
+              <div className={styles.innerlower}>
+                <div className={styles.innerhead}>{state.contribute}</div>
+                <div className={styles.innerfooter}>contribute </div>
+              </div>
             </div>
+          </div>
         </div>
-    );
+      ) : (
+        <></>
+      )}
+    </div>
+  );
 }
 
 export default UserProfile;
