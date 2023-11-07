@@ -15,7 +15,7 @@ import DoChallenge from "../pages/Jeonghui/DoChallenge";
 import DetailFeed from "../pages/DetailFeed/DetailFeed";
 import Login from "../pages/Login/Login";
 import UpdateReview from "../pages/UpdateReview/UpdateReview";
-
+import KakaoLogin from "../pages/Login/KakaoLogin";
 function Router() {
   return (
     <Routes>
@@ -29,7 +29,7 @@ function Router() {
       <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
       <Route path="/login" element={<Login />} />
       <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
-
+      <Route path="/login/oauth2/redirect/kakao" element={<KakaoLogin />} />
       {/* test */}
       <Route path="/test" element={<Test />} />
       {/* Jeonghui */}
