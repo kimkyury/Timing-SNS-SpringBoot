@@ -14,7 +14,11 @@ function Jeonghui() {
     const photoRef = useRef(null);
     const videoRef = useRef(null);
     const location = useLocation();
-    const timeLaps = location.state;
+    // const timeLaps = location.state;
+    const timeLaps = {
+        id: 1,
+        percent: 0,
+    };
     const navigate = useNavigate();
     const [width, setWidth] = useState(100);
     const [height, setHeight] = useState(100);
@@ -23,8 +27,6 @@ function Jeonghui() {
 
     useEffect(() => {
         // setupWebcam();
-
-        console.log(timeLaps);
 
         const containerInfo = document.querySelectorAll('div')[4];
         setWidth(containerInfo.getBoundingClientRect().width);
