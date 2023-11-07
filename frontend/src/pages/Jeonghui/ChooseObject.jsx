@@ -28,10 +28,11 @@ function ChooseObject() {
                     accept: '*/*',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
                 },
-                responseType: 'blob',
+                // responseType: 'blob',
             })
             .then((response) => {
                 console.log(response);
+                console.log(response.data);
                 if (response.status == 204) {
                     setDate(null);
                     alert('객체를 제대로 선택해주세요');
