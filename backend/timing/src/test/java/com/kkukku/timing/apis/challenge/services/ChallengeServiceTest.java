@@ -5,16 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
-import com.kkukku.timing.apis.challenge.repositories.SnapshotRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
+import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
-import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.hashtag.entities.ChallengeHashTagEntity;
 import com.kkukku.timing.apis.hashtag.entities.FeedHashTagEntity;
 import com.kkukku.timing.apis.hashtag.repositories.ChallengeHashTagRepository;
@@ -24,7 +27,9 @@ import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,16 +56,10 @@ import org.springframework.mock.web.MockMultipartFile;
 public class ChallengeServiceTest {
 
     @Autowired
-    private FeedRepository feedRepository;
-
-    @Autowired
     private ChallengeRepository challengeRepository;
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @Autowired
-    private SnapshotRepository snapshotRepository;
 
     @Autowired
     private ChallengeService challengeService;
@@ -89,12 +88,44 @@ public class ChallengeServiceTest {
         try {
             content = Files.readAllBytes(path);
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
 
         return new MockMultipartFile(name, originalFileName, contentType,
             content);
     }
+
+    public MockMultipartFile getSampleText() {
+        Path path = Paths.get("src/test/resources/test_polygon.txt");
+        String name = "file";
+        String originalFileName = "test_polygon.txt";
+        String contentType = "text/plain"; // 텍스트 파일의 MIME 타입
+        byte[] content = null;
+
+        try {
+            content = Files.readAllBytes(path);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return new MockMultipartFile(name, originalFileName, contentType, content);
+    }
+
+    public S3Object createS3ObjectFromMultipartFile(MockMultipartFile file) throws IOException {
+        S3Object s3Object = new S3Object();
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+
+        // S3Object에 ObjectMetadata 설정
+        s3Object.setObjectMetadata(metadata);
+
+        // S3Object의 내용을 설정
+        s3Object.setObjectContent(new ByteArrayInputStream(file.getBytes()));
+
+        return s3Object;
+    }
+
 
     @Test
     @Transactional
@@ -284,8 +315,31 @@ public class ChallengeServiceTest {
                                            .getContent())
                            )
         );
+    }
+
+    @Test
+    @Transactional
+    @Order(8)
+    @DisplayName("")
+    void shouldGetPolygonByChallenge() throws IOException {
+
+        MockMultipartFile testPolygonFile = getSampleText();
+        S3Object mockS3Object = createS3ObjectFromMultipartFile(testPolygonFile);
+        when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
+
+        // given
+        Long challengeId = 2L;
+        Integer memberId = 1;
+
+        // when
+        ChallengePolygonResponse response = challengeService.getPolygonByChallenge(memberId,
+            challengeId);
+
+        // then
+        String expectedPolygonStr = new String(testPolygonFile.getBytes(), StandardCharsets.UTF_8);
+
+        assertEquals(expectedPolygonStr, response.getPolygon());
 
     }
+
 }
-
-
