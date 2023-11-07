@@ -94,7 +94,7 @@ public class ChallengeController {
     @Operation(operationId = "3_1", summary = "특정 Challenge의 SnapShot 촬영을 위한 Polygon 얻기", tags = {
         "2. Challenge"},
         description = "SnapShot촬영시 가이드 윤곽선을 그리기 위한 Polygon을 String 형태로 받아옵니다. ")
-    @PostMapping(value = "/{id}/polygon")
+    @GetMapping(value = "/{id}/polygon")
     public ResponseEntity<ChallengePolygonResponse> getSnapshotByChallenge(@PathVariable Long id) {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
