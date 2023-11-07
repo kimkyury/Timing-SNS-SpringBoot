@@ -1,0 +1,155 @@
+.container {
+  margin-bottom: 7%;
+}
+
+.profileimage {
+  width: 12vw;
+  height: 12vw;
+  border-radius: 100%;
+  align-self: center;
+}
+.nameContainer {
+  display: flex;
+  margin-bottom: 2%;
+}
+.namebox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin-left: 3%;
+}
+.name {
+  font-size: 4vw;
+  font-weight: bold;
+}
+.id {
+  font-size: 3vw;
+  font-weight: bold;
+  color: #7c8c9b;
+}
+
+.imageContainer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 30px;
+  margin-bottom: 10px;
+}
+
+.tagContainer {
+  display: flex;
+}
+
+.tagitem {
+  display: flex;
+  margin-right: 3%;
+  align-self: center;
+  font-size: 4vw;
+}
+.tagitemicon {
+  margin-right: 10px;
+}
+
+.contentContainer {
+  display: flex;
+  align-items: baseline;
+}
+
+.contentContainer .name {
+  font-weight: bold;
+  margin-right: 2%;
+  font-size: 4.5vw;
+}
+
+.contentContainer .content {
+  font-size: 4.5vw;
+}
+
+.hashTagContainer {
+  display: flex;
+  font-weight: bold;
+  font-size: 3.5vw;
+}
+.hash {
+  margin-right: 10px;
+  text-align: center;
+  align-self: center;
+}
+
+.floatBottom {
+  margin-bottom: 7vh;
+}
+
+.commentContainer {
+  display: flex;
+  margin-bottom: 2%;
+}
+
+.commentContainerFix {
+  display: flex;
+  width: 92vw;
+  margin-bottom: 6.95vh;
+  position: fixed;
+  bottom: 0;
+  background-color: white;
+}
+
+.commentImage {
+  width: 9vw;
+  height: 9vw;
+  border-radius: 100%;
+  align-self: center;
+}
+
+.commentbox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin-left: 3%;
+}
+
+.commentbox .commentInfo {
+  display: flex;
+  flex-direction: row;
+}
+
+.commentInfo .name {
+  font-size: 3vw;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.commentInfo .time {
+  font-size: 3vw;
+  font-weight: bold;
+  margin-left: 8%;
+  color: #7c8c9b;
+  white-space: nowrap;
+}
+
+.commentbox .comment {
+  font-size: 3vw;
+  font-weight: bold;
+}
+
+.commentInput {
+  width: 100%;
+  /* height: 35px; */
+  font-size: 4vw;
+  margin-left: 3%;
+  border: none; /* 테두리를 없애는 부분 */
+  outline: none;
+  /* border-block-end: solid; */
+}
+
+.commentBtn {
+  font-size: 4vw;
+  margin-left: 3%;
+  white-space: nowrap;
+}
+
+.editbtn {
+  position: absolute;
+  right: 5vw;
+}

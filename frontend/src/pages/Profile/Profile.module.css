@@ -1,16 +1,13 @@
-.container{
-    display: flex;
-    flex-direction: column;
-}
-.user_info{
-    height: 140px;
-    margin-top: 10px;
+.container {
+  margin: 0 4%;
+  margin-top: 10px;
 }
 
-.proccessing_timelapse{
-    height: 140px;
+.box {
+  margin: 3% 0;
 }
-.my_timelapse{
-    border: 1px solid red;
-    height: 40vh;
+
+.timeContainerName {
+  font-size: 5vw;
+  font-weight: bold;
 }
