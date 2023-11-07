@@ -1,10 +1,13 @@
 package com.kkukku.timing.apis.challenge.services;
 
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
+import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
@@ -19,6 +22,10 @@ import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -102,26 +109,13 @@ public class ChallengeService {
     public void extendChallenge(Integer memberId, Long challengeId) {
 
         checkOwnChallenge(memberId, challengeId);
-
-        ChallengeEntity challenge = challengeRepository.findById(challengeId)
-                                                       .orElseThrow(
-                                                           () -> new CustomException(
-                                                               ErrorCode.NOT_EXIST_CHALLENGE)
-                                                       );
+        ChallengeEntity challenge = getChallengeById(challengeId);
 
         LocalDate endedAt = challenge.getEndedAt();
         LocalDate extendEndedAt = endedAt.plusDays(21);
 
         challenge.setEndedAt(extendEndedAt);
         challengeRepository.save(challenge);
-
-    }
-
-    public void checkOwnChallenge(Integer memberId, Long challengeId) {
-
-        challengeRepository.findByIdAndMemberId(challengeId, memberId)
-                           .orElseThrow(
-                               () -> new CustomException(ErrorCode.THIS_CHALLENGE_IS_NOT_YOURS));
 
     }
 
@@ -139,5 +133,51 @@ public class ChallengeService {
         ChallengeEntity savedChallenge = challengeRepository.save(challenge);
 
         challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptionByFeed);
+    }
+
+    public ChallengePolygonResponse getPolygonByChallenge(Integer memberId, Long challengeId)
+        throws IOException {
+
+        ChallengeEntity challenge = getChallengeById(challengeId);
+        checkOwnChallenge(memberId, challengeId);
+
+        String fineName = challenge.getPolygonUrl();
+
+        String polygonToString = "";
+        S3Object s3Object = s3Service.getFile(fineName);
+        try (S3ObjectInputStream s3is = s3Object.getObjectContent();
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(s3is, StandardCharsets.UTF_8))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line)
+                             .append("\n"); // TODO: 줄바꿈은 필요가 없을 수도 있다
+            }
+            polygonToString = stringBuilder.toString()
+                                           .trim();
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            s3Object.close();
+        }
+
+        return new ChallengePolygonResponse(polygonToString);
+    }
+
+
+    private ChallengeEntity getChallengeById(Long challengeId) {
+        return challengeRepository.findById(challengeId)
+                                  .orElseThrow(
+                                      () -> new CustomException(ErrorCode.NOT_EXIST_CHALLENGE));
+
+    }
+
+    private void checkOwnChallenge(Integer memberId, Long challengeId) {
+
+        challengeRepository.findByIdAndMemberId(challengeId, memberId)
+                           .orElseThrow(
+                               () -> new CustomException(ErrorCode.THIS_CHALLENGE_IS_NOT_YOURS));
+
     }
 }
