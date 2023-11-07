@@ -35,6 +35,7 @@ public class ChallengeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private FeedEntity parent; //
@@ -62,7 +63,7 @@ public class ChallengeEntity {
         this.member = member;
         this.startedAt = startedAt;
         this.goalContent = goalContent;
-        this.endedAt = calculateEndDate(startedAt);
+        this.endedAt = calculateEndedDate(startedAt);
         this.thumbnailUrl = "/default_thumbnail.png";
     }
 
@@ -83,7 +84,7 @@ public class ChallengeEntity {
         );
     }
 
-    private LocalDate calculateEndDate(LocalDate startDate) {
+    private LocalDate calculateEndedDate(LocalDate startDate) {
         return startDate.plusDays(21);
     }
 }
