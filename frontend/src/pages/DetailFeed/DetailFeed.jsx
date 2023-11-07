@@ -13,6 +13,7 @@ function DetailFeed() {
   const [state, setState] = useState(null);
   const navigate = useNavigate();
 
+<<<<<<< HEAD
   useEffect(() => {
     const user = { id: "@헬린이", profile_img: `${dog}` };
     setUser(user);
@@ -46,6 +47,46 @@ function DetailFeed() {
         },
         {
           memberId: 11,
+=======
+    useEffect(() => {
+        const user = { id: '@헬린이1', profile_img: `${dog}` };
+        setUser(user);
+        const state = {
+            pk: 1,
+            profileimage: `${dog}`,
+            name: '하성호',
+            id: '@헬린이',
+            image: `${dog}`,
+            isLiked: false,
+            isPublic: true,
+            likes: 1234567,
+            comment: 765432,
+            share: 1000,
+            time: new Date() - 400,
+            hash: ['#개', '#댕댕이', '#시바', '#산책'],
+            content: '멍멍',
+            comments: [
+                { name: '김정희', comment: '뭐', profileimage: `${dog}`, time: new Date() - 100 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+                { name: '하성호', comment: 'ㅋㅋㅋ', profileimage: `${dog}`, time: new Date() - 10 },
+            ],
+        };
+        setState(state);
+    }, []);
+>>>>>>> 0955665 (:art: Refactor: refactor profile)
 
           name: "하성호",
           content: "ㅋㅋㅋ",

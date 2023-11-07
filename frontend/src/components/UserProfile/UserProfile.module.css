@@ -1,19 +1,11 @@
 .container {
     display: flex;
-    background-color: white;
-}
-.imageContainer {
-    height: 90px;
-    width: 90px;
-    object-fit: cover;
-    border-radius: 50px;
 }
 
-.imagebox {
-    display: flex;
-    flex-direction: column;
-    font-size: 20px;
-    font-weight: bold;
+.imageContainer {
+    height: 22vw;
+    width: 22vw;
+    border-radius: 50px;
 }
 
 .mainContainer {

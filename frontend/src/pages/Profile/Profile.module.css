@@ -1,23 +1,12 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  padding: 2%;
-}
-.user_info {
-  height: 25%;
-  margin-top: 30px;
+    margin: 0 4%;
 }
 
-.proccessing_timelapse {
-  height: 25%;
+.box {
+    margin: 3% 0;
 }
-.my_timelapse {
-  height: fit-content;
-  margin-bottom: 3%;
-}
+
 .timeContainerName {
-  text-align: start;
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 3%;
+    font-size: 5vw;
+    font-weight: bold;
 }
