@@ -24,6 +24,8 @@ function Jeonghui() {
     useEffect(() => {
         // setupWebcam();
 
+        console.log(timeLaps);
+
         const containerInfo = document.querySelectorAll('div')[4];
         setWidth(containerInfo.getBoundingClientRect().width);
         setHeight(containerInfo.getBoundingClientRect().height - 1);

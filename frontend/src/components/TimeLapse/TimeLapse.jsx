@@ -16,9 +16,9 @@ function TimeLapse() {
     sessionStorage.getItem("accessToken")
   );
 
-  const finishTimeLaps = () => {
-    setIsFinished(!isFinished);
-  };
+    const finishTimeLaps = () => {
+        setIsFinished(!isFinished);
+    };
 
     const takePhoto = (index) => {
         navigate(`/jeonghui`, { state: timeLaps[index] });
@@ -29,6 +29,10 @@ function TimeLapse() {
         // }
     };
 
+    const continueTimeLaps = () => {
+        // 타입랩스 이어가기 위한 로직 추가
+        setIsFinished(false);
+    };
 
   const continueTimeLaps = () => {
     // 타입랩스 이어가기 위한 로직 추가
@@ -125,11 +129,27 @@ function TimeLapse() {
                 아니요
               </button>
             </div>
-          </div>
+
+            {isFinished && (
+                <div className={styles.finish}>
+                    <ConfettiExplosion {...largeProps} />
+                    <div className={styles.finishContainer}>
+                        <div>타임랩스를 완료했습니다!!</div>
+                        <div>이어하시면 21일이 추가됩니다.</div>
+                        <div>이어하시겠습니까?</div>
+                        <div className={styles.buttonContainer}>
+                            <button className={styles.continueTimeLaps} onClick={continueTimeLaps}>
+                                예
+                            </button>
+                            <button className={styles.discontinueTimeLaps} onClick={discontinueTimeLaps}>
+                                아니요
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }
 
 export default TimeLapse;
