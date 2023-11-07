@@ -1,13 +1,10 @@
-import styles from "./TimeLapse.module.css";
-import { useNavigate } from "react-router-dom";
-import {
-  CircularProgressbar,
-  buildStyles,
-  CircularProgressbarWithChildren,
-} from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import dog from "../../assets/dog2.jpg";
-import { useEffect, useState } from "react";
+import styles from './TimeLapse.module.css';
+import { useNavigate } from 'react-router-dom';
+import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import dog from '../../assets/dog.jpg';
+import dog2 from '../../assets/dog2.jpg';
+import { useEffect, useState } from 'react';
 import ConfettiExplosion from "react-confetti-explosion";
 import axios from "axios";
 function TimeLapse() {
@@ -23,10 +20,21 @@ function TimeLapse() {
     setIsFinished(!isFinished);
   };
 
+    const takePhoto = (index) => {
+        navigate(`/jeonghui`, { state: timeLaps[index] });
+        // if (timeLaps[index].percent == 0) {
+        //     navigate(`/jeonghui`, { state: timeLaps[index] });
+        // } else {
+        //     navigate(`/doChallenge`);
+        // }
+    };
+
+
   const continueTimeLaps = () => {
     // 타입랩스 이어가기 위한 로직 추가
     setIsFinished(false);
   };
+
 
   const discontinueTimeLaps = () => {
     // 타입랩스를 피드로 변환하는 로직 추가
