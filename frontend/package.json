@@ -30,12 +30,9 @@
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.17.0",
     "react-tree-graph": "^8.0.1",
-<<<<<<< HEAD
-    "redux-logger": "^3.0.6",
-=======
     "react-webcam": "^7.2.0",
+    "redux-logger": "^3.0.6",
     "redux-persist": "^4.3.1",
->>>>>>> 0955665 (:art: Refactor: refactor profile)
     "require": "^2.4.20",
     "styled-components": "^6.1.0"
   },
