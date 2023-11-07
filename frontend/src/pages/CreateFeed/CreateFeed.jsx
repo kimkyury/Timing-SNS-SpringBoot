@@ -1,15 +1,20 @@
-import { useState } from "react";
 import styles from "./CreateFeed.module.css";
 import Input from "@mui/joy/Input";
 import Textarea from "@mui/joy/Textarea";
 import Calendar from "react-calendar";
 import moment from "moment";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./Calendar.css";
 function CreateFeed() {
+  const BASE_URL = `http://k9e203.p.ssafy.io`;
+  const [accessToken, setAccessToken] = useState(
+    sessionStorage.getItem("accessToken")
+  );
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
   const [value, onChange] = useState(new Date());
+  const [contentValue, setContentValue] = useState("");
   const handleTagInputChange = (event) => {
     setCurrentTag(event.target.value);
   };
@@ -26,7 +31,29 @@ function CreateFeed() {
     updatedTags.splice(index, 1);
     setTags(updatedTags);
   };
-
+  const createChallenge = () => {
+    axios
+      .post(
+        `${BASE_URL}/api/v1/challenges`,
+        { startedAt: value, hashtags: tags, goalContents: contentValue },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        // setState(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  useEffect(() => {
+    console.log(value);
+    console.log(typeof value);
+  }, [value]);
   return (
     <div className={styles.container}>
       <div className={styles.boxname}>시작일</div>
@@ -64,8 +91,14 @@ function CreateFeed() {
         ))}
       </div>
       <div className={styles.boxname}>달성목표</div>
-      <Textarea minRows={4} className={styles.contentbox} />
-      <button className={styles.summitbtn}>챌린지 시작하기</button>
+      <Textarea
+        minRows={4}
+        className={styles.contentbox}
+        onChange={setContentValue}
+      />
+      <button className={styles.summitbtn} onClick={createChallenge}>
+        챌린지 시작하기
+      </button>
     </div>
   );
 }

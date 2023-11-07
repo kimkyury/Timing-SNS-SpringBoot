@@ -1,7 +1,7 @@
 import TimeLapse from "../../components/TimeLapse/TimeLapse";
 import styles from "./Profile.module.css";
 import UserProfile from "../../components/UserProfile/USerProfile";
-import MyFeed from "../../components/Feed/MyFeed";
+import MyFeed from "../../components/Feed/FeedList";
 import dog from "../../assets/dog.jpg";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -10,6 +10,7 @@ function Profile() {
   const [accessToken, setAccessToken] = useState(
     sessionStorage.getItem("accessToken")
   );
+  // const [state, setState] = useState([]);
   const getChallenge = () => {
     axios
       .get(`${BASE_URL}/api/v1/challenges`, {
@@ -19,6 +20,7 @@ function Profile() {
       })
       .then((response) => {
         console.log(response);
+        // setState(response.data);
       })
       .catch((error) => {
         console.error(error);
