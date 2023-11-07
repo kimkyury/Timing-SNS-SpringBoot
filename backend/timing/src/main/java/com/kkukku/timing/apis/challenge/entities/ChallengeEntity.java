@@ -1,6 +1,7 @@
 package com.kkukku.timing.apis.challenge.entities;
 
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
+import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import jakarta.persistence.Column;
@@ -34,9 +35,10 @@ public class ChallengeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private FeedEntity feed;
+    private FeedEntity parent; //
 
     @Column(nullable = false)
     private LocalDate startedAt;
@@ -57,29 +59,32 @@ public class ChallengeEntity {
     private String polygonUrl;
 
 
-    public ChallengeEntity(MemberEntity member, LocalDate startedAt, String goalContent) {
+    private ChallengeEntity(MemberEntity member, LocalDate startedAt, String goalContent) {
         this.member = member;
         this.startedAt = startedAt;
         this.goalContent = goalContent;
-        this.endedAt = calculateEndDate(startedAt);
+        this.endedAt = calculateEndedDate(startedAt);
+        this.thumbnailUrl = "/default_thumbnail.png";
     }
 
-    public ChallengeEntity(MemberEntity member, LocalDate startedAt) {
-        this.member = member;
-        this.startedAt = startedAt;
-        this.endedAt = calculateEndDate(startedAt);
-    }
-
-    public static ChallengeEntity create(MemberEntity member,
-        ChallengeCreateRequest challengeCreateRequest) {
+    public static ChallengeEntity of(MemberEntity member,
+        ChallengeCreateRequest request) {
         return new ChallengeEntity(
             member,
-            challengeCreateRequest.getStartedAt(),
-            challengeCreateRequest.getGoalContent()
+            request.getStartedAt(),
+            request.getGoalContent()
         );
     }
 
-    private LocalDate calculateEndDate(LocalDate startDate) {
+    public static ChallengeEntity of(MemberEntity member, ChallengeRelayRequest request) {
+        return new ChallengeEntity(
+            member,
+            request.getStartedAt(),
+            request.getGoalContent()
+        );
+    }
+
+    private LocalDate calculateEndedDate(LocalDate startDate) {
         return startDate.plusDays(21);
     }
 }

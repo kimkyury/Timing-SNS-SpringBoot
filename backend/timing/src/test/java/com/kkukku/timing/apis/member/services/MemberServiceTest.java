@@ -112,7 +112,7 @@ public class MemberServiceTest {
     @DisplayName("유저의 profileImageUrl 수정되어야 한다")
     void shouldUpdateProfileImg() {
 
-        String updatedProfileUrl = "http://example.com/profile.png";
+        String updatedProfileUrl = "profile.png";
         when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(updatedProfileUrl);
         MockMultipartFile multipartFile = getSampleImage();
 
@@ -122,7 +122,8 @@ public class MemberServiceTest {
                                                      .get();
 
         assertEquals("isOriginalNickname", originalNickname, updatedMember.getNickname());
-        assertEquals("isUpdatedProfileUrl", updatedProfileUrl, updatedMember.getProfileImageUrl());
+        assertEquals("isUpdatedProfileUrl", "/" + updatedProfileUrl,
+            updatedMember.getProfileImageUrl());
     }
 
     @Test
@@ -130,7 +131,7 @@ public class MemberServiceTest {
     @DisplayName("유저의 Nickname, ProfileImageUrl 수정되어야 한다")
     void shouldUpdateNicknameAndProfileImg() {
 
-        String updatedProfileUrl = "http://example.com/profile.png";
+        String updatedProfileUrl = "profile.png";
         when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(updatedProfileUrl);
         String updatedNickname = "수정된 닉네임";
         MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(updatedNickname);
@@ -141,7 +142,8 @@ public class MemberServiceTest {
         MemberEntity updatedMember = memberRepository.findByEmail(testEmail)
                                                      .get();
         assertEquals("isUpdatedNickname", updatedNickname, updatedMember.getNickname());
-        assertEquals("isUpdatedNickname", updatedProfileUrl, updatedMember.getProfileImageUrl());
+        assertEquals("isUpdatedNickname", "/" + updatedProfileUrl,
+            updatedMember.getProfileImageUrl());
     }
 
     @Test

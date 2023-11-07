@@ -1,5 +1,7 @@
 package com.kkukku.timing.apis.hashtag.services;
 
+import com.kkukku.timing.apis.hashtag.entities.FeedHashTagEntity;
+import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.repositories.FeedHashTagRepository;
 import com.kkukku.timing.apis.hashtag.responses.FeedHashTagResponse;
 import java.util.List;
@@ -16,6 +18,13 @@ public class FeedHashTagService {
         return feedHashTagRepository.findAllByFeedId(feedId)
                                     .stream()
                                     .map(FeedHashTagResponse::new)
+                                    .toList();
+    }
+
+    public List<HashTagOptionEntity> getHashTagOptionByFeedId(Long feedId) {
+        return feedHashTagRepository.findAllByFeedId(feedId)
+                                    .stream()
+                                    .map(FeedHashTagEntity::getHashTagOption)
                                     .toList();
     }
 }
