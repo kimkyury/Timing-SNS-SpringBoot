@@ -157,6 +157,20 @@ public class FeedService {
         feedRepository.save(feed);
     }
 
+    @Transactional
+    public void updateFeed(Long id, String review, Boolean isPrivate) {
+        FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
+
+        if (review != null) {
+            feed.setReview(review);
+        }
+        if (isPrivate != null) {
+            feed.setIsPrivate(isPrivate);
+        }
+
+        feedRepository.save(feed);
+    }
+
     private int find(Integer[] parent, Integer x) {
         if (parent[x].equals(x)) {
             return x;
