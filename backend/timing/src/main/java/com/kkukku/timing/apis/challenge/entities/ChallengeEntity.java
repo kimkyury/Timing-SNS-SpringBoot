@@ -41,6 +41,7 @@ public class ChallengeEntity {
     @Column(nullable = false)
     private LocalDate startedAt;
 
+    @Setter
     @Column(nullable = false)
     private LocalDate endedAt;
 

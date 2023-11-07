@@ -90,6 +90,24 @@ public class ChallengeService {
 
     }
 
+    public void extendChallenge(Integer memberId, Long challengeId) {
+
+        checkOwnChallenge(memberId, challengeId);
+
+        ChallengeEntity challenge = challengeRepository.findById(challengeId)
+                                                       .orElseThrow(
+                                                           () -> new CustomException(
+                                                               ErrorCode.NOT_EXIST_CHALLENGE)
+                                                       );
+        
+        LocalDate endedAt = challenge.getEndedAt();
+        LocalDate extendEndedAt = endedAt.plusDays(21);
+
+        challenge.setEndedAt(extendEndedAt);
+        challengeRepository.save(challenge);
+
+    }
+
     public void checkOwnChallenge(Integer memberId, Long challengeId) {
 
         challengeRepository.findByIdAndMemberId(challengeId, memberId)
