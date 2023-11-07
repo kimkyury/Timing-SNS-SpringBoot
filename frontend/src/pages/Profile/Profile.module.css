@@ -1,12 +1,13 @@
 .container {
-    margin: 0 4%;
+  margin: 0 4%;
+  margin-top: 10px;
 }
 
 .box {
-    margin: 3% 0;
+  margin: 3% 0;
 }
 
 .timeContainerName {
-    font-size: 5vw;
-    font-weight: bold;
+  font-size: 5vw;
+  font-weight: bold;
 }

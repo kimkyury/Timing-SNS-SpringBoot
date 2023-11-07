@@ -10,17 +10,17 @@ function Profile() {
   const [accessToken, setAccessToken] = useState(
     sessionStorage.getItem("accessToken")
   );
-  // const [state, setState] = useState([]);
+  const [state, setState] = useState([]);
   const getChallenge = () => {
     axios
-      .get(`${BASE_URL}/api/v1/challenges`, {
+      .get(`${BASE_URL}/api/v1/feeds`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
-        console.log(response);
-        // setState(response.data);
+        console.log(response.data);
+        setState(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -29,20 +29,6 @@ function Profile() {
   useEffect(() => {
     getChallenge();
   }, []);
-  const state = {
-    contents: [
-      { image: `${dog}`, isPublic: true },
-      { image: `${dog}`, isPublic: false },
-      { image: `${dog}`, isPublic: false },
-      { image: `${dog}`, isPublic: false },
-      { image: `${dog}`, isPublic: false },
-      { image: `${dog}`, isPublic: true },
-      { image: `${dog}`, isPublic: false },
-      { image: `${dog}`, isPublic: true },
-      { image: `${dog}`, isPublic: false },
-      { image: `${dog}`, isPublic: false },
-    ],
-  };
 
   return (
     <div className={styles.container}>
@@ -53,18 +39,24 @@ function Profile() {
         <div className={styles.timeContainerName}>진행중인 타입랩스</div>
         <TimeLapse />
       </div>
-      <div className={styles.my_timelapse}>
-        <div className={styles.timeContainerName}>공개 타입랩스</div>
-        <MyFeed
-          state={state.contents.filter((content) => content.isPublic == false)}
-        />
-      </div>
-      <div className={styles.my_timelapse}>
-        <div className={styles.timeContainerName}>비공개 타입랩스</div>
-        <MyFeed
-          state={state.contents.filter((content) => content.isPublic == true)}
-        />
-      </div>
+      {state.length != 0 ? (
+        <div className={styles.my_timelapse}>
+          <div className={styles.timeContainerName}>공개 타입랩스</div>
+          <MyFeed
+            state={state.filter((content) => content.isPublic == false)}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
+      {state.length != 0 ? (
+        <div className={styles.my_timelapse}>
+          <div className={styles.timeContainerName}>비공개 타입랩스</div>
+          <MyFeed state={state.filter((content) => content.isPublic == true)} />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

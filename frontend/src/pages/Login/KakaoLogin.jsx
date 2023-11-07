@@ -10,7 +10,6 @@ const KakaoLogin = () => {
   useEffect(() => {
     if (accessToken) {
       alert("로그인 성공");
-      console.log(accessToken);
       sessionStorage.setItem("accessToken", accessToken);
       navigate("/");
     }

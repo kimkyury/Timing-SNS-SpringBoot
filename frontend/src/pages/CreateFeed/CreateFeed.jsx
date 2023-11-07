@@ -21,7 +21,7 @@ function CreateFeed() {
 
   const handleTagAdd = () => {
     if (currentTag.trim() !== "") {
-      setTags([...tags, "# " + currentTag]);
+      setTags([...tags, "#" + currentTag]);
       setCurrentTag("");
     }
   };
@@ -32,10 +32,15 @@ function CreateFeed() {
     setTags(updatedTags);
   };
   const createChallenge = () => {
+    const Json = JSON.stringify();
     axios
       .post(
         `${BASE_URL}/api/v1/challenges`,
-        { startedAt: value, hashtags: tags, goalContents: contentValue },
+        {
+          startedAt: value,
+          hashTags: tags,
+          goalContents: contentValue.target.value,
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -51,8 +56,9 @@ function CreateFeed() {
       });
   };
   useEffect(() => {
-    console.log(value);
-    console.log(typeof value);
+    console.log(tags);
+    console.log(value.toDateString());
+    console.log(typeof tags);
   }, [value]);
   return (
     <div className={styles.container}>

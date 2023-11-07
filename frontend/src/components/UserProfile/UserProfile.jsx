@@ -21,7 +21,6 @@ function UserProfile() {
         },
       })
       .then((response) => {
-        console.log(response);
         setState(response.data);
         setIsLoading(true);
       })
