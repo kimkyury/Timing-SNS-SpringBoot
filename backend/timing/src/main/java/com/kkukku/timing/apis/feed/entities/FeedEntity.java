@@ -1,7 +1,6 @@
 package com.kkukku.timing.apis.feed.entities;
 
 import com.kkukku.timing.apis.member.entities.MemberEntity;
-import com.kkukku.timing.s3.services.S3Service;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +17,7 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "feeds")
@@ -56,11 +56,14 @@ public class FeedEntity {
     private String timelapseUrl;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Setter
     private Boolean isPrivate;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Setter
     private Boolean isDelete;
 
+    @Setter
     private String review;
 
     @Column(nullable = false, insertable = false)
@@ -72,12 +75,6 @@ public class FeedEntity {
     @PreUpdate
     public void updateTimeStamps() {
         this.updatedAt = LocalDateTime.now();
-    }
-
-    public void delete(S3Service s3Service) {
-        this.isDelete = true;
-        s3Service.deleteFile(thumbnailUrl);
-        s3Service.deleteFile(timelapseUrl);
     }
 
 }
