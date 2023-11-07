@@ -150,7 +150,9 @@ public class FeedService {
     public void deleteFeed(Long id) {
         FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
 
-        feed.delete(s3Service);
+        feed.setIsDelete(true);
+        s3Service.deleteFile(feed.getThumbnailUrl());
+        s3Service.deleteFile(feed.getTimelapseUrl());
 
         feedRepository.save(feed);
     }
