@@ -1,6 +1,7 @@
 package com.kkukku.timing.s3.services;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -54,15 +55,23 @@ public class S3Service {
 
     public S3Object getFile(String fileName) {
 
-        return amazonS3.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
+        String adjustedFileName = fileName.startsWith("/") ? fileName.substring(1) : fileName;
+
+        try {
+            return amazonS3.getObject(new GetObjectRequest(BUCKET_NAME, adjustedFileName));
+        } catch (AmazonS3Exception e) {
+            throw new CustomException(ErrorCode.NOT_EXIST_MULTIPART_FILE);
+        }
     }
 
     public void deleteFile(String fileName) {
+        
         try {
             amazonS3.deleteObject(new DeleteObjectRequest(BUCKET_NAME, fileName.substring(1)));
         } catch (Exception e) {
             throw new CustomException(ErrorCode.FAIL_DELETE_FILE_S3);
         }
     }
+
 
 }
