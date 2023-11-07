@@ -150,7 +150,23 @@ public class FeedService {
     public void deleteFeed(Long id) {
         FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
 
-        feed.delete(s3Service);
+        feed.setIsDelete(true);
+        s3Service.deleteFile(feed.getThumbnailUrl());
+        s3Service.deleteFile(feed.getTimelapseUrl());
+
+        feedRepository.save(feed);
+    }
+
+    @Transactional
+    public void updateFeed(Long id, String review, Boolean isPrivate) {
+        FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
+
+        if (review != null) {
+            feed.setReview(review);
+        }
+        if (isPrivate != null) {
+            feed.setIsPrivate(isPrivate);
+        }
 
         feedRepository.save(feed);
     }
