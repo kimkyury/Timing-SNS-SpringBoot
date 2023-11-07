@@ -59,7 +59,7 @@ public class S3Service {
 
     public void deleteFile(String fileName) {
         try {
-            amazonS3.deleteObject(new DeleteObjectRequest(BUCKET_NAME, fileName));
+            amazonS3.deleteObject(new DeleteObjectRequest(BUCKET_NAME, fileName.substring(1)));
         } catch (Exception e) {
             throw new CustomException(ErrorCode.FAIL_DELETE_FILE_S3);
         }

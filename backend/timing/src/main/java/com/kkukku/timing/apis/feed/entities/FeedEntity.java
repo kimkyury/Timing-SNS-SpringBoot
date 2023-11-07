@@ -1,6 +1,7 @@
 package com.kkukku.timing.apis.feed.entities;
 
 import com.kkukku.timing.apis.member.entities.MemberEntity;
+import com.kkukku.timing.s3.services.S3Service;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -71,6 +72,12 @@ public class FeedEntity {
     @PreUpdate
     public void updateTimeStamps() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void delete(S3Service s3Service) {
+        this.isDelete = true;
+        s3Service.deleteFile(thumbnailUrl);
+        s3Service.deleteFile(timelapseUrl);
     }
 
 }
