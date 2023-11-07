@@ -57,6 +57,12 @@ public class FeedController {
         return ApiResponseUtil.success(feedService.getOwnFeeds());
     }
 
+    @Operation(summary = "피드 삭제", tags = {"3. Feed"})
+    @DeleteMapping("/{id}")
+    public void deleteFeed(@PathVariable Long id) {
+        feedService.deleteFeed(id);
+    }
+
     @Operation(summary = "피드 댓글 조회", tags = {
         "3. Feed"}, description = "page 값은 1부터 가능하고, 10개씩 주어집니다.")
     @GetMapping("/{id}/comments")
