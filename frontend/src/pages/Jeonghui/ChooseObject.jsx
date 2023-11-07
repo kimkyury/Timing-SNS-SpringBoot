@@ -28,16 +28,17 @@ function ChooseObject() {
                     accept: '*/*',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
                 },
-                // responseType: 'blob',
+                responseType: 'blob',
             })
             .then((response) => {
-                console.log(response);
-                console.log(response.data);
+                console.log(response.headers['poly']);
+
                 if (response.status == 204) {
                     setDate(null);
                     alert('객체를 제대로 선택해주세요');
                 } else {
-                    setDate(response.data);
+                    setDate(new Blob([response.data], { type: 'image/png' }));
+                    // setDate(response.data);
                 }
             })
             .catch((error) => {
@@ -48,7 +49,6 @@ function ChooseObject() {
     const eventListener = (event) => {
         const x = event.clientX - event.target.getBoundingClientRect().left; //x축
         const y = event.clientY - event.target.getBoundingClientRect().top; //y축
-        // console.log('position', x, y);
         checkObject(x, y);
     };
 
