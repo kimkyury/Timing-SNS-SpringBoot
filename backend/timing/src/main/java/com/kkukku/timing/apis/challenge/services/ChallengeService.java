@@ -135,8 +135,7 @@ public class ChallengeService {
         challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptionByFeed);
     }
 
-    public ChallengePolygonResponse getPolygonByChallenge(Integer memberId, Long challengeId)
-        throws IOException {
+    public ChallengePolygonResponse getPolygonByChallenge(Integer memberId, Long challengeId) {
 
         ChallengeEntity challenge = getChallengeById(challengeId);
         checkOwnChallenge(memberId, challengeId);
@@ -159,7 +158,11 @@ public class ChallengeService {
         } catch (IOException e) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         } finally {
-            s3Object.close();
+            try {
+                s3Object.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return new ChallengePolygonResponse(polygonToString);
