@@ -11,4 +11,5 @@ public interface ChallengeRepository extends JpaRepository<ChallengeEntity, Long
 
     Optional<ChallengeEntity> findByIdAndMemberId(Long challengeId, Integer memberId);
 
+    Optional<ChallengeEntity> findByParentId(Long feedId);
 }

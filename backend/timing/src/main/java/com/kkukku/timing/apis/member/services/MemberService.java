@@ -30,25 +30,17 @@ public class MemberService {
     public void updateMember(Integer memberId, MemberUpdateRequest memberUpdateRequest,
         MultipartFile multipartFile) {
 
+        MemberEntity member = getMemberById(memberId);
         if (memberUpdateRequest != null) {
-            memberRepository.findById(memberId)
-                            .ifPresent(
-                                selectMember -> {
-                                    selectMember.setNickname(memberUpdateRequest.getNickname());
-                                    memberRepository.save(selectMember);
-                                });
+            member.setNickname(memberUpdateRequest.getNickname());
+            memberRepository.save(member);
         }
 
         if (multipartFile != null) {
             String profileImageUrl = "/" + s3Service.uploadFile(multipartFile);
-            memberRepository.findById(memberId)
-                            .ifPresent(
-                                selectMember -> {
-                                    selectMember.setProfileImageUrl(profileImageUrl);
-                                    memberRepository.save(selectMember);
-                                });
+            member.setProfileImageUrl(profileImageUrl);
+            memberRepository.save(member);
         }
-
     }
 
     public MemberDetailResponse getMemberInfo(String memberEmail) {
