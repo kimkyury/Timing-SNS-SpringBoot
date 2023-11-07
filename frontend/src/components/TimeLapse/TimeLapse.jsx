@@ -1,13 +1,10 @@
-import styles from "./TimeLapse.module.css";
-import { useNavigate } from "react-router-dom";
-import {
-  CircularProgressbar,
-  buildStyles,
-  CircularProgressbarWithChildren,
-} from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import dog from "../../assets/dog2.jpg";
-import { useEffect, useState } from "react";
+import styles from './TimeLapse.module.css';
+import { useNavigate } from 'react-router-dom';
+import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import dog from '../../assets/dog.jpg';
+import dog2 from '../../assets/dog2.jpg';
+import { useEffect, useState } from 'react';
 import ConfettiExplosion from "react-confetti-explosion";
 
 function TimeLapse() {
@@ -15,15 +12,16 @@ function TimeLapse() {
   const [timeLaps, setTimeLaps] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
 
-  useEffect(() => {
-    // 여기서 axios로 timeLaps 가져올꺼임
-    const state = [
-      { percent: 10, name: "test1", img: `${dog}` },
-      { percent: 50, name: "test2", img: `${dog}` },
-      { percent: 70, name: "test3", img: `${dog}` },
-      { percent: 70, name: "test3", img: `${dog}` },
-      { percent: 70, name: "test3", img: `${dog}` },
-    ];
+    useEffect(() => {
+        // 여기서 axios로 timeLaps 가져올꺼임
+
+        const state = [
+            { id: 1, percent: 0, img: `${dog}` },
+            { id: 1, percent: 50, img: `${dog}` },
+            { id: 2, percent: 0, img: `${dog2}` },
+            { id: 2, percent: 70, img: `${dog2}` },
+            { id: 1, percent: 70, img: `${dog}` },
+        ];
 
     setTimeLaps(state);
   }, []);
@@ -32,10 +30,21 @@ function TimeLapse() {
     setIsFinished(!isFinished);
   };
 
+    const takePhoto = (index) => {
+        navigate(`/jeonghui`, { state: timeLaps[index] });
+        // if (timeLaps[index].percent == 0) {
+        //     navigate(`/jeonghui`, { state: timeLaps[index] });
+        // } else {
+        //     navigate(`/doChallenge`);
+        // }
+    };
+
+
   const continueTimeLaps = () => {
     // 타입랩스 이어가기 위한 로직 추가
     setIsFinished(false);
   };
+
 
   const discontinueTimeLaps = () => {
     // 타입랩스를 피드로 변환하는 로직 추가
