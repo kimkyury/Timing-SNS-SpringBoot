@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -189,12 +190,47 @@ public class ChallengeServiceTest {
 
         //given
         Integer memberId = 2;
-        Long targetChallengeId = 2L;
-        List<SnapshotEntity> expectedSnapshots = snapshotService.getAllSnapshotByChallenge(
-            targetChallengeId);
+        Long targetChallengeId = 1L;
 
         assertThrows(CustomException.class, () ->
             challengeService.deleteChallenge(memberId, targetChallengeId));
 
     }
+
+    @Test
+    @Transactional
+    @Order(6)
+    @DisplayName("자신의 특정 챌린지에 대하여 기간을 연장한다")
+    void shouldExtendOwnChallenge() {
+
+        //given
+        Long targetChallengeId = 1L;
+        Integer memberId = 1;
+        ChallengeEntity beforeChallenge = challengeRepository.findById(targetChallengeId)
+                                                             .get();
+        int expectedDiffDay = (int) ChronoUnit.DAYS.between(beforeChallenge.getStartedAt(),
+            beforeChallenge.getEndedAt()) + 21;
+
+        // when
+        challengeService.extendChallenge(memberId, targetChallengeId);
+
+        // then
+        ChallengeEntity actualChallenge = challengeRepository.findById(targetChallengeId)
+                                                             .get();
+        int actualDiffDay = (int) ChronoUnit.DAYS.between(actualChallenge.getStartedAt(),
+            actualChallenge.getEndedAt());
+
+        assertEquals(actualDiffDay, expectedDiffDay);
+
+    }
+
+
+    @Test
+    @Transactional
+    @Order(7)
+    @DisplayName("타 유저의 Feed에서 Challenge 이어가기를 수행한다")
+    void shouldRelayChallengeFromOtherFeed() {
+
+    }
+
 }

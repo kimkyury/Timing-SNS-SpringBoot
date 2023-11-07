@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,13 +52,25 @@ public class ChallengeController {
     }
 
     @Operation(summary = "본인의 특정 Challenge 삭제하기", tags = {"2. Challenge"},
-        description = "특정 Challenge를 삭제하며, 관련 Snapshot들도 삭제합니다. ")
+        description = "본인의 특정 Challenge를 삭제하며, 관련 Snapshot들도 삭제합니다.  ")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteChallenge(@PathVariable Long id) {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
 
         challengeService.deleteChallenge(memberId, id);
+
+        return ApiResponseUtil.success();
+    }
+
+    @Operation(summary = "본인의 특정 Challenge 기간 연장하기", tags = {"2. Challenge"},
+        description = "본인의 특정 Challenge 완료 후, 21일을 연장할 수 있습니다. ")
+    @PatchMapping(value = "/{id}/extension")
+    public ResponseEntity<Void> extendChallenge(@PathVariable Long id) {
+
+        Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
+
+        challengeService.extendChallenge(memberId, id);
 
         return ApiResponseUtil.success();
     }
