@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.kkukku.timing.apis.feed.responses.FeedOtherResponse;
-import com.kkukku.timing.apis.feed.responses.FeedOwnResponse;
+import com.kkukku.timing.apis.feed.responses.FeedSummaryResponse;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.security.services.MemberDetailService;
 import java.util.List;
@@ -43,7 +42,7 @@ public class FeedServiceTest {
     public void getOwnFeedsTest() {
         String[] titles = {"http://example.com/thumbnail2.jpg", "http://example.com/thumbnail4.jpg",
             "http://example.com/thumbnail6.jpg"};
-        List<FeedOwnResponse> feeds = feedService.getOwnFeeds();
+        List<FeedSummaryResponse> feeds = feedService.getOwnSummaryFeeds();
 
         assertEquals(titles.length, feeds.size(), "Check own feeds size with data.sql");
 
@@ -56,7 +55,7 @@ public class FeedServiceTest {
     @Test
     public void getOtherFeedsTest() {
         String[] titles = {"http://example.com/thumbnail1.jpg"};
-        List<FeedOtherResponse> feeds = feedService.getOtherFeeds("kkr@test.com");
+        List<FeedSummaryResponse> feeds = feedService.getOtherSummaryFeeds("kkr@test.com");
 
         assertEquals(titles.length, feeds.size(), "Check other feeds size with data.sql");
 
