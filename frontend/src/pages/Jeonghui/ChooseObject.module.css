@@ -1,0 +1,40 @@
+.container {
+    /* width: 100%;
+    height: 80vh; */
+    margin: 3% 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.textContainer {
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.buttonContainer {
+    display: flex;
+    margin-top: 4%;
+    justify-items: center;
+    align-items: center;
+}
+
+.buttonContainer button {
+    border-radius: 40px;
+    width: 50vw;
+    font-size: 5vw;
+    margin: 0 10%;
+    border: none;
+    outline: none;
+}
+
+.continue {
+    color: #ffffff;
+    background-color: #979bff;
+}
+
+.retry {
+    color: #ffffff;
+    background-color: #ff7a7a;
+}

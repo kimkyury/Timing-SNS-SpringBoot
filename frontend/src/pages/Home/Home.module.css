@@ -1,8 +1,5 @@
-.container{
+.container {
+    /* margin: 0 2%; */
     display: flex;
     flex-direction: column;
-}
-.Home_timelapse{
-}
-.Home_main{
 }

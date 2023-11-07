@@ -1,10 +1,89 @@
-.boxname{
-    font-size: 30px;
-    font-weight: bold;
-    text-align: start;
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-bottom: 10px;
+  padding: 2%;
+}
+.boxname {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: start;
+  margin-bottom: 3%;
 }
 
-.btn{
-    color: white;
-    background-color: green;
+.btn {
+  width: 18%;
+  height: 30px;
+  height: 40px !important;
+  padding: 0;
+  border: 1px solid transparent !important;
+  background-color: white;
+}
+
+.selectdate {
+  width: 100%;
+}
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag {
+  width: fit-content;
+  border-radius: 20px;
+  padding: 2.5px;
+  font-size: 12.5px;
+  margin-right: 5px;
+  background-color: #efefef;
+}
+
+.tagbtn {
+  width: 30px;
+  height: 30px;
+  justify-items: center;
+  text-align: center;
+  border-radius: 20px;
+  font-size: 12.5px;
+  padding: 5px;
+  margin-left: 5px;
+}
+.inputbox {
+  width: 80%;
+  height: 40px !important;
+  border-radius: 100px !important;
+  background-color: #efefef !important;
+  margin-bottom: 5%;
+}
+
+.tagInputContainer {
+  display: flex;
+  align-content: center;
+}
+.calender {
+  border-radius: 30px;
+  width: 100% !important;
+  height: fit-content;
+}
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: #f87171;
+  border-radius: 50%;
+  display: flex;
+  margin-left: 1px;
+}
+.summitbtn {
+  width: 60%;
+  height: 40px !important;
+  border-radius: 20px;
+  align-self: center;
+  background-color: #97d3ff;
+  color: white;
+}
+.contentbox {
+  width: 100%;
+  border-radius: 40px !important;
+  background-color: #efefef !important;
+  margin-bottom: 5%;
 }
