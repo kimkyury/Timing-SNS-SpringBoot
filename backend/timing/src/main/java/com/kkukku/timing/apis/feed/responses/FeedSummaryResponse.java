@@ -7,19 +7,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FeedOwnResponse {
+public class FeedSummaryResponse {
 
     private Long id;
     private String thumbnailUrl;
     private Boolean isPrivate;
-    private Long feedCount;
-    private Integer contributeCount;
 
-    public FeedOwnResponse(FeedEntity feed, Long feedCount, Integer contributeCount) {
+    public FeedSummaryResponse(FeedEntity feed) {
         this.id = feed.getId();
         this.thumbnailUrl = feed.getThumbnailUrl();
         this.isPrivate = feed.getIsPrivate();
-        this.feedCount = feedCount;
-        this.contributeCount = contributeCount;
     }
 }
