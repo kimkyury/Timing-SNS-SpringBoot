@@ -12,9 +12,7 @@ function UserProfile() {
     };
     return (
         <div className={styles.container}>
-            <div className={styles.imagebox}>
-                <img src={state.profileimage} className={styles.imageContainer} />
-            </div>
+            <img src={state.profileimage} className={styles.imageContainer} />
             <div className={styles.mainContainer}>
                 <div className={styles.upper}>
                     <div className={styles.articlebox}>
