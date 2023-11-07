@@ -7,153 +7,174 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import dog from "../../assets/dog.jpg";
-
+import axios from "axios";
+import { useLocation } from "react-router-dom";
 function DetailFeed() {
+  const location = useLocation();
+  const data = location.state;
   const [user, setUser] = useState(null);
   const [state, setState] = useState(null);
   const navigate = useNavigate();
-
+  const BASE_URL = `http://k9e203.p.ssafy.io`;
+  const [accessToken, setAccessToken] = useState(
+    sessionStorage.getItem("accessToken")
+  );
   useEffect(() => {
     const user = { id: "@헬린이", profile_img: `${dog}` };
     setUser(user);
-    const state = {
-      id: 1,
-      user: {
-        memberId: 12,
-        email: "123@naver.com",
-        nickname: "김정희",
-        profileImg: `${dog}`,
-      },
-      parentId: null,
-      rootId: null,
-      goalContent: "몸짱",
-      content: "안녕하세요!!",
-      thumbnailUrl: `${dog}`,
-      isPrivate: true,
-      isLike: true,
-      time: new Date(),
-      hashTag: ["#운동", "#오운완"],
-      likeCount: 1234567,
-      commentCount: 765432,
-      shareCount: 1000,
-      comments: [
-        {
-          memberId: 12,
-          name: "김정희",
-          content: "뭐",
-          profileImg: `${dog}`,
-          time: new Date() - 10000,
-        },
-        {
-          memberId: 11,
+    // const state = {
+    //   id: 1,
+    //   user: {
+    //     memberId: 12,
+    //     email: "123@naver.com",
+    //     nickname: "김정희",
+    //     profileImg: `${dog}`,
+    //   },
+    //   parentId: null,
+    //   rootId: null,
+    //   goalContent: "몸짱",
+    //   content: "안녕하세요!!",
+    //   thumbnailUrl: `${dog}`,
+    //   isPrivate: true,
+    //   isLike: true,
+    //   time: new Date(),
+    //   hashTag: ["#운동", "#오운완"],
+    //   likeCount: 1234567,
+    //   commentCount: 765432,
+    //   shareCount: 1000,
+    //   comments: [
+    //     {
+    //       memberId: 12,
+    //       name: "김정희",
+    //       content: "뭐",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10000,
+    //     },
+    //     {
+    //       memberId: 11,
 
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-        {
-          memberId: 11,
-          name: "하성호",
-          content: "ㅋㅋㅋ",
-          profileImg: `${dog}`,
-          time: new Date() - 10,
-        },
-      ],
-    };
-    setState(state);
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //     {
+    //       memberId: 11,
+    //       name: "하성호",
+    //       content: "ㅋㅋㅋ",
+    //       profileImg: `${dog}`,
+    //       time: new Date() - 10,
+    //     },
+    //   ],
+    // };
+    // setState(state);
   }, []);
+  const getDetailFeed = () => {
+    axios
+      .get(`${BASE_URL}/api/v1/feeds/${data.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setState(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const setIsPublic = () => {
     const currentState = { ...state };
     setState(currentState);
@@ -175,7 +196,10 @@ function DetailFeed() {
   const deleteFeed = () => {
     // 여기서 피드 삭제 로직 실행
   };
-
+  useEffect(() => {
+    // getDetailFeed();
+    console.log(data);
+  }, []);
   return (
     <div className={styles.container}>
       {state && (
