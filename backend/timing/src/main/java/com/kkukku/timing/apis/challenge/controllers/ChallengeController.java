@@ -89,6 +89,4 @@ public class ChallengeController {
 
         return ApiResponseUtil.success();
     }
-
-
 }
