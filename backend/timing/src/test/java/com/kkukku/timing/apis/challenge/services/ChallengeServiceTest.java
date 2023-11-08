@@ -25,6 +25,7 @@ import com.kkukku.timing.apis.hashtag.repositories.FeedHashTagRepository;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.exception.CustomException;
+import com.kkukku.timing.external.services.VisionAIService;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.ByteArrayInputStream;
@@ -78,6 +79,9 @@ public class ChallengeServiceTest {
 
     @Value("${cloud.aws.s3.url}")
     private String s3StartUrl;
+
+    @MockBean
+    private VisionAIService visionAIService;
 
     public MockMultipartFile getSampleImage(String pathStr, String filename) {
         Path path = Paths.get(pathStr);
@@ -376,5 +380,56 @@ public class ChallengeServiceTest {
         assertEquals("/" + afterObjectName, challenge.getObjectUrl());
 
     }
+
+
+    @Test
+    @Transactional
+    @Order(10)
+    @DisplayName("특정 스냅샷 추가시, 유사성이 높다면 스냅샷이 등록된다")
+    void shouldSaveWhenHighSimilarity() {
+
+        // given
+        String afterSnapshotName = "test_snapshot3.png";
+        String afterSnapshotPath = "src/test/resources/image/" + afterSnapshotName;
+        MockMultipartFile snapshotFile = getSampleText(afterSnapshotPath, afterSnapshotName);
+
+        String objectName = "test_object.png";
+        String objectPath = "src/test/resources/image/" + objectName;
+
+        Long challengeId = 2L;
+        Integer memberId = 1;
+
+        // when
+        challengeService.setSnapshotProcedure(memberId, challengeId, snapshotFile);
+
+        // then
+        SnapshotEntity actualSnapshot = snapshotService.getAllSnapshotByChallenge(challengeId)
+                                                       .getLast();
+
+        assertEquals("/" + afterSnapshotName, actualSnapshot.getImageUrl());
+
+    }
+
+    @Test
+    @Transactional
+    @Order(10)
+    @DisplayName("특정 스냅샷 추가시, 유사성이 낮다면 스냅샷이 등록되지 않는다")
+    void shouldSaveWhenLowSimilarity() {
+
+        String afterSnapshotName = "test_snapshot.png";
+        String afterSnapshotPath = "src/test/resources/image/" + afterSnapshotName;
+        MockMultipartFile snapshotFile = getSampleText(afterSnapshotPath, afterSnapshotName);
+
+        String objectName = "test_object.png";
+        String objectPath = "src/test/resources/image/" + objectName;
+        MockMultipartFile objectFile = getSampleText(objectPath, objectName);
+//
+//        doThrow(new CustomException(ErrorCode.NOT_PROPER_COORDINATE)).when(
+//                                                                         visionAIService);
+//                                                                     .checkSimilarity(snapshotFile,
+//                                                                         objectFile);
+
+    }
+
 
 }
