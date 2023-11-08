@@ -11,7 +11,8 @@ VALUES ('kkr@test.com', '/default_profile.png', '테스터', 0),
 
 INSERT INTO challenges (member_id, started_at, ended_at, goal_content, thumbnail_url, object_url,
                         polygon_url)
-VALUES (1, '2023-10-01', '2023-10-22', '강아지와 산책', '/default_thumbnail.png', null, null),
+VALUES (1, '2023-10-01', '2023-10-22', '강아지와 산책', '/default_thumbnail.png', '/test_object.png',
+        '/test_polygon.txt'),
        (1, '2023-10-02', '2023-10-23', '하체 운동하기', '/test_thumbnail.png', '/test_object.png',
         '/test_polygon.txt'),
        (1, '2023-10-03', '2023-10-24', NULL, '/default_thumbnail.png', null, null),
