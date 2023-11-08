@@ -25,7 +25,6 @@ import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -85,9 +84,7 @@ public class ChallengeService {
                                    long id = c.getId();
                                    String thumbnailUrl =
                                        s3Service.getS3StartUrl() + c.getThumbnailUrl();
-                                   long countDays = diffDay(c.getStartedAt(),
-                                       LocalDate.now()
-                                                .minusDays(1));
+                                   long countDays = diffDay(c.getStartedAt(), LocalDate.now());
                                    long maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
                                    return new Challenge(id, thumbnailUrl, countDays, maxDays);
                                })
@@ -236,18 +233,14 @@ public class ChallengeService {
         // get SnapshotFile StreamResource
         String objectUrl = challenge.getObjectUrl();
         S3Object s3Object = s3Service.getFile(objectUrl);
-        InputStream inputStream = s3Object.getObjectContent();
         InputStreamResource objectFileInputStream = new InputStreamResource(
             s3Object.getObjectContent());
 
-        // 1. 유사성 검사를 한다
         visionAIService.checkSimilarity(snapshotFileInputResource, objectFileInputStream);
 
-        // 2. 응답이 400이 아니라서 잘 처리되었다면, S3에 저장한다
+        String savedSnapshotUrl = s3Service.uploadFile(snapshot);
 
-        // 3. S3 저장 한 후, url을 얻어온다
-
-        // 4. 해당 snapshot url을 Snapshot으로 저장한다
+        snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
 
     }
 
