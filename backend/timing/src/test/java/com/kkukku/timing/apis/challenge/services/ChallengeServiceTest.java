@@ -6,13 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
+import com.kkukku.timing.apis.challenge.repositories.SnapshotRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
@@ -26,6 +29,7 @@ import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.external.services.VisionAIService;
+import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.ByteArrayInputStream;
@@ -50,6 +54,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 @SpringBootTest(properties = "spring.profiles.active=local")
@@ -73,6 +78,9 @@ public class ChallengeServiceTest {
 
     @Autowired
     private SnapshotService snapshotService;
+
+    @Autowired
+    private SnapshotRepository snapshotRepository;
 
     @MockBean
     private S3Service s3Service;
@@ -113,7 +121,20 @@ public class ChallengeServiceTest {
         return new MockMultipartFile(name, fileName, contentType, content);
     }
 
-    public S3Object createS3ObjectFromMultipartFile(MockMultipartFile file) throws IOException {
+    private S3Object createMockS3Object(String filePath) throws IOException {
+
+        byte[] contentBytes = Files.readAllBytes(Paths.get(filePath));
+        ByteArrayInputStream contentStream = new ByteArrayInputStream(contentBytes);
+
+        S3ObjectInputStream s3ObjectInputStream = new S3ObjectInputStream(contentStream, null);
+        S3Object s3Object = new S3Object();
+        s3Object.setObjectContent(s3ObjectInputStream);
+
+        return s3Object;
+    }
+
+    public S3Object createS3ObjectFromMultipartFile(MockMultipartFile file)
+        throws IOException {
         S3Object s3Object = new S3Object();
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
@@ -219,7 +240,7 @@ public class ChallengeServiceTest {
         //given
         Integer memberId = 1;
         Long targetChallengeId = 2L;
-        List<SnapshotEntity> expectedSnapshots = snapshotService.getAllSnapshotByChallenge(
+        List<SnapshotEntity> beforeSnapshots = snapshotService.getAllSnapshotByChallenge(
             targetChallengeId);
 
         // when
@@ -229,6 +250,11 @@ public class ChallengeServiceTest {
         Optional<ChallengeEntity> expectedChallenge = challengeRepository.findById(
             targetChallengeId);
         assertTrue(expectedChallenge.isEmpty());
+
+        List<SnapshotEntity> afterSnapshots = snapshotService.getAllSnapshotByChallenge(
+            targetChallengeId);
+
+        assertEquals(0, afterSnapshots.size());
     }
 
     @Test
@@ -386,7 +412,7 @@ public class ChallengeServiceTest {
     @Transactional
     @Order(10)
     @DisplayName("특정 스냅샷 추가시, 유사성이 높다면 스냅샷이 등록된다")
-    void shouldSaveWhenHighSimilarity() {
+    void shouldSaveWhenHighSimilarity() throws IOException {
 
         // given
         String afterSnapshotName = "test_snapshot3.png";
@@ -395,7 +421,10 @@ public class ChallengeServiceTest {
 
         String objectName = "test_object.png";
         String objectPath = "src/test/resources/image/" + objectName;
-        MockMultipartFile object = getSampleText(afterSnapshotPath, afterSnapshotName);
+        S3Object mockS3Object = createMockS3Object(objectPath);
+
+        when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
+        when(s3Service.uploadFile(snapshotFile)).thenReturn(afterSnapshotName);
 
         Long challengeId = 2L;
         Integer memberId = 1;
@@ -411,24 +440,49 @@ public class ChallengeServiceTest {
 
     }
 
+
     @Test
     @Transactional
     @Order(10)
     @DisplayName("특정 스냅샷 추가시, 유사성이 낮다면 스냅샷이 등록되지 않는다")
-    void shouldSaveWhenLowSimilarity() {
+    void shouldSaveWhenLowSimilarity() throws IOException {
 
-        String afterSnapshotName = "test_snapshot.png";
+        String afterSnapshotName = "test_snapshot3.png";
         String afterSnapshotPath = "src/test/resources/image/" + afterSnapshotName;
         MockMultipartFile snapshotFile = getSampleText(afterSnapshotPath, afterSnapshotName);
 
         String objectName = "test_object.png";
         String objectPath = "src/test/resources/image/" + objectName;
-        MockMultipartFile objectFile = getSampleText(objectPath, objectName);
-//
-//        doThrow(new CustomException(ErrorCode.NOT_PROPER_COORDINATE)).when(
-//                                                                         visionAIService);
-//                                                                     .checkSimilarity(snapshotFile,
-//                                                                         objectFile);
+        S3Object mockS3Object = createMockS3Object(objectPath);
+
+        byte[] snapshotDataBytes = Files.readAllBytes(Paths.get(afterSnapshotPath));
+        InputStreamResource snapshotStreamResource = new InputStreamResource(
+            new ByteArrayInputStream(snapshotDataBytes));
+
+        byte[] objectDataBytes = Files.readAllBytes(Paths.get(objectPath));
+        InputStreamResource objectStreamResource = new InputStreamResource(
+            new ByteArrayInputStream(objectDataBytes));
+
+        doThrow(new CustomException(ErrorCode.NOT_PROPER_COORDINATE)).when(
+                                                                         visionAIService)
+                                                                     .checkSimilarity(
+                                                                         snapshotStreamResource,
+                                                                         objectStreamResource);
+
+        when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
+        when(s3Service.uploadFile(snapshotFile)).thenReturn(afterSnapshotName);
+
+        Long challengeId = 2L;
+        Integer memberId = 1;
+
+        // when
+        challengeService.setSnapshotProcedure(memberId, challengeId, snapshotFile);
+
+        // then
+        SnapshotEntity actualSnapshot = snapshotService.getAllSnapshotByChallenge(challengeId)
+                                                       .getLast();
+
+        assertEquals("/" + afterSnapshotName, actualSnapshot.getImageUrl());
 
     }
 
