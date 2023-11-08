@@ -22,6 +22,7 @@ public enum ErrorCode {
     NOT_EXIST_FEED(400, "Not exist feed"),
     THIS_CHALLENGE_IS_NOT_YOURS(400, "This challenge is not your Challenge"),
     NOT_EXIST_MULTIPART_FILE(400, "Not Exist MultiPart File"),
+    NOT_COMPLETED_CHALLENGE(400, "The number of snapshots is insufficient."),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),

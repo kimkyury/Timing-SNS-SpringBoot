@@ -18,4 +18,8 @@ public class SnapshotService {
         return snapshotRepository.findAllByChallengeId(challengeId);
     }
 
+    public long getCntSnapshotByChallenge(Long challengeId) {
+        return snapshotRepository.countByChallengeId(challengeId);
+    }
+
 }
