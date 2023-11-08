@@ -193,6 +193,7 @@ public class ChallengeService {
         if (expectedCnt != actualCnt) {
             throw new CustomException(ErrorCode.NOT_COMPLETED_CHALLENGE);
         }
-
     }
+
+
 }
