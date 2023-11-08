@@ -41,7 +41,7 @@ public class VisionAIService {
         MultiValueMap<String, HttpEntity<?>> multipartBody = bodyBuilder.build();
 
         ResponseEntity<Void> result = restClient.post()
-                                                .uri(baseUrl + "/")
+                                                .uri(baseUrl + "/objectDetaction")
                                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                                                 .body(multipartBody)
                                                 .retrieve()
