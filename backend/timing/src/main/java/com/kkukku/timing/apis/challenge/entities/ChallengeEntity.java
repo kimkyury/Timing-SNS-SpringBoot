@@ -52,6 +52,7 @@ public class ChallengeEntity {
     @Setter
     private String objectUrl;
 
+    @Setter
     @Column(nullable = false, insertable = false)
     private String thumbnailUrl;
 

@@ -486,5 +486,39 @@ public class ChallengeServiceTest {
 
     }
 
+    @Test
+    @Transactional
+    @Order(10)
+    @DisplayName("특정 스냅샷 추가시, 최초 등록이면 썸네일이 등록된다")
+    void shouldSetThumbnailWhenInitAddSnapshot() throws IOException {
+
+        // given
+        String afterSnapshotName = "test_snapshot3.png";
+        String afterSnapshotPath = "src/test/resources/image/" + afterSnapshotName;
+        MockMultipartFile snapshotFile = getSampleText(afterSnapshotPath, afterSnapshotName);
+
+        String objectName = "test_object.png";
+        String objectPath = "src/test/resources/image/" + objectName;
+        S3Object mockS3Object = createMockS3Object(objectPath);
+
+        when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
+        when(s3Service.uploadFile(snapshotFile)).thenReturn(afterSnapshotName);
+
+        Long challengeId = 1L;
+        Integer memberId = 1;
+
+        // when
+        challengeService.setSnapshotProcedure(memberId, challengeId, snapshotFile);
+
+        // then
+        SnapshotEntity actualSnapshot = snapshotService.getAllSnapshotByChallenge(challengeId)
+                                                       .getLast();
+        ChallengeEntity actualChallenge = challengeRepository.findById(challengeId)
+                                                             .get();
+
+        assertEquals("/" + afterSnapshotName, actualSnapshot.getImageUrl());
+        assertEquals("/" + afterSnapshotName, actualChallenge.getThumbnailUrl());
+    }
+
 
 }
