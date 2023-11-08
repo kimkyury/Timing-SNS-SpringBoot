@@ -104,4 +104,15 @@ public class FeedServiceTest {
                                             .getReview()));
     }
 
+    @Test
+    public void getFeedDetailTest() {
+        Long notMyDeletedFeed = 3L;
+        Long notMyPrivateFeed = 5L;
+        Long myDeletedFeed = 8L;
+
+        assertThrows(CustomException.class, () -> feedService.getFeedDetail(notMyDeletedFeed));
+        assertThrows(CustomException.class, () -> feedService.getFeedDetail(notMyPrivateFeed));
+        assertThrows(CustomException.class, () -> feedService.getFeedDetail(myDeletedFeed));
+    }
+
 }
