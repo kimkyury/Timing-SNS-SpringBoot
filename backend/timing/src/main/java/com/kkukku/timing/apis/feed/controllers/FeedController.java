@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.feed.controllers;
 
+import com.amazonaws.services.s3.model.S3Object;
 import com.kkukku.timing.apis.comment.requests.CommentSaveRequest;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.feed.requests.FeedUpdateRequest;
@@ -12,6 +13,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,6 +80,21 @@ public class FeedController {
     @GetMapping("/{id}/influence")
     public ResponseEntity<FeedNodeResponse> getFeedTree(@PathVariable Long id) {
         return ApiResponseUtil.success(feedService.getFeedTree(id));
+    }
+
+    @Operation(summary = "피드 타임랩스 다운로드", tags = {
+        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
+    @GetMapping("/{id}/videos")
+    public ResponseEntity<?> getFile(@PathVariable Long id) {
+        S3Object s3Object = feedService.getTimelapseFile(id);
+        InputStreamResource resource = new InputStreamResource(s3Object.getObjectContent());
+
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType(s3Object.getObjectMetadata()
+                                                                           .getContentType()))
+                             .header(HttpHeaders.CONTENT_DISPOSITION,
+                                 "attachment; filename=\"" + s3Object.getKey() + "\"")
+                             .body(resource);
     }
 
     @Operation(summary = "피드 댓글 조회", tags = {

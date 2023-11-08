@@ -20,7 +20,13 @@ public class FeedNodeResponse {
     public FeedNodeResponse(FeedEntity feed) {
         this.childs = new ArrayList<>();
         this.id = feed.getId();
-        this.thumbnailUrl = feed.getThumbnailUrl();
+
+        if (feed.getIsPrivate() || feed.getIsDelete()) {
+            this.thumbnailUrl = "/default_thumbnail.png";
+        } else {
+            this.thumbnailUrl = feed.getThumbnailUrl();
+        }
+
         this.isPrivate = feed.getIsPrivate();
         this.isDelete = feed.getIsDelete();
     }
