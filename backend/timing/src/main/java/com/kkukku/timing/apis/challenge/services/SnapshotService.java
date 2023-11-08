@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.challenge.services;
 
+import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.SnapshotRepository;
 import java.util.List;
@@ -20,6 +21,13 @@ public class SnapshotService {
 
     public long getCntSnapshotByChallenge(Long challengeId) {
         return snapshotRepository.countByChallengeId(challengeId);
+    }
+
+    public void createSnapshot(ChallengeEntity challenge, String url) {
+
+        SnapshotEntity snapshot = SnapshotEntity.of(challenge, url);
+        snapshotRepository.save(snapshot);
+        
     }
 
 }
