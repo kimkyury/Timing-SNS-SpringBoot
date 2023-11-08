@@ -244,7 +244,7 @@ public class FeedService {
 
         accessCheck(feed);
 
-        likeService.saveLike(id);
+        likeService.deleteLike(id);
     }
 
     public void accessCheck(FeedEntity feed) {
