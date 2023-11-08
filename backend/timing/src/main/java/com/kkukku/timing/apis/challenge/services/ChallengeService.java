@@ -224,12 +224,7 @@ public class ChallengeService {
         checkOwnChallenge(memberId, challengeId);
 
         // get SnapshotFile StreamResource
-        InputStreamResource snapshotFileInputResource;
-        try {
-            snapshotFileInputResource = new InputStreamResource(snapshot.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        InputStreamResource snapshotInputStream = getInputStreamByMultipart(snapshot);
 
         // get SnapshotFile StreamResource
         String objectUrl = challenge.getObjectUrl();
@@ -238,13 +233,36 @@ public class ChallengeService {
             s3Object.getObjectContent());
 
         //TODO: 적용해야 함
-        //visionAIService.checkSimilarity(snapshotFileInputResource, objectFileInputStream);
+//        visionAIService.checkSimilarity(snapshotInputStream, objectFileInputStream);
 
         String savedSnapshotUrl = s3Service.uploadFile(snapshot);
 
-        snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
+        saveChallengeThumbnail(challenge, savedSnapshotUrl);
 
+        snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
+    // TODO: 다른 Util로 이동시키기
+    private InputStreamResource getInputStreamByMultipart(MultipartFile file) {
 
+        InputStreamResource fileInputResource;
+
+        try {
+            fileInputResource = new InputStreamResource(file.getInputStream());
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        return fileInputResource;
+    }
+
+    private void saveChallengeThumbnail(ChallengeEntity challenge, String thumbnailUrl) {
+
+        if (challenge.getThumbnailUrl()
+                     .equals("/default_thumbnail.png")) {
+            System.out.println("----------thumbnail change--------");
+            challenge.setThumbnailUrl("/" + thumbnailUrl);
+            challengeRepository.save(challenge);
+        }
+    }
 }
