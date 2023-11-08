@@ -97,6 +97,7 @@ public class ChallengeService {
         return ChronoUnit.DAYS.between(startedAt, yesterday);
     }
 
+    @Transactional
     public void deleteChallenge(Integer memberId, Long challengeId) {
 
         checkOwnChallenge(memberId, challengeId);
@@ -106,8 +107,8 @@ public class ChallengeService {
                  .map(SnapshotEntity::getImageUrl)
                  .forEach(s3Service::deleteFile);
 
+        snapshotService.deleteSnapshot(snapshots);
         challengeRepository.deleteById(challengeId);
-
     }
 
     public void extendChallenge(Integer memberId, Long challengeId) {
@@ -236,7 +237,8 @@ public class ChallengeService {
         InputStreamResource objectFileInputStream = new InputStreamResource(
             s3Object.getObjectContent());
 
-        visionAIService.checkSimilarity(snapshotFileInputResource, objectFileInputStream);
+        //TODO: 적용해야 함
+        //visionAIService.checkSimilarity(snapshotFileInputResource, objectFileInputStream);
 
         String savedSnapshotUrl = s3Service.uploadFile(snapshot);
 
