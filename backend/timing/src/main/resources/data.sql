@@ -5,9 +5,9 @@ VALUES ('운동'),
        ('저녁');
 
 INSERT INTO members(email, profile_image_url, nickname, is_delete)
-VALUES ('kkr@test.com', '/test.png', '테스터', 0),
-       ('unit@test.com', '/test.png', '테스터2', 0),
-       ('man@test.com', '/test.png', '테스터3', 0);
+VALUES ('kkr@test.com', '/default_profile.png', '테스터', 0),
+       ('unit@test.com', '/default_profile.png', '테스터2', 0),
+       ('man@test.com', '/default_profile.png', '테스터3', 0);
 
 INSERT INTO challenges (member_id, started_at, ended_at, goal_content, thumbnail_url, object_url,
                         polygon_url)
@@ -25,8 +25,8 @@ VALUES (3, 2),
 
 INSERT INTO snapshots(challenge_id, image_url, created_at)
 VALUES (2, '/test_snapshot.png', '2023-10-03'),
-       (2, '/test_snapshot.png', '2023-10-04'),
-       (2, '/test_snapshot.png', '2023-10-05'),
+       (2, '/test_snapshot.png2', '2023-10-04'),
+       (2, '/test_snapshot.png3', '2023-10-05'),
        (2, '/test_snapshot.png', '2023-10-06');
 
 INSERT INTO feeds (member_id,

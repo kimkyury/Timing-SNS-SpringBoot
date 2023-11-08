@@ -79,26 +79,24 @@ public class ChallengeServiceTest {
     @Value("${cloud.aws.s3.url}")
     private String s3StartUrl;
 
-    public MockMultipartFile getSampleImage() {
-        Path path = Paths.get("src/test/resources/Chirachino.jpg");
+    public MockMultipartFile getSampleImage(String pathStr, String filename) {
+        Path path = Paths.get(pathStr);
         String name = "file";
-        String originalFileName = "Chirachino.jpg";
         String contentType = "image/jpeg";
+
         byte[] content = "".getBytes();
         try {
             content = Files.readAllBytes(path);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
 
-        return new MockMultipartFile(name, originalFileName, contentType,
-            content);
+        return new MockMultipartFile(name, filename, contentType, content);
     }
 
-    public MockMultipartFile getSampleText() {
-        Path path = Paths.get("src/test/resources/test_polygon.txt");
+    public MockMultipartFile getSampleText(String pathStr, String fileName) {
+        Path path = Paths.get(pathStr);
         String name = "file";
-        String originalFileName = "test_polygon.txt";
         String contentType = "text/plain"; // 텍스트 파일의 MIME 타입
         byte[] content = null;
 
@@ -108,7 +106,7 @@ public class ChallengeServiceTest {
             System.out.println(e.getMessage());
         }
 
-        return new MockMultipartFile(name, originalFileName, contentType, content);
+        return new MockMultipartFile(name, fileName, contentType, content);
     }
 
     public S3Object createS3ObjectFromMultipartFile(MockMultipartFile file) throws IOException {
@@ -320,10 +318,12 @@ public class ChallengeServiceTest {
     @Test
     @Transactional
     @Order(8)
-    @DisplayName("")
-    void shouldGetPolygonByChallenge() throws IOException {
+    @DisplayName("특정 챌린지의 Polygon 정보를 String값으로 반환한다")
+    void shouldGetPolygonStringByChallenge() throws IOException {
 
-        MockMultipartFile testPolygonFile = getSampleText();
+        String afterPolygonName = "test_polygon.png";
+        String afterPolygonPath = "src/test/resources/image/" + afterPolygonName;
+        MockMultipartFile testPolygonFile = getSampleText(afterPolygonPath, afterPolygonName);
         S3Object mockS3Object = createS3ObjectFromMultipartFile(testPolygonFile);
         when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
 
@@ -339,6 +339,42 @@ public class ChallengeServiceTest {
         String expectedPolygonStr = new String(testPolygonFile.getBytes(), StandardCharsets.UTF_8);
 
         assertEquals(expectedPolygonStr, response.getPolygon());
+
+    }
+
+
+    @Test
+    @Transactional
+    @Order(8)
+    @DisplayName("특정 Cahllenge에 대하여 Object와 Polygon 파일을 저장합니다.")
+    void shouldSaveObjectAndPolygonFile() {
+
+        // given
+        String afterPolygonName = "test_polygon.png";
+        String afterPolygonPath = "src/test/resources/image/" + afterPolygonName;
+        MockMultipartFile testPolygonFile = getSampleText(afterPolygonPath, afterPolygonName);
+
+        String afterObjectName = "test_object.png";
+        String afterObjectPath = "src/test/resources/image/" + afterObjectName;
+        MockMultipartFile testObjectFile = getSampleImage(afterObjectPath, afterObjectName);
+
+        Long testChallengeId = 1L;
+        Integer testMemberId = 1;
+
+        String expectedPolygonUrl = "test_polygon.png";
+        when(s3Service.uploadFile(testPolygonFile)).thenReturn(expectedPolygonUrl);
+        String expectedObjectUrl = "image/test_object.png";
+        when(s3Service.uploadFile(testObjectFile)).thenReturn(expectedObjectUrl);
+
+        // when
+//        challengeService.saveObjectAndPolygon(testMemberId, testChallengeId);
+
+        // then
+//        ChallengeEntity challenge = challengeRepository.findById(testChallengeId)
+//                                                       .get();
+
+//        assertEquals(expectedPolygonUrl, challenge.getPolygonUrl());
+//        assertEquals(expectedObjectUrl, challenge.getObjectUrl());
 
     }
 
