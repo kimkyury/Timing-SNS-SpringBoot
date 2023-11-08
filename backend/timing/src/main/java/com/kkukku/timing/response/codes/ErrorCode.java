@@ -23,6 +23,8 @@ public enum ErrorCode {
     THIS_CHALLENGE_IS_NOT_YOURS(400, "This challenge is not your Challenge"),
     NOT_EXIST_MULTIPART_FILE(400, "Not Exist MultiPart File"),
     NOT_COMPLETED_CHALLENGE(400, "The number of snapshots is insufficient."),
+    DELETED_FEED(400, "This feed is already delete"),
+    PRIVATE_FEED(400, "Private feed can access only writer"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),

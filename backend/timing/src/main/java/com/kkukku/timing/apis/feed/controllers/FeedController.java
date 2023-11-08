@@ -2,11 +2,10 @@ package com.kkukku.timing.apis.feed.controllers;
 
 import com.kkukku.timing.apis.comment.requests.CommentSaveRequest;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
-import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.requests.FeedUpdateRequest;
 import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
+import com.kkukku.timing.apis.feed.responses.FeedNodeResponse;
 import com.kkukku.timing.apis.feed.services.FeedService;
-import com.kkukku.timing.apis.like.services.LikeService;
 import com.kkukku.timing.response.ApiResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class FeedController {
 
     private final FeedService feedService;
-    private final CommentService commentService;
-    private final LikeService likeService;
 
     @Operation(summary = "추천 피드 상세 조회", tags = {"3. Feed"},
         description = "현재는 랜덤 피드를 뽑아옵니다.")
@@ -41,7 +38,8 @@ public class FeedController {
         return ApiResponseUtil.success(feedService.getRecommendFeeds());
     }
 
-    @Operation(summary = "피드 상세 조회", tags = {"3. Feed"})
+    @Operation(summary = "피드 상세 조회", tags = {
+        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("/{id}")
     public ResponseEntity<FeedDetailResponse> getFeedDetail(@PathVariable Long id) {
         return ApiResponseUtil.success(feedService.getFeedDetail(id));
@@ -73,30 +71,40 @@ public class FeedController {
         feedService.updateFeed(id, feedUpdateRequest.getReview(), feedUpdateRequest.getIsPrivate());
     }
 
+    @Operation(summary = "피드가 이어받은 모든 피드 조회 (트리 조회)", tags = {
+        "3.Feed"}, description = "delete 노드와 private 노드는 기본 thumbnail URL로 제공됨")
+    @GetMapping("/{id}/influence")
+    public ResponseEntity<FeedNodeResponse> getFeedTree(@PathVariable Long id) {
+        return ApiResponseUtil.success(feedService.getFeedTree(id));
+    }
+
     @Operation(summary = "피드 댓글 조회", tags = {
-        "3. Feed"}, description = "page 값은 1부터 가능하고, 10개씩 주어집니다.")
+        "3. Feed"}, description = "page 값은 1부터 가능하고, 10개씩 주어집니다. private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("/{id}/comments")
     public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long id,
         @RequestParam(name = "page") Integer page) {
-        return ApiResponseUtil.success(commentService.getCommentsByFeedId(id, page, 10));
+        return ApiResponseUtil.success(feedService.getCommentsByFeedId(id, page));
     }
 
-    @Operation(summary = "피드 댓글 작성", tags = {"3. Feed"})
+    @Operation(summary = "피드 댓글 작성", tags = {
+        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @PostMapping("/{id}/comments")
     public void saveComment(@PathVariable Long id,
         @RequestBody @Valid CommentSaveRequest commentSaveRequest) {
-        commentService.saveComment(id, commentSaveRequest.getContent());
+        feedService.saveComment(id, commentSaveRequest.getContent());
     }
 
-    @Operation(summary = "피드 좋아요", tags = {"3. Feed"})
+    @Operation(summary = "피드 좋아요", tags = {
+        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @PostMapping("/{id}/likes")
     public void likeFeed(@PathVariable Long id) {
-        likeService.saveLike(id);
+        feedService.saveLike(id);
     }
 
-    @Operation(summary = "피드 좋아요 취소", tags = {"3. Feed"})
+    @Operation(summary = "피드 좋아요 취소", tags = {
+        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @DeleteMapping("/{id}/likes")
     public void dislikeFeed(@PathVariable Long id) {
-        likeService.deleteLike(id);
+        feedService.deleteLike(id);
     }
 }
