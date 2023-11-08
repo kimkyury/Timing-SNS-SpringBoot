@@ -1,8 +1,6 @@
 package com.kkukku.timing.apis.challenge.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.SnapshotRepository;
@@ -24,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest(properties = "spring.profiles.active=local")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -43,11 +40,11 @@ public class SnapshotServiceTest {
     @Value("${cloud.aws.s3.url}")
     private String s3StartUrl;
 
-    public MockMultipartFile getSampleImage() {
-        Path path = Paths.get("src/test/resources/Chirachino.jpg");
+    public MockMultipartFile getSampleImage(String pathStr, String filename) {
+        Path path = Paths.get(pathStr);
         String name = "file";
-        String originalFileName = "Chirachino.jpg";
         String contentType = "image/jpeg";
+
         byte[] content = "".getBytes();
         try {
             content = Files.readAllBytes(path);
@@ -55,8 +52,7 @@ public class SnapshotServiceTest {
             System.out.println(e);
         }
 
-        return new MockMultipartFile(name, originalFileName, contentType,
-            content);
+        return new MockMultipartFile(name, filename, contentType, content);
     }
 
 
@@ -94,9 +90,9 @@ public class SnapshotServiceTest {
     void shouldSaveThumbnailAndSnapShot() {
 
         // given
-        String updatedProfileUrl = "http://example.com/profile.png";
-        when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(updatedProfileUrl);
-        MockMultipartFile multipartFile = getSampleImage();
+        String afterFileName = "test_snapshot.png";
+        String path = "src/test/resources/image/" + afterFileName;
+        MockMultipartFile multipartFile = getSampleImage(path, afterFileName);
 
 
     }
@@ -108,9 +104,9 @@ public class SnapshotServiceTest {
     void shouldSaveSnapShot() {
 
         // given
-        String updatedProfileUrl = "http://example.com/profile.png";
-        when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(updatedProfileUrl);
-        MockMultipartFile multipartFile = getSampleImage();
+        String afterFileName = "test_snapshot.png";
+        String path = "src/test/resources/image/" + afterFileName;
+        MockMultipartFile multipartFile = getSampleImage(path, afterFileName);
 
     }
 
