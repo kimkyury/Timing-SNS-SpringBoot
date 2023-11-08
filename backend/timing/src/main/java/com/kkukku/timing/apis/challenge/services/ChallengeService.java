@@ -97,6 +97,7 @@ public class ChallengeService {
         return ChronoUnit.DAYS.between(startedAt, yesterday);
     }
 
+    @Transactional
     public void deleteChallenge(Integer memberId, Long challengeId) {
 
         checkOwnChallenge(memberId, challengeId);
@@ -106,8 +107,8 @@ public class ChallengeService {
                  .map(SnapshotEntity::getImageUrl)
                  .forEach(s3Service::deleteFile);
 
+        snapshotService.deleteSnapshot(snapshots);
         challengeRepository.deleteById(challengeId);
-
     }
 
     public void extendChallenge(Integer memberId, Long challengeId) {
@@ -223,12 +224,7 @@ public class ChallengeService {
         checkOwnChallenge(memberId, challengeId);
 
         // get SnapshotFile StreamResource
-        InputStreamResource snapshotFileInputResource;
-        try {
-            snapshotFileInputResource = new InputStreamResource(snapshot.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        InputStreamResource snapshotInputStream = getInputStreamByMultipart(snapshot);
 
         // get SnapshotFile StreamResource
         String objectUrl = challenge.getObjectUrl();
@@ -236,13 +232,37 @@ public class ChallengeService {
         InputStreamResource objectFileInputStream = new InputStreamResource(
             s3Object.getObjectContent());
 
-        visionAIService.checkSimilarity(snapshotFileInputResource, objectFileInputStream);
+        //TODO: 적용해야 함
+//        visionAIService.checkSimilarity(snapshotInputStream, objectFileInputStream);
 
         String savedSnapshotUrl = s3Service.uploadFile(snapshot);
 
-        snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
+        saveChallengeThumbnail(challenge, savedSnapshotUrl);
 
+        snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
+    // TODO: 다른 Util로 이동시키기
+    private InputStreamResource getInputStreamByMultipart(MultipartFile file) {
 
+        InputStreamResource fileInputResource;
+
+        try {
+            fileInputResource = new InputStreamResource(file.getInputStream());
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        return fileInputResource;
+    }
+
+    private void saveChallengeThumbnail(ChallengeEntity challenge, String thumbnailUrl) {
+
+        if (challenge.getThumbnailUrl()
+                     .equals("/default_thumbnail.png")) {
+            System.out.println("----------thumbnail change--------");
+            challenge.setThumbnailUrl("/" + thumbnailUrl);
+            challengeRepository.save(challenge);
+        }
+    }
 }

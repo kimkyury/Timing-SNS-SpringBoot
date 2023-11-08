@@ -23,11 +23,15 @@ public class SnapshotService {
         return snapshotRepository.countByChallengeId(challengeId);
     }
 
+    public void deleteSnapshot(List<SnapshotEntity> snapshots) {
+        snapshotRepository.deleteAll(snapshots);
+    }
+
     public void createSnapshot(ChallengeEntity challenge, String url) {
 
         SnapshotEntity snapshot = SnapshotEntity.of(challenge, url);
         snapshotRepository.save(snapshot);
-        
+
     }
 
 }
