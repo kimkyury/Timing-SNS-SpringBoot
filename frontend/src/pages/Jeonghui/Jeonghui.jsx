@@ -7,6 +7,7 @@ import Webcam from 'react-webcam';
 import { useState } from 'react';
 
 const BASE_HTTP_URL = 'http://localhost:8001';
+const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 const email = 'spor1998@naver.com';
 
@@ -14,16 +15,13 @@ function Jeonghui() {
     const photoRef = useRef(null);
     const videoRef = useRef(null);
     const location = useLocation();
-    // const timeLaps = location.state;
-    const timeLaps = {
-        id: 1,
-        percent: 0,
-    };
+    const timeLaps = location.state;
     const navigate = useNavigate();
     const [width, setWidth] = useState(100);
     const [height, setHeight] = useState(100);
     const [ratio, setRatio] = useState(1);
     const [poly, setPoly] = useState(null);
+    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
 
     useEffect(() => {
         // setupWebcam();
@@ -33,22 +31,35 @@ function Jeonghui() {
         setHeight(containerInfo.getBoundingClientRect().height - 1);
         setRatio(containerInfo.getBoundingClientRect().width / containerInfo.getBoundingClientRect().height);
 
-        if (timeLaps.percent != 0) {
+        if (timeLaps.countDays > 0) {
             // 여기서 ploy 가져오는 로직
             axios
-                .get(`${BASE_HTTP_URL}/objectDetaction/getPoly/${timeLaps.id + email}`, {
+                .get(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/polygon`, {
                     headers: {
-                        accept: '*/*',
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 })
                 .then((response) => {
                     console.log(response);
-                    // setPoly(JSON.parse(response.data));
                     setPoly(response.data);
                 })
                 .catch((error) => {
-                    console.error(`Error: ${error}`);
+                    console.error(error);
                 });
+            // axios
+            //     .get(`${BASE_HTTP_URL}/objectDetaction/getPoly/${timeLaps.id + email}`, {
+            //         headers: {
+            //             accept: '*/*',
+            //         },
+            //     })
+            //     .then((response) => {
+            //         console.log(response);
+            //         // setPoly(JSON.parse(response.data));
+            //         setPoly(response.data);
+            //     })
+            //     .catch((error) => {
+            //         console.error(`Error: ${error}`);
+            //     });
         }
     }, []);
 
