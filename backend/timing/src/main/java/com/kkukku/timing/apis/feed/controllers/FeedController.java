@@ -5,6 +5,7 @@ import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.requests.FeedUpdateRequest;
 import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
+import com.kkukku.timing.apis.feed.responses.FeedNodeResponse;
 import com.kkukku.timing.apis.feed.services.FeedService;
 import com.kkukku.timing.apis.like.services.LikeService;
 import com.kkukku.timing.response.ApiResponseUtil;
@@ -71,6 +72,12 @@ public class FeedController {
     public void updateFeed(@PathVariable Long id,
         @RequestBody FeedUpdateRequest feedUpdateRequest) {
         feedService.updateFeed(id, feedUpdateRequest.getReview(), feedUpdateRequest.getIsPrivate());
+    }
+
+    @Operation(summary = "피드가 이어받은 모든 피드 조회 (트리 조회)", tags = {"3.Feed"})
+    @GetMapping("/{id}/influence")
+    public ResponseEntity<FeedNodeResponse> getFeedTree(@PathVariable Long id) {
+        return ApiResponseUtil.success(feedService.getFeedTree(id));
     }
 
     @Operation(summary = "피드 댓글 조회", tags = {

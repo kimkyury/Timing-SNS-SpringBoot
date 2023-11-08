@@ -4,6 +4,7 @@ import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
+import com.kkukku.timing.apis.feed.responses.FeedNodeResponse;
 import com.kkukku.timing.apis.feed.responses.FeedSummaryResponse;
 import com.kkukku.timing.apis.feed.responses.FeedSummaryWithCountResponse;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
@@ -14,7 +15,9 @@ import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import com.kkukku.timing.security.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -188,6 +191,29 @@ public class FeedService {
         }
 
         feedRepository.save(feed);
+    }
+
+    public FeedNodeResponse getFeedTree(Long id) {
+        Map<Long, FeedNodeResponse> map = new HashMap<>();
+
+        Long rootId = getFeedById(id).getRoot()
+                                     .getId();
+        feedRepository.findAllByRoot_Id(rootId)
+                      .forEach(feed -> {
+                          FeedNodeResponse node = new FeedNodeResponse(feed);
+                          map.put(feed.getId(), node);
+
+                          if (feed.getParent() == null) {
+                              return;
+                          }
+
+                          FeedNodeResponse parent = map.get(feed.getParent()
+                                                                .getId());
+                          parent.getChilds()
+                                .add(node);
+                      });
+
+        return map.get(rootId);
     }
 
     private int find(Integer[] parent, Integer x) {
