@@ -1,17 +1,20 @@
-import styles from './TimeLapse.module.css';
-import { useNavigate } from 'react-router-dom';
-import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { useEffect, useState } from 'react';
-import ConfettiExplosion from 'react-confetti-explosion';
-import axios from 'axios';
+import styles from "./TimeLapse.module.css";
+import { useNavigate } from "react-router-dom";
+import {
+  CircularProgressbar,
+  buildStyles,
+  CircularProgressbarWithChildren,
+} from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { useEffect, useState } from "react";
+import ConfettiExplosion from "react-confetti-explosion";
+import axios from "axios";
 function TimeLapse() {
-    const navigate = useNavigate();
-    const [timeLaps, setTimeLaps] = useState([]);
-    const [isFinished, setIsFinished] = useState(false);
-    const [finishedChallangeId, setFinishedChallangeId] = useState(null);
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
-    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
+  const navigate = useNavigate();
+  const [timeLaps, setTimeLaps] = useState([]);
+  const [isFinished, setIsFinished] = useState(false);
+  const BASE_URL = `http://k9e203.p.ssafy.io`;
+  const [accessToken] = useState(sessionStorage.getItem("accessToken"));
 
     const finishTimeLaps = (id) => {
         setIsFinished(!isFinished);

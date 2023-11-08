@@ -52,7 +52,7 @@ function Feed(data) {
     axios
       .post(
         `${BASE_URL}/api/v1/feeds/${state.id}/likes`,
-        { id: state.id },
+        {},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -62,7 +62,7 @@ function Feed(data) {
       .then((response) => {
         console.log(response);
         console.log("like");
-        getDetailFeed();
+        // getDetailFeed();
       })
       .catch((error) => {
         console.error(error);
@@ -71,21 +71,17 @@ function Feed(data) {
   const Dislike = () => {
     if (state && state.id) {
       // state 및 state.id가 존재하는지 확인
-      console.log(state, "dislike");
+      console.log(state.id, "dislike");
       axios
-        .delete(
-          `${BASE_URL}/api/v1/feeds/${state.id}/likes`,
-          { id: state.id },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        )
+        .delete(`${BASE_URL}/api/v1/feeds/${state.id}/likes`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
         .then((response) => {
           console.log(response);
           console.log("dislike");
-          getDetailFeed();
+          // getDetailFeed();
         })
         .catch((error) => {
           console.error(error);
@@ -123,7 +119,21 @@ function Feed(data) {
   const gotoEdit = () => {
     navigate(`/updatereview/${state.id}`, { state });
   };
-
+  const gotowriterprofile = () => {
+    axios
+      .get(`${BASE_URL}/api/v1/feeds?email=${state.writer.email}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        navigate(`/profile/?email=${state.writer.email}`);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   const formatK = (count) => {
     if (count >= 100000) {
       return (count / 1000000).toFixed(1) + "백만";
@@ -188,7 +198,7 @@ function Feed(data) {
       {state ? (
         <div className={styles.container}>
           {/* 게시글 주인 정보 */}
-          <div className={styles.nameContainer}>
+          <div className={styles.nameContainer} onClick={gotowriterprofile}>
             <img
               src={state.writer.profileImageUrl}
               className={styles.profileimage}
