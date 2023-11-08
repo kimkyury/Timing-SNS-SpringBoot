@@ -42,7 +42,8 @@ public class FeedController {
         return ApiResponseUtil.success(feedService.getRecommendFeeds());
     }
 
-    @Operation(summary = "피드 상세 조회", tags = {"3. Feed"})
+    @Operation(summary = "피드 상세 조회", tags = {
+        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("/{id}")
     public ResponseEntity<FeedDetailResponse> getFeedDetail(@PathVariable Long id) {
         return ApiResponseUtil.success(feedService.getFeedDetail(id));
@@ -74,7 +75,8 @@ public class FeedController {
         feedService.updateFeed(id, feedUpdateRequest.getReview(), feedUpdateRequest.getIsPrivate());
     }
 
-    @Operation(summary = "피드가 이어받은 모든 피드 조회 (트리 조회)", tags = {"3.Feed"})
+    @Operation(summary = "피드가 이어받은 모든 피드 조회 (트리 조회)", tags = {
+        "3.Feed"}, description = "delete 노드와 private 노드는 기본 thumbnail URL로 제공됨")
     @GetMapping("/{id}/influence")
     public ResponseEntity<FeedNodeResponse> getFeedTree(@PathVariable Long id) {
         return ApiResponseUtil.success(feedService.getFeedTree(id));
