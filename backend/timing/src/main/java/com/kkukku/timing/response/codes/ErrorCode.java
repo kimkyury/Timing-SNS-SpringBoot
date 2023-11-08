@@ -25,6 +25,8 @@ public enum ErrorCode {
     NOT_COMPLETED_CHALLENGE(400, "The number of snapshots is insufficient."),
     DELETED_FEED(400, "This feed is already delete"),
     PRIVATE_FEED(400, "Private feed can access only writer"),
+    NOT_HIGH_SIMILARITY_SNAPSHOT(400, "This snapshot is not High similarity"),
+    NOT_PROPER_COORDINATE(400, "This COORDINATE is not Proper coordinate"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),
