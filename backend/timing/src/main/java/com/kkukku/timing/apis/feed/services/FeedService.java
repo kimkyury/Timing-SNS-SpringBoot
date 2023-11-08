@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.feed.services;
 
+import com.amazonaws.services.s3.model.S3Object;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
@@ -255,6 +256,14 @@ public class FeedService {
                  .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
             throw new CustomException(ErrorCode.PRIVATE_FEED);
         }
+    }
+
+    public S3Object getTimelapseFile(Long id) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        return s3Service.getFile(feed.getTimelapseUrl());
     }
 
     private int find(Integer[] parent, Integer x) {
