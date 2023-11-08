@@ -1,21 +1,23 @@
-import styles from "./CreateFeed.module.css";
-import Input from "@mui/joy/Input";
-import Textarea from "@mui/joy/Textarea";
-import Calendar from "react-calendar";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import "./Calendar.css";
+import styles from './CreateFeed.module.css';
+import Input from '@mui/joy/Input';
+import Textarea from '@mui/joy/Textarea';
+import Calendar from 'react-calendar';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './Calendar.css';
 function CreateFeed() {
-  const BASE_URL = `http://k9e203.p.ssafy.io`;
-  const [accessToken] = useState(sessionStorage.getItem("accessToken"));
-  const [tags, setTags] = useState([]);
-  const [currentTag, setCurrentTag] = useState("");
-  const [value, onChange] = useState(new Date());
-  const [contentValue, setContentValue] = useState("");
-  const handleTagInputChange = (event) => {
-    setCurrentTag(event.target.value);
-  };
+    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
+    const [tags, setTags] = useState([]);
+    const [currentTag, setCurrentTag] = useState('');
+    const [value, onChange] = useState(new Date());
+    const [contentValue, setContentValue] = useState('');
+    const navigate = useNavigate();
+    const handleTagInputChange = (event) => {
+        setCurrentTag(event.target.value);
+    };
 
     const handleTagAdd = () => {
         if (currentTag.trim() !== '') {
