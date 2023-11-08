@@ -124,5 +124,20 @@ public class ChallengeController {
         return ApiResponseUtil.success();
     }
 
+    @Operation(summary = "특정 Challenge의 Snapshot 추가(미완)", tags = {
+        "2. Challenge"},
+        description = "특정 Challenge의 Snapshot추가시, 객체 유사도(현재 미연결) 이후 Snapshot이 저장됩니다. 현재는 수행시 바로 Upload(S3저장, DB 업데이트) 됩니다. ")
+    @PostMapping(value = "/{id}/snapshots", consumes = {
+        MediaType.MULTIPART_FORM_DATA_VALUE
+    })
+    public ResponseEntity<Void> setSnapshot(@PathVariable Long id,
+        @RequestPart(value = "snapshot 이미지") MultipartFile snapshot) {
+
+        Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
+        challengeService.setSnapshotProcedure(memberId, id, snapshot);
+
+        return ApiResponseUtil.success();
+    }
+
 
 }
