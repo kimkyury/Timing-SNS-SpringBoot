@@ -15,12 +15,14 @@ public class FeedNodeResponse {
     private Long id;
     private String thumbnailUrl;
     private Boolean isPrivate;
+    private Boolean isDelete;
 
     public FeedNodeResponse(FeedEntity feed) {
         this.childs = new ArrayList<>();
         this.id = feed.getId();
         this.thumbnailUrl = feed.getThumbnailUrl();
         this.isPrivate = feed.getIsPrivate();
+        this.isDelete = feed.getIsDelete();
     }
 
 }
