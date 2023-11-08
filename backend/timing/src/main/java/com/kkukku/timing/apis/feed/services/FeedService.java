@@ -1,9 +1,12 @@
 package com.kkukku.timing.apis.feed.services;
 
+import com.amazonaws.services.s3.model.S3Object;
+import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
+import com.kkukku.timing.apis.feed.responses.FeedNodeResponse;
 import com.kkukku.timing.apis.feed.responses.FeedSummaryResponse;
 import com.kkukku.timing.apis.feed.responses.FeedSummaryWithCountResponse;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
@@ -14,7 +17,9 @@ import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import com.kkukku.timing.security.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +42,11 @@ public class FeedService {
     }
 
     public FeedDetailResponse getFeedDetail(Long id) {
-        return new FeedDetailResponse(getFeedById(id), likeService.isLiked(id),
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        return new FeedDetailResponse(feed, likeService.isLiked(id),
             feedHashTagService.getHashTagsByFeedId(id), commentService.getCommentCountByFeedId(id),
             likeService.getLikeCountByFeedId(id), countInfluencedFeeds(id), s3Service);
     }
@@ -78,17 +87,6 @@ public class FeedService {
     public FeedSummaryWithCountResponse getOtherSummaryFeedsWithCount(String email) {
         return new FeedSummaryWithCountResponse(getOtherSummaryFeeds(email), countOtherFeeds(email),
             countAllInfluencedOtherFeeds(email));
-    }
-
-    public FeedEntity getFeedByIdAndMemberId(Long id, Integer memberId) {
-        return feedRepository.findByIdAndMember_Id(id, memberId)
-                             .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FEED));
-    }
-
-    public FeedEntity getFeedById(Long id) {
-        return feedRepository.findById(id)
-                             .orElseThrow(() -> new CustomException(
-                                 ErrorCode.NOT_EXIST_FEED));
     }
 
     public List<FeedEntity> getFeedsByRootId(Long rootId) {
@@ -158,6 +156,8 @@ public class FeedService {
     public void deleteFeed(Long id) {
         FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
 
+        accessCheck(feed);
+
         feed.setIsDelete(true);
         s3Service.deleteFile(feed.getThumbnailUrl());
         s3Service.deleteFile(feed.getTimelapseUrl());
@@ -169,6 +169,8 @@ public class FeedService {
     public void updateFeed(Long id, String review, Boolean isPrivate) {
         FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
 
+        accessCheck(feed);
+
         if (review != null) {
             feed.setReview(review);
         }
@@ -177,6 +179,91 @@ public class FeedService {
         }
 
         feedRepository.save(feed);
+    }
+
+    public FeedNodeResponse getFeedTree(Long id) {
+        Map<Long, FeedNodeResponse> map = new HashMap<>();
+
+        Long rootId = getFeedById(id).getRoot()
+                                     .getId();
+        feedRepository.findAllByRoot_Id(rootId)
+                      .forEach(feed -> {
+                          FeedNodeResponse node = new FeedNodeResponse(feed);
+                          map.put(feed.getId(), node);
+
+                          if (feed.getParent() == null) {
+                              return;
+                          }
+
+                          FeedNodeResponse parent = map.get(feed.getParent()
+                                                                .getId());
+                          parent.getChilds()
+                                .add(node);
+                      });
+
+        return map.get(rootId);
+    }
+
+    public FeedEntity getFeedByIdAndMemberId(Long id, Integer memberId) {
+        return feedRepository.findByIdAndMember_Id(id, memberId)
+                             .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FEED));
+    }
+
+    public FeedEntity getFeedById(Long id) {
+        return feedRepository.findById(id)
+                             .orElseThrow(() -> new CustomException(
+                                 ErrorCode.NOT_EXIST_FEED));
+    }
+
+    public List<CommentResponse> getCommentsByFeedId(Long id, Integer page) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        return commentService.getCommentsByFeedId(id, page, 10);
+    }
+
+    public void saveComment(Long id, String content) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        commentService.saveComment(id, content);
+    }
+
+    public void saveLike(Long id) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        likeService.saveLike(id);
+    }
+
+    public void deleteLike(Long id) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        likeService.saveLike(id);
+    }
+
+    public void accessCheck(FeedEntity feed) {
+        if (feed.getIsDelete()) {
+            throw new CustomException(ErrorCode.DELETED_FEED);
+        }
+        if (!feed.getMember()
+                 .getId()
+                 .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
+            throw new CustomException(ErrorCode.PRIVATE_FEED);
+        }
+    }
+
+    public S3Object getTimelapseFile(Long id) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        return s3Service.getFile(feed.getTimelapseUrl());
     }
 
     private int find(Integer[] parent, Integer x) {

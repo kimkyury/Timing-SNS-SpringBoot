@@ -20,8 +20,8 @@ public class ChallengeResponse {
     public static class Challenge {
 
         private String thumbnailUrl;
-        private int countDays;
-        private int maxDays;
+        private long countDays;
+        private long maxDays;
 
     }
 }

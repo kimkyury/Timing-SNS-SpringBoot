@@ -31,6 +31,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -78,19 +79,19 @@ public class ChallengeService {
                                .map(c -> {
                                    String thumbnailUrl =
                                        s3Service.getS3StartUrl() + c.getThumbnailUrl();
-                                   int countDays = diffDay(c.getStartedAt(),
+                                   long countDays = diffDay(c.getStartedAt(),
                                        LocalDate.now()
                                                 .minusDays(1));
-                                   int maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
+                                   long maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
                                    return new Challenge(thumbnailUrl, countDays, maxDays);
                                })
                                .toList());
     }
 
 
-    private int diffDay(LocalDate startedAt, LocalDate yesterday) {
+    private long diffDay(LocalDate startedAt, LocalDate yesterday) {
 
-        return (int) ChronoUnit.DAYS.between(startedAt, yesterday);
+        return ChronoUnit.DAYS.between(startedAt, yesterday);
     }
 
     public void deleteChallenge(Integer memberId, Long challengeId) {
@@ -169,18 +170,49 @@ public class ChallengeService {
     }
 
 
-    private ChallengeEntity getChallengeById(Long challengeId) {
+    public ChallengeEntity getChallengeById(Long challengeId) {
         return challengeRepository.findById(challengeId)
                                   .orElseThrow(
                                       () -> new CustomException(ErrorCode.NOT_EXIST_CHALLENGE));
 
     }
 
-    private void checkOwnChallenge(Integer memberId, Long challengeId) {
+    public void checkOwnChallenge(Integer memberId, Long challengeId) {
 
         challengeRepository.findByIdAndMemberId(challengeId, memberId)
                            .orElseThrow(
                                () -> new CustomException(ErrorCode.THIS_CHALLENGE_IS_NOT_YOURS));
 
     }
+
+    public void checkCompletedChallenge(Long challengeId) {
+
+        ChallengeEntity challenge = getChallengeById(challengeId);
+        long expectedCnt = diffDay(challenge.getStartedAt(), challenge.getEndedAt());
+        long actualCnt = snapshotService.getCntSnapshotByChallenge(challengeId);
+
+        if (expectedCnt != actualCnt) {
+            throw new CustomException(ErrorCode.NOT_COMPLETED_CHALLENGE);
+        }
+    }
+
+    @Transactional
+    public void saveObjectAndPolygon(Integer MemberId, Long challengeId, MultipartFile polygon,
+        MultipartFile object) {
+
+        ChallengeEntity challenge = getChallengeById(challengeId);
+        checkOwnChallenge(MemberId, challengeId);
+        // TODO: 스냅샷 등록 전적이 있다면 예외 처리
+
+        String savedPolygonUrl = s3Service.uploadFile(polygon);
+        String savedObjectUrl = s3Service.uploadFile(object);
+
+        challenge.setPolygonUrl("/" + savedPolygonUrl);
+        challenge.setObjectUrl("/" + savedObjectUrl);
+
+        challengeRepository.save(challenge);
+
+    }
+
+
 }
