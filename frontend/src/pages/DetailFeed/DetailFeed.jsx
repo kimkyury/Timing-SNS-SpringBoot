@@ -192,5 +192,4 @@ function DetailFeed() {
         </div>
     );
 }
-
 export default DetailFeed;
