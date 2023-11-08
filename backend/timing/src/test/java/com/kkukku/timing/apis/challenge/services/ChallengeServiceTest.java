@@ -239,22 +239,25 @@ public class ChallengeServiceTest {
 
         //given
         Integer memberId = 1;
-        Long targetChallengeId = 2L;
+        Long challengeId = 2L;
         List<SnapshotEntity> beforeSnapshots = snapshotService.getAllSnapshotByChallenge(
-            targetChallengeId);
+            challengeId);
 
         // when
-        challengeService.deleteChallenge(memberId, targetChallengeId);
+        challengeService.deleteChallenge(memberId, challengeId);
 
         // then
         Optional<ChallengeEntity> expectedChallenge = challengeRepository.findById(
-            targetChallengeId);
+            challengeId);
         assertTrue(expectedChallenge.isEmpty());
 
         List<SnapshotEntity> afterSnapshots = snapshotService.getAllSnapshotByChallenge(
-            targetChallengeId);
+            challengeId);
+        List<ChallengeHashTagEntity> afterChallengeHashTags = challengeHashTagRepository.findAllByChallengeId(
+            challengeId);
 
         assertEquals(0, afterSnapshots.size());
+        assertEquals(0, afterChallengeHashTags.size());
     }
 
     @Test
