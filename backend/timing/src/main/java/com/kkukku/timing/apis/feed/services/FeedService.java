@@ -37,7 +37,18 @@ public class FeedService {
     }
 
     public FeedDetailResponse getFeedDetail(Long id) {
-        return new FeedDetailResponse(getFeedById(id), likeService.isLiked(id),
+        FeedEntity feed = getFeedById(id);
+
+        if (feed.getIsDelete()) {
+            throw new CustomException(ErrorCode.DELETED_FEED);
+        }
+        if (!feed.getMember()
+                 .getId()
+                 .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
+            throw new CustomException(ErrorCode.PRIVATE_FEED);
+        }
+
+        return new FeedDetailResponse(feed, likeService.isLiked(id),
             feedHashTagService.getHashTagsByFeedId(id), commentService.getCommentCountByFeedId(id),
             likeService.getLikeCountByFeedId(id), countInfluencedFeeds(id), s3Service);
     }
