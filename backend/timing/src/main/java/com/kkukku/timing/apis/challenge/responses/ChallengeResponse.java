@@ -19,9 +19,11 @@ public class ChallengeResponse {
     @AllArgsConstructor
     public static class Challenge {
 
+        private Long id;
         private String thumbnailUrl;
         private long countDays;
         private long maxDays;
-
+        
     }
+
 }
