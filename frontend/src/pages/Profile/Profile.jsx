@@ -11,6 +11,9 @@ function Profile() {
     sessionStorage.getItem("accessToken")
   );
   const [state, setState] = useState([]);
+  useEffect(() => {
+    getChallenge();
+  }, []);
   const getChallenge = () => {
     axios
       .get(`${BASE_URL}/api/v1/feeds`, {
@@ -26,33 +29,43 @@ function Profile() {
         console.error(error);
       });
   };
-  useEffect(() => {
-    getChallenge();
-  }, []);
 
+  console.log(state.length != 0 ? "1" : "2");
   return (
-    <div className={styles.container}>
-      <div className={styles.user_info}>
-        <UserProfile />
-      </div>
-      <div className={styles.proccessing_timelapse}>
-        <div className={styles.timeContainerName}>진행중인 타입랩스</div>
-        <TimeLapse />
-      </div>
+    <div>
       {state.length != 0 ? (
-        <div className={styles.my_timelapse}>
+        <div className={styles.container}>
+          <div className={styles.user_info}>
+            <UserProfile data={state} />
+          </div>
+          <div className={styles.proccessing_timelapse}>
+            <div className={styles.timeContainerName}>진행중인 타입랩스</div>
+            <TimeLapse />
+          </div>
           <div className={styles.timeContainerName}>공개 타입랩스</div>
-          <MyFeed
-            state={state.filter((content) => content.isPublic == false)}
-          />
-        </div>
-      ) : (
-        <></>
-      )}
-      {state.length != 0 ? (
-        <div className={styles.my_timelapse}>
+          {state.feeds.length != 0 ? (
+            <div className={styles.my_timelapse}>
+              <MyFeed
+                state={state.feeds.filter(
+                  (content) => content.isPublic == false
+                )}
+              />
+            </div>
+          ) : (
+            <div className={styles.emptybox}>피드가 없어요</div>
+          )}
           <div className={styles.timeContainerName}>비공개 타입랩스</div>
-          <MyFeed state={state.filter((content) => content.isPublic == true)} />
+          {state.feeds.length != 0 ? (
+            <div className={styles.my_timelapse}>
+              <MyFeed
+                state={state.feeds.filter(
+                  (content) => content.isPublic == true
+                )}
+              />
+            </div>
+          ) : (
+            <div className={styles.emptybox}>피드가 없어요</div>
+          )}
         </div>
       ) : (
         <></>
