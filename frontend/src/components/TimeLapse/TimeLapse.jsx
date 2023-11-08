@@ -6,8 +6,6 @@ import {
   CircularProgressbarWithChildren,
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import dog from "../../assets/dog.jpg";
-import dog2 from "../../assets/dog2.jpg";
 import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 import axios from "axios";
@@ -16,9 +14,7 @@ function TimeLapse() {
   const [timeLaps, setTimeLaps] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
   const BASE_URL = `http://k9e203.p.ssafy.io`;
-  const [accessToken, setAccessToken] = useState(
-    sessionStorage.getItem("accessToken")
-  );
+  const [accessToken] = useState(sessionStorage.getItem("accessToken"));
 
   const finishTimeLaps = () => {
     setIsFinished(!isFinished);

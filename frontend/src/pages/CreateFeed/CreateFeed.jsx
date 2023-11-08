@@ -3,14 +3,12 @@ import Input from "@mui/joy/Input";
 import Textarea from "@mui/joy/Textarea";
 import Calendar from "react-calendar";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Calendar.css";
 function CreateFeed() {
   const BASE_URL = `http://k9e203.p.ssafy.io`;
-  const [accessToken, setAccessToken] = useState(
-    sessionStorage.getItem("accessToken")
-  );
+  const [accessToken] = useState(sessionStorage.getItem("accessToken"));
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
   const [value, onChange] = useState(new Date());

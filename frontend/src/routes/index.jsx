@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-
 import Home from "../pages/Home/Home";
 import Time from "../pages/Time/Time";
 import Like from "../pages/Like/Like";
@@ -24,7 +23,9 @@ function Router() {
       <Route path="/like" element={<Like />} />
       <Route path="/search" element={<Search />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path={`/profile/?email=:email`} element={<Profile />} />
       <Route path="/create" element={<Create />} />
+      <Route path="/tree" element={<Tree />} />
       <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
       <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
       <Route path="/login" element={<Login />} />

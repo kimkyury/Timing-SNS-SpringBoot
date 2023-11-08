@@ -10,31 +10,16 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 function DetailFeed() {
   const location = useLocation();
-  const data = location.state;
+  // const state = location.state;
   const [user, setUser] = useState(null);
-  const [state, setState] = useState(null);
+  const [state, setState] = useState(location.state);
   const navigate = useNavigate();
   const BASE_URL = `http://k9e203.p.ssafy.io`;
-  const [accessToken, setAccessToken] = useState(
-    sessionStorage.getItem("accessToken")
-  );
-  useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/v1/members`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+  const [accessToken] = useState(sessionStorage.getItem("accessToken"));
   const getDetailFeed = () => {
+    console.log(state, "asdfasdf");
     axios
-      .get(`${BASE_URL}/api/v1/feeds/${data.id}`, {
+      .get(`${BASE_URL}/api/v1/feeds/${state.id}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -70,60 +55,61 @@ function DetailFeed() {
   };
   useEffect(() => {
     getDetailFeed();
-    console.log(state);
+    axios
+      .get(`${BASE_URL}/api/v1/members`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setUser(response.data);
+        console.log(response.data, "USER");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
   return (
-    <div>
-      {state ? (
-        <div className={styles.container}>
-          {state && (
-            <>
-              <div className={styles.lock}>
-                {user.id != state.writer.email ? (
-                  <></>
-                ) : state.isPublic ? (
-                  <LockOutlinedIcon
-                    onClick={setIsPublic}
-                    className={styles.icon}
-                  />
-                ) : (
-                  <LockOpenIcon onClick={setIsPublic} className={styles.icon} />
-                )}
-              </div>
+    state &&
+    user && (
+      <div className={styles.container}>
+        <div className={styles.lock}>
+          {user.email !== state.writer.email ? (
+            <></>
+          ) : state.isPublic ? (
+            <LockOutlinedIcon onClick={setIsPublic} className={styles.icon} />
+          ) : (
+            <LockOpenIcon onClick={setIsPublic} className={styles.icon} />
+          )}
+        </div>
 
-              <img src={state.thumbnailUrl} className={styles.imageContainer} />
-              <div className={styles.etcbox}>
-                <div className={styles.etcinner} onClick={gotodetail}>
-                  <LoopOutlinedIcon className={styles.etcimg} />
-                  댓글보기
-                </div>
-                {user.id != state.id && (
-                  <div className={styles.etcinner}>
-                    <LoopOutlinedIcon className={styles.etcimg} />
-                    이어받기
-                  </div>
-                )}
-                {user.id == state.writer.email && (
-                  <>
-                    <div className={styles.etcinner} onClick={download}>
-                      <FileDownloadOutlinedIcon className={styles.etcimg} />
-                      다운로드
-                    </div>
-                    <div className={styles.etcinner} onClick={deleteFeed}>
-                      <DeleteOutlinedIcon className={styles.etcimg} />
-                      삭제
-                    </div>
-                  </>
-                )}
+        <img src={state.thumbnailUrl} className={styles.imageContainer} />
+        <div className={styles.etcbox}>
+          <div className={styles.etcinner} onClick={gotodetail}>
+            <LoopOutlinedIcon className={styles.etcimg} />
+            댓글보기
+          </div>
+          {user.email !== state.writer.email && (
+            <div className={styles.etcinner}>
+              <LoopOutlinedIcon className={styles.etcimg} />
+              이어받기
+            </div>
+          )}
+          {user.email === state.writer.email && (
+            <>
+              <div className={styles.etcinner} onClick={download}>
+                <FileDownloadOutlinedIcon className={styles.etcimg} />
+                다운로드
+              </div>
+              <div className={styles.etcinner} onClick={deleteFeed}>
+                <DeleteOutlinedIcon className={styles.etcimg} />
+                삭제
               </div>
             </>
           )}
         </div>
-      ) : (
-        <></>
-      )}
-    </div>
+      </div>
+    )
   );
 }
-
 export default DetailFeed;
