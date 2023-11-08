@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.feed.services;
 
+import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
@@ -42,14 +43,7 @@ public class FeedService {
     public FeedDetailResponse getFeedDetail(Long id) {
         FeedEntity feed = getFeedById(id);
 
-        if (feed.getIsDelete()) {
-            throw new CustomException(ErrorCode.DELETED_FEED);
-        }
-        if (!feed.getMember()
-                 .getId()
-                 .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
-            throw new CustomException(ErrorCode.PRIVATE_FEED);
-        }
+        accessCheck(feed);
 
         return new FeedDetailResponse(feed, likeService.isLiked(id),
             feedHashTagService.getHashTagsByFeedId(id), commentService.getCommentCountByFeedId(id),
@@ -92,17 +86,6 @@ public class FeedService {
     public FeedSummaryWithCountResponse getOtherSummaryFeedsWithCount(String email) {
         return new FeedSummaryWithCountResponse(getOtherSummaryFeeds(email), countOtherFeeds(email),
             countAllInfluencedOtherFeeds(email));
-    }
-
-    public FeedEntity getFeedByIdAndMemberId(Long id, Integer memberId) {
-        return feedRepository.findByIdAndMember_Id(id, memberId)
-                             .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FEED));
-    }
-
-    public FeedEntity getFeedById(Long id) {
-        return feedRepository.findById(id)
-                             .orElseThrow(() -> new CustomException(
-                                 ErrorCode.NOT_EXIST_FEED));
     }
 
     public List<FeedEntity> getFeedsByRootId(Long rootId) {
@@ -172,6 +155,8 @@ public class FeedService {
     public void deleteFeed(Long id) {
         FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
 
+        accessCheck(feed);
+
         feed.setIsDelete(true);
         s3Service.deleteFile(feed.getThumbnailUrl());
         s3Service.deleteFile(feed.getTimelapseUrl());
@@ -182,6 +167,8 @@ public class FeedService {
     @Transactional
     public void updateFeed(Long id, String review, Boolean isPrivate) {
         FeedEntity feed = getFeedByIdAndMemberId(id, SecurityUtil.getLoggedInMemberPrimaryKey());
+
+        accessCheck(feed);
 
         if (review != null) {
             feed.setReview(review);
@@ -214,6 +201,60 @@ public class FeedService {
                       });
 
         return map.get(rootId);
+    }
+
+    public FeedEntity getFeedByIdAndMemberId(Long id, Integer memberId) {
+        return feedRepository.findByIdAndMember_Id(id, memberId)
+                             .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FEED));
+    }
+
+    public FeedEntity getFeedById(Long id) {
+        return feedRepository.findById(id)
+                             .orElseThrow(() -> new CustomException(
+                                 ErrorCode.NOT_EXIST_FEED));
+    }
+
+    public List<CommentResponse> getCommentsByFeedId(Long id, Integer page) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        return commentService.getCommentsByFeedId(id, page, 10);
+    }
+
+    public void saveComment(Long id, String content) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        commentService.saveComment(id, content);
+    }
+
+    public void saveLike(Long id) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        likeService.saveLike(id);
+    }
+
+    public void deleteLike(Long id) {
+        FeedEntity feed = getFeedById(id);
+
+        accessCheck(feed);
+
+        likeService.saveLike(id);
+    }
+
+    public void accessCheck(FeedEntity feed) {
+        if (feed.getIsDelete()) {
+            throw new CustomException(ErrorCode.DELETED_FEED);
+        }
+        if (!feed.getMember()
+                 .getId()
+                 .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
+            throw new CustomException(ErrorCode.PRIVATE_FEED);
+        }
     }
 
     private int find(Integer[] parent, Integer x) {
