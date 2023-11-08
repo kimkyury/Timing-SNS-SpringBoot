@@ -345,36 +345,35 @@ public class ChallengeServiceTest {
 
     @Test
     @Transactional
-    @Order(8)
+    @Order(9)
     @DisplayName("특정 Cahllenge에 대하여 Object와 Polygon 파일을 저장합니다.")
     void shouldSaveObjectAndPolygonFile() {
 
         // given
         String afterPolygonName = "test_polygon.png";
         String afterPolygonPath = "src/test/resources/image/" + afterPolygonName;
-        MockMultipartFile testPolygonFile = getSampleText(afterPolygonPath, afterPolygonName);
+        MockMultipartFile polygonFile = getSampleText(afterPolygonPath, afterPolygonName);
 
         String afterObjectName = "test_object.png";
         String afterObjectPath = "src/test/resources/image/" + afterObjectName;
-        MockMultipartFile testObjectFile = getSampleImage(afterObjectPath, afterObjectName);
+        MockMultipartFile objectFile = getSampleImage(afterObjectPath, afterObjectName);
 
         Long testChallengeId = 1L;
         Integer testMemberId = 1;
 
-        String expectedPolygonUrl = "test_polygon.png";
-        when(s3Service.uploadFile(testPolygonFile)).thenReturn(expectedPolygonUrl);
-        String expectedObjectUrl = "image/test_object.png";
-        when(s3Service.uploadFile(testObjectFile)).thenReturn(expectedObjectUrl);
+        when(s3Service.uploadFile(polygonFile)).thenReturn(afterPolygonName);
+        when(s3Service.uploadFile(objectFile)).thenReturn(afterObjectName);
 
         // when
-//        challengeService.saveObjectAndPolygon(testMemberId, testChallengeId);
+        challengeService.saveObjectAndPolygon(
+            testMemberId, testChallengeId, polygonFile, objectFile);
 
         // then
-//        ChallengeEntity challenge = challengeRepository.findById(testChallengeId)
-//                                                       .get();
+        ChallengeEntity challenge = challengeRepository.findById(testChallengeId)
+                                                       .get();
 
-//        assertEquals(expectedPolygonUrl, challenge.getPolygonUrl());
-//        assertEquals(expectedObjectUrl, challenge.getObjectUrl());
+        assertEquals("/" + afterPolygonName, challenge.getPolygonUrl());
+        assertEquals("/" + afterObjectName, challenge.getObjectUrl());
 
     }
 
