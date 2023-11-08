@@ -1,4 +1,4 @@
-package com.kkukku.timing.external.requests;
+package com.kkukku.timing.apis.challenge.requests;
 
 
 import lombok.AllArgsConstructor;
@@ -12,5 +12,5 @@ public class CheckCoordinateRequest {
 
     private float x;
     private float y;
-    
+
 }
