@@ -33,6 +33,20 @@ function Feed(data) {
         console.error(error);
       });
   };
+  const getDetailFeed = () => {
+    axios
+      .get(`${BASE_URL}/api/v1/feeds/${data.data.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setState(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   const Like = () => {
     console.log(state);
     axios
@@ -48,6 +62,7 @@ function Feed(data) {
       .then((response) => {
         console.log(response);
         console.log("like");
+        getDetailFeed();
       })
       .catch((error) => {
         console.error(error);
@@ -56,16 +71,21 @@ function Feed(data) {
   const Dislike = () => {
     if (state && state.id) {
       // state 및 state.id가 존재하는지 확인
-      console.log(state);
+      console.log(state, "dislike");
       axios
-        .delete(`${BASE_URL}/api/v1/feeds/${state.id}/likes`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .delete(
+          `${BASE_URL}/api/v1/feeds/${state.id}/likes`,
+          { id: state.id },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        )
         .then((response) => {
           console.log(response);
           console.log("dislike");
+          getDetailFeed();
         })
         .catch((error) => {
           console.error(error);
@@ -192,7 +212,7 @@ function Feed(data) {
               <div className={styles.tagitemicon}>
                 {state.isLiked ? (
                   <FavoriteOutlinedIcon
-                    style={{ width: "4vw", height: "4vw" }}
+                    style={{ width: "4vw", height: "4vw", color: "red" }}
                     onClick={Dislike}
                   />
                 ) : (
