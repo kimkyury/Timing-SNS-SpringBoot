@@ -395,6 +395,7 @@ public class ChallengeServiceTest {
 
         String objectName = "test_object.png";
         String objectPath = "src/test/resources/image/" + objectName;
+        MockMultipartFile object = getSampleText(afterSnapshotPath, afterSnapshotName);
 
         Long challengeId = 2L;
         Integer memberId = 1;
