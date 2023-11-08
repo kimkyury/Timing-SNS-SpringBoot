@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/challenges")
@@ -103,6 +106,22 @@ public class ChallengeController {
             memberId, id);
 
         return ApiResponseUtil.success(challengePolygonResponse);
+    }
+
+    @Operation(summary = "특정 Challenge의 Polygon, Object 사진 저장", tags = {
+        "2. Challenge"},
+        description = "특정 Challenge의 Snapshot 최초 등록시, 사진의 객체 최종 확정을 통해 Polygon, Object가 저장됩니다")
+    @PostMapping(value = "/{id}/objects", consumes = {
+        MediaType.MULTIPART_FORM_DATA_VALUE
+    })
+    public ResponseEntity<Void> savePolygonAndObject(@PathVariable Long id,
+        @RequestPart(value = "polygon 텍스트 파일") MultipartFile polygon,
+        @RequestPart(value = "object 이미지 파일") MultipartFile object) {
+
+        Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
+        challengeService.saveObjectAndPolygon(memberId, id, polygon, object);
+
+        return ApiResponseUtil.success();
     }
 
 

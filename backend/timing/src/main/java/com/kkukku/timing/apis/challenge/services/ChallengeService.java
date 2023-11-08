@@ -31,6 +31,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -193,6 +194,24 @@ public class ChallengeService {
         if (expectedCnt != actualCnt) {
             throw new CustomException(ErrorCode.NOT_COMPLETED_CHALLENGE);
         }
+    }
+
+    @Transactional
+    public void saveObjectAndPolygon(Integer MemberId, Long challengeId, MultipartFile polygon,
+        MultipartFile object) {
+
+        ChallengeEntity challenge = getChallengeById(challengeId);
+        checkOwnChallenge(MemberId, challengeId);
+        // TODO: 스냅샷 등록 전적이 있다면 예외 처리
+
+        String savedPolygonUrl = s3Service.uploadFile(polygon);
+        String savedObjectUrl = s3Service.uploadFile(object);
+
+        challenge.setPolygonUrl("/" + savedPolygonUrl);
+        challenge.setObjectUrl("/" + savedObjectUrl);
+
+        challengeRepository.save(challenge);
+
     }
 
 
