@@ -32,12 +32,12 @@ function CreateFeed() {
     setTags(updatedTags);
   };
   const createChallenge = () => {
-    const Json = JSON.stringify();
+    console.log(value);
     axios
       .post(
         `${BASE_URL}/api/v1/challenges`,
         {
-          startedAt: value,
+          startedAt: value.toISOString().split("T")[0],
           hashTags: tags,
           goalContents: contentValue.target.value,
         },
@@ -63,7 +63,13 @@ function CreateFeed() {
   return (
     <div className={styles.container}>
       <div className={styles.boxname}>시작일</div>
-      <Calendar onChange={onChange} value={value} className={styles.calender} />
+      <Calendar
+        onChange={onChange}
+        value={value}
+        className={styles.calender}
+        minDate={new Date()}
+        calendarType={"iso8601"}
+      />
       <div>{moment(value).format("YYYY년 MM월 DD일")} </div>
       <div className={styles.boxname}>해쉬</div>
       <div className={styles.tagInputContainer}>
