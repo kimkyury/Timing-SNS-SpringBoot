@@ -19,19 +19,23 @@ import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.exception.CustomException;
+import com.kkukku.timing.external.services.VisionAIService;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +44,7 @@ public class ChallengeService {
     private final S3Service s3Service;
     private final FeedService feedService;
     private final MemberService memberService;
+    private final VisionAIService visionAIService;
     private final SnapshotService snapshotService;
     private final FeedHashTagService feedHashTagService;
     private final HashTagOptionService hashTagOptionService;
@@ -77,13 +82,14 @@ public class ChallengeService {
             challengeRepository.findByMemberId(memberId)
                                .stream()
                                .map(c -> {
+                                   long id = c.getId();
                                    String thumbnailUrl =
                                        s3Service.getS3StartUrl() + c.getThumbnailUrl();
                                    long countDays = diffDay(c.getStartedAt(),
                                        LocalDate.now()
                                                 .minusDays(1));
                                    long maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
-                                   return new Challenge(thumbnailUrl, countDays, maxDays);
+                                   return new Challenge(id, thumbnailUrl, countDays, maxDays);
                                })
                                .toList());
     }
@@ -197,11 +203,11 @@ public class ChallengeService {
     }
 
     @Transactional
-    public void saveObjectAndPolygon(Integer MemberId, Long challengeId, MultipartFile polygon,
+    public void saveObjectAndPolygon(Integer memberId, Long challengeId, MultipartFile polygon,
         MultipartFile object) {
 
         ChallengeEntity challenge = getChallengeById(challengeId);
-        checkOwnChallenge(MemberId, challengeId);
+        checkOwnChallenge(memberId, challengeId);
         // TODO: 스냅샷 등록 전적이 있다면 예외 처리
 
         String savedPolygonUrl = s3Service.uploadFile(polygon);
@@ -211,6 +217,37 @@ public class ChallengeService {
         challenge.setObjectUrl("/" + savedObjectUrl);
 
         challengeRepository.save(challenge);
+
+    }
+
+    public void setSnapshotProcedure(Integer memberId, Long challengeId, MultipartFile snapshot) {
+
+        ChallengeEntity challenge = getChallengeById(challengeId);
+        checkOwnChallenge(memberId, challengeId);
+
+        // get SnapshotFile StreamResource
+        InputStreamResource snapshotFileInputResource;
+        try {
+            snapshotFileInputResource = new InputStreamResource(snapshot.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // get SnapshotFile StreamResource
+        String objectUrl = challenge.getObjectUrl();
+        S3Object s3Object = s3Service.getFile(objectUrl);
+        InputStream inputStream = s3Object.getObjectContent();
+        InputStreamResource objectFileInputStream = new InputStreamResource(
+            s3Object.getObjectContent());
+
+        // 1. 유사성 검사를 한다
+        visionAIService.checkSimilarity(snapshotFileInputResource, objectFileInputStream);
+
+        // 2. 응답이 400이 아니라서 잘 처리되었다면, S3에 저장한다
+
+        // 3. S3 저장 한 후, url을 얻어온다
+
+        // 4. 해당 snapshot url을 Snapshot으로 저장한다
 
     }
 
