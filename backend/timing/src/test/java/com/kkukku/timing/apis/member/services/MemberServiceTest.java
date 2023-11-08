@@ -43,15 +43,17 @@ public class MemberServiceTest {
 
     private static String testEmail;
     private static String originalNickname;
+    private static String originalProfilePath;
     private static String originalProfileUrl;
 
     private Integer testId;
 
     @BeforeAll
     static void init() {
-        testEmail = "test@com";
+        testEmail = "test@test.com";
         originalNickname = "TESTER";
-        originalProfileUrl = "src/test/resources/Chirachino.jpg";
+        originalProfilePath = "src/test/resources/image/default_profile.png";
+        originalProfileUrl = "default_profile.png";
     }
 
     @BeforeEach
@@ -60,8 +62,9 @@ public class MemberServiceTest {
         memberRepository.findByEmail(testEmail)
                         .ifPresent(memberRepository::delete);
 
-        MemberEntity memberEntity = new MemberEntity(testEmail, originalProfileUrl,
-            originalNickname);
+        MemberEntity memberEntity = new MemberEntity(
+            testEmail, originalProfileUrl, originalNickname
+        );
         memberRepository.save(memberEntity);
 
         testId = memberRepository.findByEmail(testEmail)
@@ -70,12 +73,11 @@ public class MemberServiceTest {
 
     }
 
-
-    public MockMultipartFile getSampleImage() {
-        Path path = Paths.get("src/test/resources/Chirachino.jpg");
+    public MockMultipartFile getSampleImage(String pathStr, String filename) {
+        Path path = Paths.get(pathStr);
         String name = "file";
-        String originalFileName = "Chirachino.jpg";
         String contentType = "image/jpeg";
+
         byte[] content = "".getBytes();
         try {
             content = Files.readAllBytes(path);
@@ -83,8 +85,7 @@ public class MemberServiceTest {
             System.out.println(e);
         }
 
-        return new MockMultipartFile(name, originalFileName, contentType,
-            content);
+        return new MockMultipartFile(name, filename, contentType, content);
     }
 
     @Test
@@ -93,8 +94,8 @@ public class MemberServiceTest {
     void shouldUpdateNickname() {
 
         // given
-        String updatedNickname = "수정된 닉네임";
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(updatedNickname);
+        String afterNickname = "수정된 닉네임";
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(afterNickname);
 
         // when
         memberService.updateMember(testId, memberUpdateRequest, null);
@@ -102,7 +103,7 @@ public class MemberServiceTest {
         // then
         MemberEntity updatedMember = memberRepository.findByEmail(testEmail)
                                                      .get();
-        assertEquals("isUpdatedNickname", updatedNickname, updatedMember.getNickname());
+        assertEquals("isUpdatedNickname", afterNickname, updatedMember.getNickname());
         assertEquals("isOriginalProfileUrl", originalProfileUrl,
             updatedMember.getProfileImageUrl());
     }
@@ -112,18 +113,21 @@ public class MemberServiceTest {
     @DisplayName("유저의 profileImageUrl 수정되어야 한다")
     void shouldUpdateProfileImg() {
 
-        String updatedProfileUrl = "profile.png";
-        when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(updatedProfileUrl);
-        MockMultipartFile multipartFile = getSampleImage();
+        // given
+        String afterFileName = "test_profile.png";
+        when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(afterFileName);
+        String path = "src/test/resources/image/" + afterFileName;
+        MockMultipartFile multipartFile = getSampleImage(path, afterFileName);
 
+        // when
         memberService.updateMember(testId, null, multipartFile);
 
-        MemberEntity updatedMember = memberRepository.findByEmail(testEmail)
-                                                     .get();
-
-        assertEquals("isOriginalNickname", originalNickname, updatedMember.getNickname());
-        assertEquals("isUpdatedProfileUrl", "/" + updatedProfileUrl,
-            updatedMember.getProfileImageUrl());
+        // then
+        MemberEntity actualMember = memberRepository.findByEmail(testEmail)
+                                                    .get();
+        assertEquals("isOriginalNickname", originalNickname, actualMember.getNickname());
+        assertEquals("isUpdatedProfileUrl", "/" + afterFileName,
+            actualMember.getProfileImageUrl());
     }
 
     @Test
@@ -131,19 +135,24 @@ public class MemberServiceTest {
     @DisplayName("유저의 Nickname, ProfileImageUrl 수정되어야 한다")
     void shouldUpdateNicknameAndProfileImg() {
 
-        String updatedProfileUrl = "profile.png";
-        when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(updatedProfileUrl);
-        String updatedNickname = "수정된 닉네임";
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(updatedNickname);
-        MockMultipartFile multipartFile = getSampleImage();
+        // given
+        String afterFileName = "test_profile.png";
+        when(s3Service.uploadFile(any(MultipartFile.class))).thenReturn(afterFileName);
+        String path = "src/test/resources/image/" + afterFileName;
+        MockMultipartFile multipartFile = getSampleImage(path, afterFileName);
 
+        String afterNickname = "수정된 닉네임";
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(afterNickname);
+
+        // when
         memberService.updateMember(testId, memberUpdateRequest, multipartFile);
 
-        MemberEntity updatedMember = memberRepository.findByEmail(testEmail)
-                                                     .get();
-        assertEquals("isUpdatedNickname", updatedNickname, updatedMember.getNickname());
-        assertEquals("isUpdatedNickname", "/" + updatedProfileUrl,
-            updatedMember.getProfileImageUrl());
+        // then
+        MemberEntity actualMember = memberRepository.findByEmail(testEmail)
+                                                    .get();
+        assertEquals("isUpdatedNickname", afterNickname, actualMember.getNickname());
+        assertEquals("isUpdatedProfileUrl", "/" + afterFileName,
+            actualMember.getProfileImageUrl());
     }
 
     @Test
