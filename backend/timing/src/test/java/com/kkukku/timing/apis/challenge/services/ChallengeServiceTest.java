@@ -2,6 +2,7 @@ package com.kkukku.timing.apis.challenge.services;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -54,8 +55,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.MultiValueMap;
 
 @SpringBootTest(properties = "spring.profiles.active=local")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -239,22 +240,25 @@ public class ChallengeServiceTest {
 
         //given
         Integer memberId = 1;
-        Long targetChallengeId = 2L;
+        Long challengeId = 2L;
         List<SnapshotEntity> beforeSnapshots = snapshotService.getAllSnapshotByChallenge(
-            targetChallengeId);
+            challengeId);
 
         // when
-        challengeService.deleteChallenge(memberId, targetChallengeId);
+        challengeService.deleteChallenge(memberId, challengeId);
 
         // then
         Optional<ChallengeEntity> expectedChallenge = challengeRepository.findById(
-            targetChallengeId);
+            challengeId);
         assertTrue(expectedChallenge.isEmpty());
 
         List<SnapshotEntity> afterSnapshots = snapshotService.getAllSnapshotByChallenge(
-            targetChallengeId);
+            challengeId);
+        List<ChallengeHashTagEntity> afterChallengeHashTags = challengeHashTagRepository.findAllByChallengeId(
+            challengeId);
 
         assertEquals(0, afterSnapshots.size());
+        assertEquals(0, afterChallengeHashTags.size());
     }
 
     @Test
@@ -455,19 +459,10 @@ public class ChallengeServiceTest {
         String objectPath = "src/test/resources/image/" + objectName;
         S3Object mockS3Object = createMockS3Object(objectPath);
 
-        byte[] snapshotDataBytes = Files.readAllBytes(Paths.get(afterSnapshotPath));
-        InputStreamResource snapshotStreamResource = new InputStreamResource(
-            new ByteArrayInputStream(snapshotDataBytes));
-
-        byte[] objectDataBytes = Files.readAllBytes(Paths.get(objectPath));
-        InputStreamResource objectStreamResource = new InputStreamResource(
-            new ByteArrayInputStream(objectDataBytes));
-
-        doThrow(new CustomException(ErrorCode.NOT_PROPER_COORDINATE)).when(
-                                                                         visionAIService)
-                                                                     .checkSimilarity(
-                                                                         snapshotStreamResource,
-                                                                         objectStreamResource);
+        doThrow(new CustomException(ErrorCode.NOT_HIGH_SIMILARITY_SNAPSHOT)).when(
+                                                                                visionAIService)
+                                                                            .checkSimilarity(
+                                                                                any(MultiValueMap.class));
 
         when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
         when(s3Service.uploadFile(snapshotFile)).thenReturn(afterSnapshotName);
@@ -476,13 +471,15 @@ public class ChallengeServiceTest {
         Integer memberId = 1;
 
         // when
-        challengeService.setSnapshotProcedure(memberId, challengeId, snapshotFile);
+        assertThrows(CustomException.class, () -> {
+            challengeService.setSnapshotProcedure(memberId, challengeId, snapshotFile);
+        });
 
         // then
-        SnapshotEntity actualSnapshot = snapshotService.getAllSnapshotByChallenge(challengeId)
-                                                       .getLast();
+        List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
+        assertNotEquals(("/" + afterSnapshotName), snapshots.get(snapshots.size() - 1)
+                                                            .getImageUrl());
 
-        assertEquals("/" + afterSnapshotName, actualSnapshot.getImageUrl());
 
     }
 
@@ -520,5 +517,27 @@ public class ChallengeServiceTest {
         assertEquals("/" + afterSnapshotName, actualChallenge.getThumbnailUrl());
     }
 
+//    @Test
+//    @Transactional
+//    @Order(11)
+//    @DisplayName("스냅샷에 대한 객체 선택 좌표가 유효할 경우,  Polygon.txt와 Object를 줍니다. ")
+//    void shouldOutputPolygonTextAndObjectPngWhenSelectProperCoordinate() {
+//
+//        CheckCoordinateRequest request = new CheckCoordinateRequest(100, 200);
+//        String afterSnapshotName = "test_snapshot.png";
+//        String afterSnapshotPath = "src/test/resources/image/" + afterSnapshotName;
+//        MockMultipartFile snapshotFile = getSampleText(afterSnapshotPath, afterSnapshotName);
+//
+//        // when
+//        ResponseSpec response = challengeService.checkProperCoordnate(request, snapshotFile);
+//
+//        // then
+//        HttpHeaders httpHeaders = response.toEntity(String.class)
+//                                          .getHeaders();
+//        byte[] objectImage = response.body();
+//
+//        assertNotNull(httpHeaders.get("polygon"));
+//
+//    }
 
 }

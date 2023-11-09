@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -82,7 +83,7 @@ public class ChallengeController {
     }
 
     @Operation(summary = "타 멤버의 특정 Challenge 이어하기", tags = {"2. Challenge"},
-        description = "타 회원의 Feed 정보를 이어서 본인의 Challenge로 생성합니다. HastTag정보가 연동됩니다. GoalContent는 연동되지 않습니다.(별도 작성) ")
+        description = "타 회원의 Feed 정보를 이어서 본인의 Challenge로 생성합니다. HastTag 정보가 연동됩니다. GoalContent 정보는 연동되지 않습니다.(별도 작성) ")
     @PostMapping(value = "/{id}/relay")
     public ResponseEntity<Void> relayChallenge(@PathVariable Long id,
         @Valid @RequestBody ChallengeRelayRequest request) {
@@ -96,7 +97,7 @@ public class ChallengeController {
 
     @Operation(summary = "특정 Challenge의 SnapShot 촬영을 위한 Polygon 얻기", tags = {
         "2. Challenge"},
-        description = "SnapShot촬영시 가이드 윤곽선을 그리기 위한 Polygon을 String 형태로 받아옵니다. ")
+        description = "SnapShot 촬영 시 가이드 윤곽선을 그리기 위한 Polygon을 String 형태로 받아옵니다. ")
     @GetMapping(value = "/{id}/polygon")
     public ResponseEntity<ChallengePolygonResponse> getSnapshotByChallenge(@PathVariable Long id) {
 
@@ -111,12 +112,10 @@ public class ChallengeController {
     @Operation(summary = "특정 Challenge의 Polygon, Object 사진 저장", tags = {
         "2. Challenge"},
         description = "특정 Challenge의 Snapshot 최초 등록시, 사진의 객체 최종 확정을 통해 Polygon, Object가 저장됩니다")
-    @PostMapping(value = "/{id}/objects", consumes = {
-        MediaType.MULTIPART_FORM_DATA_VALUE
-    })
+    @PostMapping(value = "/{id}/objects", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> savePolygonAndObject(@PathVariable Long id,
-        @RequestPart(value = "polygon 텍스트 파일") MultipartFile polygon,
-        @RequestPart(value = "object 이미지 파일") MultipartFile object) {
+        @RequestPart MultipartFile polygon,
+        @RequestPart MultipartFile object) {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
         challengeService.saveObjectAndPolygon(memberId, id, polygon, object);
@@ -124,19 +123,34 @@ public class ChallengeController {
         return ApiResponseUtil.success();
     }
 
-    @Operation(summary = "특정 Challenge의 Snapshot 추가(미완)", tags = {
-        "2. Challenge"},
-        description = "특정 Challenge의 Snapshot추가시, 객체 유사도(현재 미연결) 이후 Snapshot이 저장됩니다. 현재는 수행시 바로 Upload(S3저장, DB 업데이트) 됩니다. ")
-    @PostMapping(value = "/{id}/snapshots", consumes = {
-        MediaType.MULTIPART_FORM_DATA_VALUE
-    })
-    public ResponseEntity<Void> setSnapshot(@PathVariable Long id,
-        @RequestPart(value = "snapshot 이미지") MultipartFile snapshot) {
+    // 이하로 Python Proxy APIs
+    @Operation(summary = "특정 Challenge의 Snapshot 추가(미완)", tags = {"2. Challenge"},
+        description = "특정 Challenge의 Snapshot 추가 시, 객체 유사도(현재 미연결) 이후 Snapshot이 저장됩니다. 현재는 수행시 바로 Upload(S3저장, DB 업데이트) 됩니다. ")
+    @PostMapping(value = "/{id}/snapshots", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Void> setSnapshot(
+        @PathVariable Long id, @RequestPart MultipartFile snapshot) {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
         challengeService.setSnapshotProcedure(memberId, id, snapshot);
 
         return ApiResponseUtil.success();
+    }
+
+    @Operation(summary = "특정 Challenge의 최초 Snapshot 객체 탐지 요청(미완)", tags = {
+        "2. Challenge"},
+        description = "특정 Challenge의 최초 Snapshot 추가 시, 객체 탐지를 요청(미완) 합니다. 객체가 없을 경우 400에러가 뜹니다. (현재는 무조건 200) ")
+    @PostMapping(value = "/{id}/snapshots/objects/detection", consumes = {
+        MediaType.MULTIPART_FORM_DATA_VALUE
+    })
+    public ResponseEntity<byte[]> getObjectInSnapshot(@PathVariable Long id,
+        @RequestPart MultipartFile snapshot) {
+
+        byte[] objectsImage = challengeService.getDetectedObject(snapshot);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(MediaType.IMAGE_PNG_VALUE);
+
+        return ApiResponseUtil.success(headers, objectsImage);
     }
 
 
