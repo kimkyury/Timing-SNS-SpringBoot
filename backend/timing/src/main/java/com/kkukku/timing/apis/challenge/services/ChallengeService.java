@@ -265,4 +265,10 @@ public class ChallengeService {
             challengeRepository.save(challenge);
         }
     }
+
+    public byte[] getDetectedObject(MultipartFile image) {
+
+        InputStreamResource imageStreamResource = getInputStreamByMultipart(image);
+        return visionAIService.getDetectedObject(imageStreamResource);
+    }
 }
