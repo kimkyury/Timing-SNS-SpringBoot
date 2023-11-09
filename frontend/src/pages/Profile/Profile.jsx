@@ -15,12 +15,12 @@ function Profile() {
   const [state, setState] = useState([]);
   useEffect(() => {
     if (currentUrl == "/profile") {
-      getChallenge();
+      getFeed();
     } else {
-      getWriterChallenge();
+      getWriterFeed();
     }
   }, []);
-  const getChallenge = () => {
+  const getFeed = () => {
     axios
       .get(`${BASE_URL}/api/v1/feeds`, {
         headers: {
@@ -28,13 +28,14 @@ function Profile() {
         },
       })
       .then((response) => {
+        console.log(response.data);
         setState(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
   };
-  const getWriterChallenge = () => {
+  const getWriterFeed = () => {
     axios
       .get(`${BASE_URL}/api/v1/feeds?email=${email}`, {
         headers: {
@@ -48,7 +49,6 @@ function Profile() {
         console.error(error);
       });
   };
-
   return state.length != 0 ? (
     <div className={styles.container}>
       <div className={styles.user_info}>

@@ -70,7 +70,7 @@ function Login() {
       <div>
         <img src={logo} className={styles.logoimg} />
       </div>
-      <div onClick={handleLogout}>dsfsdf</div>
+      {/* <div onClick={handleLogout}>dsfsdf</div> */}
     </div>
   );
 }
