@@ -6,7 +6,8 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import Webcam from 'react-webcam';
 import { useState } from 'react';
 
-const BASE_HTTP_URL = 'http://localhost:8001';
+// const BASE_HTTP_URL = 'http://localhost:8001';
+const BASE_HTTP_URL = `http://k9e203a.p.ssafy.io`;
 const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 const email = 'spor1998@naver.com';
@@ -25,7 +26,7 @@ function Jeonghui() {
 
     useEffect(() => {
         // setupWebcam();
-
+        console.log(timeLaps);
         const containerInfo = document.querySelectorAll('div')[4];
         setWidth(containerInfo.getBoundingClientRect().width);
         setHeight(containerInfo.getBoundingClientRect().height - 1);
@@ -124,11 +125,12 @@ function Jeonghui() {
         var blob = dataURItoBlob(photo);
 
         var formData = new FormData();
-        formData.append('img', blob);
+        formData.append('snapshot', blob);
 
-        if (timeLaps.percent == 0) {
+        if (timeLaps.countDays <= 0) {
+            console.log('객체 인식 실행');
             axios
-                .post(`${BASE_HTTP_URL}/objectDetaction`, formData, {
+                .post(`${BASE_HTTP_URL}/objectDetection`, formData, {
                     headers: {
                         accept: '*/*',
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
@@ -146,7 +148,7 @@ function Jeonghui() {
             formData.append('challengeId', timeLaps.id + email);
 
             axios
-                .post(`${BASE_HTTP_URL}/objectDetaction/similarity`, formData, {
+                .post(`${BASE_HTTP_URL}/objectDetection/similarity`, formData, {
                     headers: {
                         accept: '*/*',
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
