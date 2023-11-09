@@ -25,9 +25,7 @@ function Jeonghui() {
     const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
 
     useEffect(() => {
-        // setupWebcam();
-        console.log(timeLaps);
-        const containerInfo = document.querySelectorAll('div')[4];
+        const containerInfo = document.querySelector('.' + styles.container);
         setWidth(containerInfo.getBoundingClientRect().width);
         setHeight(containerInfo.getBoundingClientRect().height - 1);
         setRatio(containerInfo.getBoundingClientRect().width / containerInfo.getBoundingClientRect().height);
