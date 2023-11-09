@@ -10,7 +10,6 @@ import com.kkukku.timing.response.ApiResponseUtil;
 import com.kkukku.timing.security.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -129,10 +128,10 @@ public class ChallengeController {
         description = "특정 Challenge의 Snapshot 추가 시, 객체 유사도(현재 미연결) 이후 Snapshot이 저장됩니다. 현재는 수행시 바로 Upload(S3저장, DB 업데이트) 됩니다. ")
     @PostMapping(value = "/{id}/snapshots", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> setSnapshot(
-        @PathVariable Long id, @RequestPart MultipartFile snapshot, HttpServletRequest request) {
+        @PathVariable Long id, @RequestPart MultipartFile snapshot) {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
-        challengeService.setSnapshotProcedure(memberId, id, snapshot, request);
+        challengeService.setSnapshotProcedure(memberId, id, snapshot);
 
         return ApiResponseUtil.success();
     }

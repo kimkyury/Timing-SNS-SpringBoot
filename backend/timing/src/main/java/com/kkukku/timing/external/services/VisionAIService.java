@@ -52,7 +52,6 @@ public class VisionAIService {
     public void checkSimilarity(MultiValueMap<String, Object> body) {
 
         RestClient restClient = RestClient.create();
-
         ResponseEntity<Void> result = restClient.post()
                                                 .uri(baseUrl + "/objectDetaction/similarity")
                                                 .contentType(MediaType.MULTIPART_FORM_DATA)
