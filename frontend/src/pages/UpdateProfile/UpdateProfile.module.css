@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-bottom: 10px;
+  padding: 2%;
+  align-items: center;
+}
+.summitbtn {
+  width: 60%;
+  height: 40px !important;
+  border-radius: 20px;
+  align-self: center;
+  background-color: #97d3ff;
+  color: white;
+}
+.contentbox {
+  width: 100%;
+  border-radius: 40px !important;
+  background-color: #efefef !important;
+  margin-bottom: 5%;
+}

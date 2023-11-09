@@ -1,8 +1,11 @@
 import styles from "./UserProfile.module.css";
 import axios from "axios";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useEffect, useState } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function UserProfile(data) {
+  const navigate = useNavigate();
   const BASE_URL = `http://k9e203.p.ssafy.io`;
   const [accessToken] = useState(sessionStorage.getItem("accessToken"));
   const [info] = useState(data.data);
@@ -53,7 +56,10 @@ function UserProfile(data) {
       getWriterProfile();
     }
   }, []);
-
+  const goToUpdateprofile = () => {
+    console.log(state);
+    navigate(`/updateprofile/${state.email}`, { state });
+  };
   return (
     <div>
       {isLoading ? (
@@ -67,7 +73,10 @@ function UserProfile(data) {
           <div className={styles.mainContainer}>
             <div className={styles.upper}>
               <div className={styles.articlebox}>
-                <div className={styles.name}>{state.nickname}</div>
+                <div className={styles.name}>
+                  {state.nickname}
+                  <div onClick={goToUpdateprofile}>update</div>
+                </div>
                 <div>{formatEmail(state.email)}</div>
               </div>
             </div>
