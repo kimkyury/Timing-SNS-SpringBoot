@@ -2,6 +2,7 @@ package com.kkukku.timing.apis.feed.controllers;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.kkukku.timing.apis.challenge.requests.ChallengeCompleteRequest;
 import com.kkukku.timing.apis.comment.requests.CommentSaveRequest;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.feed.requests.FeedUpdateRequest;
@@ -119,6 +120,13 @@ public class FeedController {
         };
 
         return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
+    @Operation(summary = "챌린지 완료, 피드 전환", tags = {"3. Feed"})
+    @PostMapping("")
+    public void convertToFeed(
+        @Valid @RequestBody ChallengeCompleteRequest challengeCompleteRequest) {
+        feedService.convertToFeed(challengeCompleteRequest.getChallengeId());
     }
 
     @Operation(summary = "피드 댓글 조회", tags = {
