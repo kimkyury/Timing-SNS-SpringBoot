@@ -23,6 +23,7 @@ public class FeedDetailResponse {
     private LocalDate endedAt;
     private String goalContent;
     private String thumbnailUrl;
+    private Boolean isPrivate;
     private String review;
     private LocalDateTime createdAt;
     private Boolean isLiked;
@@ -51,6 +52,7 @@ public class FeedDetailResponse {
         this.endedAt = feed.getEndedAt();
         this.goalContent = feed.getGoalContent();
         this.thumbnailUrl = feed.getThumbnailUrl();
+        this.isPrivate = feed.getIsPrivate();
         this.review = feed.getReview();
         this.createdAt = feed.getCreatedAt();
         this.isLiked = isLiked;
