@@ -258,12 +258,16 @@ public class FeedService {
         }
     }
 
-    public S3Object getTimelapseFile(Long id) {
+    public S3Object getTimelapseFileCheckAccess(Long id) {
         FeedEntity feed = getFeedById(id);
 
         accessCheck(feed);
 
         return s3Service.getFile(feed.getTimelapseUrl());
+    }
+
+    public S3Object getTimelapseFile(Long id) {
+        return s3Service.getFile(getFeedById(id).getTimelapseUrl());
     }
 
     private int find(Integer[] parent, Integer x) {
