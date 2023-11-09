@@ -11,7 +11,7 @@ import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
-import com.kkukku.timing.apis.feed.services.FeedService;
+import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
@@ -44,7 +44,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChallengeService {
 
     private final S3Service s3Service;
-    private final FeedService feedService;
     private final MemberService memberService;
     private final VisionAIService visionAIService;
     private final SnapshotService snapshotService;
@@ -53,6 +52,7 @@ public class ChallengeService {
     private final ChallengeHashTagService challengeHashTagService;
 
     private final ChallengeRepository challengeRepository;
+    private final FeedRepository feedRepository;
 
     @Transactional
     public void createChallengeProcedure(Integer memberId,
@@ -130,8 +130,9 @@ public class ChallengeService {
 
     @Transactional
     public void relayChallenge(Integer memberId, Long feedId, ChallengeRelayRequest request) {
-
-        FeedEntity feed = feedService.getFeedById(feedId);
+        FeedEntity feed = feedRepository.findById(feedId)
+                                        .orElseThrow(() -> new CustomException(
+                                            ErrorCode.NOT_EXIST_FEED));
         List<HashTagOptionEntity> hashTagOptionByFeed = feedHashTagService.getHashTagOptionByFeedId(
             feedId);
         MemberEntity member = memberService.getMemberById(memberId);
