@@ -1,6 +1,7 @@
 package com.kkukku.timing.apis.feed.controllers;
 
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.kkukku.timing.apis.comment.requests.CommentSaveRequest;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.feed.requests.FeedUpdateRequest;
@@ -15,6 +16,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
 @RequestMapping("/api/v1/feeds")
@@ -37,7 +40,7 @@ public class FeedController {
 
     @Operation(summary = "추천 피드 상세 조회", tags = {"3. Feed"},
         description = "현재는 랜덤 피드를 뽑아옵니다.")
-    @GetMapping("/recommeded")
+    @GetMapping("/recommended")
     public ResponseEntity<List<FeedDetailResponse>> getRecommendFeeds() {
         return ApiResponseUtil.success(feedService.getRecommendFeeds());
     }
@@ -76,7 +79,7 @@ public class FeedController {
     }
 
     @Operation(summary = "피드가 이어받은 모든 피드 조회 (트리 조회)", tags = {
-        "3.Feed"}, description = "delete 노드와 private 노드는 기본 thumbnail URL로 제공됨")
+        "3. Feed"}, description = "delete 노드와 private 노드는 기본 thumbnail URL로 제공됨")
     @GetMapping("/{id}/influence")
     public ResponseEntity<FeedNodeResponse> getFeedTree(@PathVariable Long id) {
         return ApiResponseUtil.success(feedService.getFeedTree(id));
@@ -86,7 +89,7 @@ public class FeedController {
         "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("/{id}/videos")
     public ResponseEntity<?> getFile(@PathVariable Long id) {
-        S3Object s3Object = feedService.getTimelapseFile(id);
+        S3Object s3Object = feedService.getTimelapseFileCheckAccess(id);
         InputStreamResource resource = new InputStreamResource(s3Object.getObjectContent());
 
         return ResponseEntity.ok()
@@ -95,6 +98,24 @@ public class FeedController {
                              .header(HttpHeaders.CONTENT_DISPOSITION,
                                  "attachment; filename=\"" + s3Object.getKey() + "\"")
                              .body(resource);
+    }
+
+    @Operation(summary = "피드 스트리밍", tags = {"3. Feed"})
+    @GetMapping("/{id}/videos/streaming")
+    public ResponseEntity<StreamingResponseBody> timelapseStreaming(@PathVariable Long id) {
+        S3Object s3Object = feedService.getTimelapseFile(id);
+        S3ObjectInputStream finalObject = s3Object.getObjectContent();
+
+        final StreamingResponseBody body = outputStream -> {
+            int numberOfBytesToWrite = 0;
+            byte[] data = new byte[1024];
+            while ((numberOfBytesToWrite = finalObject.read(data, 0, data.length)) != -1) {
+                outputStream.write(data, 0, numberOfBytesToWrite);
+            }
+            finalObject.close();
+        };
+
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
     @Operation(summary = "피드 댓글 조회", tags = {
