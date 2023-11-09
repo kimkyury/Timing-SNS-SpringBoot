@@ -15,28 +15,31 @@ import DetailFeed from "../pages/DetailFeed/DetailFeed";
 import Login from "../pages/Login/Login";
 import UpdateReview from "../pages/UpdateReview/UpdateReview";
 import KakaoLogin from "../pages/Login/KakaoLogin";
+import PrivateRoute from "./PrivateRoute";
 function Router() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/time" element={<Time />} />
-      <Route path="/like" element={<Like />} />
-      <Route path="/search" element={<Search />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path={`/profile/?email=:email`} element={<Profile />} />
-      <Route path="/create" element={<Create />} />
-      <Route path="/tree" element={<Tree />} />
-      <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
-      <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
       <Route path="/login" element={<Login />} />
-      <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
       <Route path="/login/oauth2/redirect/kakao" element={<KakaoLogin />} />
-      {/* test */}
-      <Route path="/test" element={<Test />} />
-      {/* Jeonghui */}
-      <Route path="/jeonghui" element={<Jeonghui />} />
-      <Route path="/chooseObject" element={<ChooseObject />} />
-      <Route path="/doChallenge" element={<DoChallenge />} />
+      <Route element={<PrivateRoute />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/time" element={<Time />} />
+        <Route path="/like" element={<Like />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path={`/profile/?email=:email`} element={<Profile />} />
+        <Route path="/create" element={<Create />} />
+        <Route path="/tree" element={<Tree />} />
+        <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
+        <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
+        <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
+        {/* test */}
+        <Route path="/test" element={<Test />} />
+        {/* Jeonghui */}
+        <Route path="/jeonghui" element={<Jeonghui />} />
+        <Route path="/chooseObject" element={<ChooseObject />} />
+        <Route path="/doChallenge" element={<DoChallenge />} />
+      </Route>
     </Routes>
   );
 }

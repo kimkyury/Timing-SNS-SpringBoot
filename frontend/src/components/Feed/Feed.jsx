@@ -11,6 +11,7 @@ import axios from "axios";
 const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 function Feed(data) {
+  console.log(data.data, "feed");
   const navigate = useNavigate();
   const location = useLocation();
   const currentUrl = location.pathname;
@@ -49,24 +50,26 @@ function Feed(data) {
   };
   const Like = () => {
     console.log(state);
-    axios
-      .post(
-        `${BASE_URL}/api/v1/feeds/${state.id}/likes`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response);
-        console.log("like");
-        // getDetailFeed();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (user.email != state.writer.email) {
+      axios
+        .post(
+          `${BASE_URL}/api/v1/feeds/${state.id}/likes`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          console.log("like");
+          getDetailFeed();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
   const Dislike = () => {
     if (state && state.id) {
@@ -81,7 +84,7 @@ function Feed(data) {
         .then((response) => {
           console.log(response);
           console.log("dislike");
-          // getDetailFeed();
+          getDetailFeed();
         })
         .catch((error) => {
           console.error(error);
@@ -110,6 +113,7 @@ function Feed(data) {
   }, []);
 
   const gotoDetailComment = () => {
+    console.log(state);
     navigate(`/detailcomment/${state.id}`, { state });
   };
   const gotoDetailFeed = () => {
@@ -193,6 +197,8 @@ function Feed(data) {
   //         setComments(updatedComments);
   //     }
   // };
+  console.log(user);
+  console.log(state);
   return (
     <div>
       {state ? (

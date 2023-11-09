@@ -9,8 +9,6 @@ function FeedList(data) {
   const [state, setState] = useState(data.state);
   const navigate = useNavigate();
   const accessToken = sessionStorage.getItem("accessToken");
-  console.log("myfeed");
-  console.log(state);
   const goToFeed = (i) => {
     getDetailFeed(i);
   };
@@ -23,7 +21,6 @@ function FeedList(data) {
       })
       .then((response) => {
         setState(response.data);
-        console.log(state, i, "datas");
         navigate(`/detailfeed/${i}`, {
           state: state.find((item) => item.id === i),
         });
@@ -44,7 +41,7 @@ function FeedList(data) {
               onClick={() => goToFeed(v.id)}
             >
               <img
-                src={v.image}
+                src={v.thumbnailUrl}
                 style={{ filter: v.isPublic ? "blur(5px)" : "" }}
               />
               {v.isPublic && <LockOutlinedIcon className={styles.lock} />}

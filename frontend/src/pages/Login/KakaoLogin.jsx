@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import Toast, { Success } from "../../components/Toast/Toast";
 
 const KakaoLogin = () => {
   const [searchParams] = useSearchParams();
@@ -9,7 +10,7 @@ const KakaoLogin = () => {
 
   useEffect(() => {
     if (accessToken) {
-      alert("로그인 성공");
+      Success("로그인 성공");
       sessionStorage.setItem("accessToken", accessToken);
       navigate("/");
     }
@@ -19,6 +20,7 @@ const KakaoLogin = () => {
 
   return (
     <div>
+      <Toast />
       <p>로그인</p>
     </div>
   );

@@ -11,12 +11,13 @@ function MainFeed() {
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     axios
-      .get(`${BASE_URL}/api/v1/feeds/recommeded`, {
+      .get(`${BASE_URL}/api/v1/feeds/recommended?page=1`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
+        console.log(response.data);
         setState(response.data);
       })
       .catch((error) => {

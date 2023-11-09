@@ -9,33 +9,38 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 function DetailFeed() {
-  const location = useLocation();
-  const data = location.state;
-  const [user, setUser] = useState(null);
-  const [state, setState] = useState(data);
   const navigate = useNavigate();
   const BASE_URL = `http://k9e203.p.ssafy.io`;
   const [accessToken, setAccessToken] = useState(
     sessionStorage.getItem("accessToken")
   );
-  console.log(state);
-  // useEffect(() => {
-  //   console.log(data);
-  //   setState(data);
-  //   axios
-  //     .get(`${BASE_URL}/api/v1/members`, {
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       setUser(response.data);
-  //       // console.log(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }, []);
+  const location = useLocation();
+  const data = location.state;
+  const [user, setUser] = useState(null);
+  const [state, setState] = useState(data);
+  const [newState, setNewstate] = useState();
+  const [NewReview, setNewReivew] = useState(state.review);
+  const [isPrivate] = useState(state.isPrivate);
+  const updateReview = () => {
+    console.log(state);
+
+    axios
+      .patch(
+        `${BASE_URL}/api/v1/feeds/${state.id}`,
+        { isPrivate: !state.isPrivate, review: state.review },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   const getStream = () => {
     axios
       .get(`${BASE_URL}/api/v1/feeds/${data.id}/videos/stream`, {
@@ -50,32 +55,8 @@ function DetailFeed() {
         console.error(error);
       });
   };
-  // const getDetailFeed = () => {
-  //     axios
-  //         .get(`${BASE_URL}/api/v1/feeds/${data.id}`, {
-  //             headers: {
-  //                 Authorization: `Bearer ${accessToken}`,
-  //             },
-  //         })
-  //         .then((response) => {
-  //             setState(response.data);
-  //         })
-  //         .catch((error) => {
-  //             console.error(error);
-  //         });
-  // };
-  const setIsPublic = () => {
-    const currentState = { ...state };
-    setState(currentState);
-    if (currentState.isPublic) {
-      currentState.isPublic = false;
-    } else {
-      currentState.isPublic = true;
-    }
-    setState(currentState);
-  };
-
   const gotodetail = () => {
+    setState(newState);
     navigate(`/detailcomment/${data.id}`, { state });
   };
   const download = () => {
@@ -143,7 +124,6 @@ function DetailFeed() {
       });
   };
   const getDetailFeed = () => {
-    console.log(state, "asdfasdf");
     axios
       .get(`${BASE_URL}/api/v1/feeds/${data.id}`, {
         headers: {
@@ -151,7 +131,8 @@ function DetailFeed() {
         },
       })
       .then((response) => {
-        setState(response.data);
+        console.log(response.data);
+        setNewstate(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -168,41 +149,41 @@ function DetailFeed() {
       })
       .then((response) => {
         setUser(response.data);
-        console.log(response.data, "USER");
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
-  console.log(user);
-  console.log(state);
-  return state && user ? (
+  return newState && user ? (
     <div className={styles.container}>
-      {state && user && (
+      {newState && user && (
         <>
           <div className={styles.lock}>
-            {user.email != state.writer.email ? (
+            {user.email != newState.writer.email ? (
               <></>
-            ) : state.isPublic ? (
-              <LockOutlinedIcon onClick={setIsPublic} className={styles.icon} />
+            ) : newState.isPrivate ? (
+              <LockOutlinedIcon
+                onClick={updateReview}
+                className={styles.icon}
+              />
             ) : (
-              <LockOpenIcon onClick={setIsPublic} className={styles.icon} />
+              <LockOpenIcon onClick={updateReview} className={styles.icon} />
             )}
           </div>
 
-          <img src={state.thumbnailUrl} className={styles.imageContainer} />
+          <img src={newState.thumbnailUrl} className={styles.imageContainer} />
           <div className={styles.etcbox}>
             <div className={styles.etcinner} onClick={gotodetail}>
               <LoopOutlinedIcon className={styles.etcimg} />
               댓글보기
             </div>
-            {user.email != state.writer.email && (
+            {user.email != newState.writer.email && (
               <div className={styles.etcinner} onClick={relay}>
                 <LoopOutlinedIcon className={styles.etcimg} />
                 이어받기
               </div>
             )}
-            {user.email == state.writer.email && (
+            {user.email == newState.writer.email && (
               <>
                 <div className={styles.etcinner} onClick={download}>
                   <FileDownloadOutlinedIcon className={styles.etcimg} />
