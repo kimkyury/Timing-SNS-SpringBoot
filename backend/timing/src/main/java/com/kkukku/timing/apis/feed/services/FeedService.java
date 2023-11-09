@@ -13,6 +13,8 @@ import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
 import com.kkukku.timing.apis.like.services.LikeService;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.exception.CustomException;
+import com.kkukku.timing.jwt.services.JwtService;
+import com.kkukku.timing.redis.services.RedisService;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import com.kkukku.timing.security.utils.SecurityUtil;
@@ -33,6 +35,8 @@ public class FeedService {
     private final LikeService likeService;
     private final S3Service s3Service;
     private final MemberService memberService;
+    private final JwtService jwtService;
+    private final RedisService redisService;
 
     public List<FeedDetailResponse> getRecommendFeeds() {
         return feedRepository.findRandomFeeds()
@@ -247,17 +251,6 @@ public class FeedService {
         likeService.deleteLike(id);
     }
 
-    public void accessCheck(FeedEntity feed) {
-        if (feed.getIsDelete()) {
-            throw new CustomException(ErrorCode.DELETED_FEED);
-        }
-        if (!feed.getMember()
-                 .getId()
-                 .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
-            throw new CustomException(ErrorCode.PRIVATE_FEED);
-        }
-    }
-
     public S3Object getTimelapseFileCheckAccess(Long id) {
         FeedEntity feed = getFeedById(id);
 
@@ -268,6 +261,32 @@ public class FeedService {
 
     public S3Object getTimelapseFile(Long id) {
         return s3Service.getFile(getFeedById(id).getTimelapseUrl());
+    }
+
+    public void jwtCheck(String jwt) {
+        String email = jwtService.extractUsername(jwt);
+
+        if (email == null) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+        if (!jwtService.isTokenValid(jwt, email)) {
+            throw new CustomException(ErrorCode.TOKEN_EXPIRED);
+        }
+        String isLogout = redisService.getValue("member:" + email + ":LOGOUT");
+        if (isLogout != null) {
+            throw new CustomException(ErrorCode.LOGGED_OUT_MEMBER_TOKEN);
+        }
+    }
+
+    public void accessCheck(FeedEntity feed) {
+        if (feed.getIsDelete()) {
+            throw new CustomException(ErrorCode.DELETED_FEED);
+        }
+        if (!feed.getMember()
+                 .getId()
+                 .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
+            throw new CustomException(ErrorCode.PRIVATE_FEED);
+        }
     }
 
     private int find(Integer[] parent, Integer x) {
