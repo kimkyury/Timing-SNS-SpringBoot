@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import styles from "./Feed.module.css";
-import { useNavigate, useLocation } from "react-router-dom";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import axios from "axios";
+import { useEffect, useState } from 'react';
+import styles from './Feed.module.css';
+import { useNavigate, useLocation } from 'react-router-dom';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import SmsOutlinedIcon from '@mui/icons-material/SmsOutlined';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import axios from 'axios';
 
 const BASE_URL = `http://k9e203.p.ssafy.io`;
 
@@ -310,48 +310,129 @@ function Feed(data) {
                         {formatT(new Date() - v.createdAt)}
                       </div>
                     </div>
-                    <div className={styles.comment}>{v.content}</div>
-                  </div>
-                  {/* {user.id == v.name ? <CloseOutlinedIcon onClick={() => handleDeleteComment(i)} /> : ''} */}
-                </div>
-              ))}
-            </div>
-          )}
 
-          {user && (
-            <div
-              className={
-                currentUrl == "/"
-                  ? styles.commentContainer
-                  : styles.commentContainerFix
-              }
-            >
-              <img src={user.profileImageUrl} className={styles.commentImage} />
-              <input
-                type="text"
-                className={styles.commentInput}
-                placeholder="댓글 달기..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                onClick={gotoDetailComment}
-                onKeyDown={(e) => activeEnter(e)}
-              />
-              {newComment.length != 0 && (
-                <button
-                  onClick={handleAddComment}
-                  className={styles.commentBtn}
-                >
-                  추가
-                </button>
-              )}
-            </div>
-          )}
+                    {/* 게시글 이미지 */}
+                    <img
+                        src={
+                            'https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com' + state.thumbnailUrl + '.png'
+                        }
+                        className={styles.imageContainer}
+                        onClick={gotoDetailFeed}
+                    />
+
+                    {/* 게시글 좋아요, 댓글, 이어가기 정보 */}
+                    <div className={styles.tagContainer}>
+                        <div className={styles.tagitem}>
+                            <div className={styles.tagitemicon}>
+                                {state.isLiked ? (
+                                    <FavoriteOutlinedIcon
+                                        style={{ width: '4vw', height: '4vw', color: 'red' }}
+                                        onClick={Dislike}
+                                    />
+                                ) : (
+                                    <FavoriteBorderOutlinedIcon
+                                        style={{ width: '4vw', height: '4vw' }}
+                                        onClick={Like}
+                                    />
+                                )}
+                            </div>
+                            <div>{formatK(state.likeCount)}</div>
+                        </div>
+                        <div className={styles.tagitem}>
+                            <div className={styles.tagitemicon}>
+                                <SmsOutlinedIcon style={{ width: '4vw', height: '4vw' }} />
+                            </div>
+                            {currentUrl == '/' ? (
+                                <div>{formatK(state.commentCount)}</div>
+                            ) : (
+                                <div>{formatK(comment.length)}</div>
+                            )}
+                        </div>
+                        <div className={styles.tagitem}>
+                            <div className={styles.tagitemicon}>
+                                <ShareOutlinedIcon style={{ width: '4vw', height: '4vw' }} />
+                            </div>
+                            <div>{formatK(state.shareCount)}</div>
+                        </div>
+
+                        {/* 수정버튼 */}
+
+                        {currentUrl == '/' ? (
+                            <></>
+                        ) : (
+                            <>
+                                {state.length != 0 && user != null && user.email == state.writer.email ? (
+                                    <EditOutlinedIcon className={styles.editbtn} onClick={gotoEdit} />
+                                ) : (
+                                    <></>
+                                )}
+                            </>
+                        )}
+                    </div>
+
+                    {/* 게시글 본문 */}
+                    <div className={styles.contentContainer}>
+                        <div className={styles.name}>{state.writer.nickname}</div>
+                        <div className={styles.content}>{state.review}</div>
+                    </div>
+
+                    {/* 게시글 해시태그 */}
+                    <div className={styles.hashTagContainer}>
+                        {state.length != 0 &&
+                            state.hashTags.map((v, i) => (
+                                <div key={i} className={styles.hash}>
+                                    <div>{v.content}</div>
+                                </div>
+                            ))}
+                    </div>
+
+                    {/* 게시글 시간 정보 */}
+                    <div>{formatT(new Date() - state.createdAt)}</div>
+
+                    {/* 게시글 댓글 */}
+                    {currentUrl != '/' && comment.length != 0 && (
+                        <div className={styles.floatBottom}>
+                            {comment.map((v, i) => (
+                                <div key={i} className={styles.commentContainer}>
+                                    <img src={v.writer.profileImageUrl} className={styles.commentImage} />
+                                    <div className={styles.commentbox}>
+                                        <div className={styles.commentInfo}>
+                                            <div className={styles.name}>{v.writer.nickname}</div>
+                                            <div className={styles.time}>{formatT(new Date() - v.createdAt)}</div>
+                                        </div>
+                                        <div className={styles.comment}>{v.content}</div>
+                                    </div>
+                                    {/* {user.id == v.name ? <CloseOutlinedIcon onClick={() => handleDeleteComment(i)} /> : ''} */}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {user && (
+                        <div className={currentUrl == '/' ? styles.commentContainer : styles.commentContainerFix}>
+                            <img src={user.profileImageUrl} className={styles.commentImage} />
+                            <input
+                                type="text"
+                                className={styles.commentInput}
+                                placeholder="댓글 달기..."
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                onClick={gotoDetailComment}
+                                onKeyDown={(e) => activeEnter(e)}
+                            />
+                            {newComment.length != 0 && (
+                                <button onClick={handleAddComment} className={styles.commentBtn}>
+                                    추가
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <></>
+            )}
         </div>
-      ) : (
-        <></>
-      )}
-    </div>
-  );
+    );
 }
 
 export default Feed;
