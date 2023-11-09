@@ -31,8 +31,11 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -218,22 +221,19 @@ public class ChallengeService {
 
     }
 
-    public void setSnapshotProcedure(Integer memberId, Long challengeId, MultipartFile snapshot) {
+    public void setSnapshotProcedure(
+        Integer memberId, Long challengeId, MultipartFile snapshot) {
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
+        body.add("snapshot", snapshotResource);
 
         ChallengeEntity challenge = getChallengeById(challengeId);
         checkOwnChallenge(memberId, challengeId);
-
-        // get SnapshotFile StreamResource
-        InputStreamResource snapshotInputStream = getInputStreamByMultipart(snapshot);
-
-        // get SnapshotFile StreamResource
-        String objectUrl = challenge.getObjectUrl();
-        S3Object s3Object = s3Service.getFile(objectUrl);
-        InputStreamResource objectFileInputStream = new InputStreamResource(
-            s3Object.getObjectContent());
-
+        String objectUrl = s3Service.getS3StartUrl() + challenge.getObjectUrl();
+        body.add("objectUrl", objectUrl);
         //TODO: 적용해야 함
-//        visionAIService.checkSimilarity(snapshotInputStream, objectFileInputStream);
+        visionAIService.checkSimilarity(body);
 
         String savedSnapshotUrl = s3Service.uploadFile(snapshot);
 
@@ -270,5 +270,18 @@ public class ChallengeService {
 
         InputStreamResource imageStreamResource = getInputStreamByMultipart(image);
         return visionAIService.getDetectedObject(imageStreamResource);
+    }
+
+    private ByteArrayResource getByteArrayResource(MultipartFile file) {
+        try {
+            return new ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            };
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 }
