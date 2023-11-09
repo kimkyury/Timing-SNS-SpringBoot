@@ -523,5 +523,27 @@ public class ChallengeServiceTest {
         assertEquals("/" + afterSnapshotName, actualChallenge.getThumbnailUrl());
     }
 
+//    @Test
+//    @Transactional
+//    @Order(11)
+//    @DisplayName("스냅샷에 대한 객체 선택 좌표가 유효할 경우,  Polygon.txt와 Object를 줍니다. ")
+//    void shouldOutputPolygonTextAndObjectPngWhenSelectProperCoordinate() {
+//
+//        CheckCoordinateRequest request = new CheckCoordinateRequest(100, 200);
+//        String afterSnapshotName = "test_snapshot.png";
+//        String afterSnapshotPath = "src/test/resources/image/" + afterSnapshotName;
+//        MockMultipartFile snapshotFile = getSampleText(afterSnapshotPath, afterSnapshotName);
+//
+//        // when
+//        ResponseSpec response = challengeService.checkProperCoordnate(request, snapshotFile);
+//
+//        // then
+//        HttpHeaders httpHeaders = response.toEntity(String.class)
+//                                          .getHeaders();
+//        byte[] objectImage = response.body();
+//
+//        assertNotNull(httpHeaders.get("polygon"));
+//
+//    }
 
 }
