@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -137,6 +138,23 @@ public class ChallengeController {
         challengeService.setSnapshotProcedure(memberId, id, snapshot);
 
         return ApiResponseUtil.success();
+    }
+
+    @Operation(summary = "특정 Challenge의 최초 Snapshot 객체 탐지 요청(미완)", tags = {
+        "2. Challenge"},
+        description = "특정 Challenge의 최초 Snapshot 추가 시, 객체 탐지를 요청(미완) 합니다. 객체가 없을 경우 400에러가 뜹니다. (현재는 무조건 200) ")
+    @PostMapping(value = "/{id}/snapshots/objects/detection", consumes = {
+        MediaType.MULTIPART_FORM_DATA_VALUE
+    })
+    public ResponseEntity<byte[]> getObjectInSnapshot(@PathVariable Long id,
+        @RequestPart(value = "snapshot 이미지") MultipartFile snapshot) {
+
+        byte[] objectsImage = challengeService.getDetectedObject(snapshot);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(MediaType.IMAGE_PNG_VALUE);
+
+        return ApiResponseUtil.success(headers, objectsImage);
     }
 
 
