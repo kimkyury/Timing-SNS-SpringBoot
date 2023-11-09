@@ -1,6 +1,9 @@
 package com.kkukku.timing.apis.feed.services;
 
 import com.amazonaws.services.s3.model.S3Object;
+import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
+import com.kkukku.timing.apis.challenge.services.ChallengeService;
+import com.kkukku.timing.apis.challenge.services.SnapshotService;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
@@ -9,10 +12,12 @@ import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
 import com.kkukku.timing.apis.feed.responses.FeedNodeResponse;
 import com.kkukku.timing.apis.feed.responses.FeedSummaryResponse;
 import com.kkukku.timing.apis.feed.responses.FeedSummaryWithCountResponse;
+import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
 import com.kkukku.timing.apis.like.services.LikeService;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.exception.CustomException;
+import com.kkukku.timing.external.services.VisionAIService;
 import com.kkukku.timing.jwt.services.JwtService;
 import com.kkukku.timing.redis.services.RedisService;
 import com.kkukku.timing.response.codes.ErrorCode;
@@ -24,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +43,10 @@ public class FeedService {
     private final MemberService memberService;
     private final JwtService jwtService;
     private final RedisService redisService;
+    private final ChallengeService challengeService;
+    private final SnapshotService snapshotService;
+    private final ChallengeHashTagService challengeHashTagService;
+    private final VisionAIService visionAIService;
 
     public List<FeedDetailResponse> getRecommendFeeds() {
         return feedRepository.findRandomFeeds()
@@ -261,6 +271,24 @@ public class FeedService {
 
     public S3Object getTimelapseFile(Long id) {
         return s3Service.getFile(getFeedById(id).getTimelapseUrl());
+    }
+
+    public void convertToFeed(Long challengeId) {
+        ChallengeEntity challenge = challengeService.getChallengeById(challengeId);
+
+        challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
+        challengeService.checkCompletedChallenge(challengeId);
+
+        MultipartFile timelapseFile = visionAIService.getMovieBySnapshots(
+            snapshotService.getAllSnapshotByChallenge(challengeId));
+        String timelapseUrl = s3Service.uploadFile(timelapseFile);
+
+        FeedEntity feed = feedRepository.save(new FeedEntity(challenge, timelapseUrl));
+        feed.setRelation(challenge.getParent());
+        feedHashTagService.saveHashTagsByFeedId(feed.getId(),
+            challengeHashTagService.getHashTagOptionByChallengeId(challengeId));
+
+        challengeService.deleteChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
     }
 
     public void jwtCheck(String jwt) {
