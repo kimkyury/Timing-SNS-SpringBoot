@@ -32,7 +32,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -242,20 +241,6 @@ public class ChallengeService {
         snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
-    // TODO: 다른 Util로 이동시키기
-    private InputStreamResource getInputStreamByMultipart(MultipartFile file) {
-
-        InputStreamResource fileInputResource;
-
-        try {
-            fileInputResource = new InputStreamResource(file.getInputStream());
-        } catch (IOException e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-
-        return fileInputResource;
-    }
-
     private void saveChallengeThumbnail(ChallengeEntity challenge, String thumbnailUrl) {
 
         if (challenge.getThumbnailUrl()
@@ -266,10 +251,13 @@ public class ChallengeService {
         }
     }
 
-    public byte[] getDetectedObject(MultipartFile image) {
+    public byte[] getDetectedObject(MultipartFile snapshot) {
 
-        InputStreamResource imageStreamResource = getInputStreamByMultipart(image);
-        return visionAIService.getDetectedObject(imageStreamResource);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
+        body.add("snapshot", snapshotResource);
+
+        return visionAIService.getDetectedObject(body);
     }
 
     private ByteArrayResource getByteArrayResource(MultipartFile file) {
