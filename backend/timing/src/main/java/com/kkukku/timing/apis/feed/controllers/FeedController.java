@@ -102,7 +102,10 @@ public class FeedController {
 
     @Operation(summary = "피드 스트리밍", tags = {"3. Feed"})
     @GetMapping("/{id}/videos/streaming")
-    public ResponseEntity<StreamingResponseBody> timelapseStreaming(@PathVariable Long id) {
+    public ResponseEntity<StreamingResponseBody> timelapseStreaming(@PathVariable Long id,
+        @RequestParam(name = "access-token") String accessToken) {
+        feedService.jwtCheck(accessToken);
+
         S3Object s3Object = feedService.getTimelapseFile(id);
         S3ObjectInputStream finalObject = s3Object.getObjectContent();
 
