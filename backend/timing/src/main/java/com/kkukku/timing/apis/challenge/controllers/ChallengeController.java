@@ -125,7 +125,9 @@ public class ChallengeController {
 
     // 이하로 Python Proxy APIs
     @Operation(summary = "특정 Challenge의 Snapshot 추가(미완)", tags = {"2. Challenge"},
-        description = "특정 Challenge의 Snapshot 추가 시, 객체 유사도(현재 미연결) 이후 Snapshot이 저장됩니다. 현재는 수행시 바로 Upload(S3저장, DB 업데이트) 됩니다. ")
+        description = "특정 Challenge의 Snapshot 추가 시, AI server를 통한 유사도 판정 이후 Snapshot이 저장됩니다."
+            + "<br/> *상태코드:400일 시, 객체 유사도가 낮아서 실패한 경우입니다."
+            + " <br/> *상태코드:200일 시, snapshot이 저장됩니다. (현재 무조건 200)")
     @PostMapping(value = "/{id}/snapshots", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> setSnapshot(
         @PathVariable Long id, @RequestPart MultipartFile snapshot) {
@@ -138,7 +140,10 @@ public class ChallengeController {
 
     @Operation(summary = "특정 Challenge의 최초 Snapshot 객체 탐지 요청(미완)", tags = {
         "2. Challenge"},
-        description = "특정 Challenge의 최초 Snapshot 추가 시, 객체 탐지를 요청(미완) 합니다. 객체가 없을 경우 400에러가 뜹니다. (현재는 무조건 200) ")
+        description =
+            "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 객체 탐지를 요청하고 Object 이미지를 리턴(미완)합니다. "
+                + "<br/> *상태코드:4xx일 경우, 객체를 발견하지 못한 것입니다 (현재는 무조건 200)"
+                + "<br/> *상태코드:200일 경우, object.png을 보냅니다 (현재는 안 보내짐) ")
     @PostMapping(value = "/{id}/snapshots/objects/detection", consumes = {
         MediaType.MULTIPART_FORM_DATA_VALUE
     })
@@ -148,7 +153,7 @@ public class ChallengeController {
         byte[] objectsImage = challengeService.getDetectedObject(snapshot);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(MediaType.IMAGE_PNG_VALUE);
+        headers.setContentType(MediaType.IMAGE_PNG);
 
         return ApiResponseUtil.success(headers, objectsImage);
     }
