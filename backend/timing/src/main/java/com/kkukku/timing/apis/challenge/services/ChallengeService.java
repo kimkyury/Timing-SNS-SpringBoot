@@ -233,7 +233,7 @@ public class ChallengeService {
         String objectUrl = s3Service.getS3StartUrl() + challenge.getObjectUrl();
         body.add("objectUrl", objectUrl);
         //TODO: 적용해야 함
-        visionAIService.checkSimilarity(body);
+//        visionAIService.checkSimilarity(body);
 
         String savedSnapshotUrl = s3Service.uploadFile(snapshot);
 
