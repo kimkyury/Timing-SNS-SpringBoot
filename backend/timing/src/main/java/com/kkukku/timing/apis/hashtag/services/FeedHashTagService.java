@@ -27,4 +27,11 @@ public class FeedHashTagService {
                                     .map(FeedHashTagEntity::getHashTagOption)
                                     .toList();
     }
+
+    public void saveHashTagsByFeedId(Long feedId, List<HashTagOptionEntity> hashTags) {
+        feedHashTagRepository.saveAll(hashTags.stream()
+                                              .map(
+                                                  hashTag -> new FeedHashTagEntity(hashTag, feedId))
+                                              .toList());
+    }
 }
