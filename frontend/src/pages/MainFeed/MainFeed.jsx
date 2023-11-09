@@ -8,21 +8,22 @@ const BASE_URL = `http://k9e203.p.ssafy.io`;
 function MainFeed() {
     const [state, setState] = useState([]);
 
-    useEffect(() => {
-        const accessToken = sessionStorage.getItem('accessToken');
-        axios
-            .get(`${BASE_URL}/api/v1/feeds/recommended`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
-            .then((response) => {
-                setState(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, []);
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    axios
+      .get(`${BASE_URL}/api/v1/feeds/recommended?page=1`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setState(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
     useEffect(() => {
         console.log(state);
