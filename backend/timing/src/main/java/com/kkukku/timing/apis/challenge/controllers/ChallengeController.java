@@ -3,6 +3,7 @@ package com.kkukku.timing.apis.challenge.controllers;
 
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
+import com.kkukku.timing.apis.challenge.requests.CheckCoordinateRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClient.ResponseSpec;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -151,12 +153,37 @@ public class ChallengeController {
     public ResponseEntity<byte[]> getObjectInSnapshot(@PathVariable Long id,
         @RequestPart MultipartFile snapshot) {
 
-        byte[] objectsImage = challengeService.getDetectedObject(snapshot);
+        ResponseSpec response = challengeService.getDetectedObject(snapshot);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_PNG);
+        byte[] objectImage = response.body(byte[].class);
+        HttpHeaders httpHeaders = response.toEntity(String.class)
+                                          .getHeaders();
 
-        return ApiResponseUtil.success(headers, objectsImage);
+        return ApiResponseUtil.success(httpHeaders, objectImage);
+    }
+
+
+    @Operation(summary = "특정 Challenge의 최초 Snapshot추가 시, 객체 선택 및 좌표 유효성 검사", tags = {
+        "2. Challenge"},
+        description =
+            "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 현재 좌표의 유효성을 요청(미완)합니다. "
+                + "<br/> *상태코드:4xx일 경우, 올바르지 않은 좌표값입니다. (현재는 무조건 200)"
+                + "<br/> *상태코드:200일 경우, object.png을 Body로, Polygon String값을 헤더로 리턴합니다. (현재는 안 보내짐) "
+                + "<br/> AIServer에는 FormData형식으로, 'snapshot'에 이미지가, 'coordinate'에 좌표 JSON이 String형태로 전송됩니다(NOTION참고). ")
+    @PostMapping(value = "{id}/snapshots/objects/choose", consumes = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.MULTIPART_FORM_DATA_VALUE
+    })
+    public ResponseEntity<byte[]> chooseObjectByCoordinate(
+        @Valid @RequestPart CheckCoordinateRequest request, @RequestPart MultipartFile snapshot) {
+
+        ResponseSpec response = challengeService.getChoiceObject(request, snapshot);
+
+        byte[] objectImage = response.body(byte[].class);
+        HttpHeaders httpHeaders = response.toEntity(String.class)
+                                          .getHeaders();
+
+        return ApiResponseUtil.success(httpHeaders, objectImage);
     }
 
 
