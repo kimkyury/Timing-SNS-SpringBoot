@@ -49,22 +49,14 @@ public class VisionAIService {
 
     }
 
-    public void checkSimilarity(
-        InputStreamResource snapshotStreamResource, InputStreamResource objectStreamResource) {
+    public void checkSimilarity(MultiValueMap<String, Object> body) {
 
         RestClient restClient = RestClient.create();
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("snapshot", snapshotStreamResource)
-                   .filename("snapshot");
-        bodyBuilder.part("object", objectStreamResource)
-                   .filename("object");
-        MultiValueMap<String, HttpEntity<?>> multipartBody = bodyBuilder.build();
 
         ResponseEntity<Void> result = restClient.post()
                                                 .uri(baseUrl + "/objectDetaction/similarity")
                                                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                                                .body(multipartBody)
+                                                .body(body)
                                                 .retrieve()
                                                 .onStatus(HttpStatusCode::is4xxClientError,
                                                     (request, response) -> {
