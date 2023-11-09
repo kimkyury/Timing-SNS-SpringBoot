@@ -25,7 +25,7 @@ CREATE TABLE feeds (
                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
                        member_id INT NOT NULL,
                        parent_id BIGINT,
-                       root_id BIGINT NOT NULL,
+                       root_id BIGINT,
                        started_at DATE NOT NULL,
                        ended_at DATE NOT NULL,
                        goal_content VARCHAR(255),

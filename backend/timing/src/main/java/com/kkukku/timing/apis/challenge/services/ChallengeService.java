@@ -2,16 +2,19 @@ package com.kkukku.timing.apis.challenge.services;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
+import com.kkukku.timing.apis.challenge.requests.CheckCoordinateRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
-import com.kkukku.timing.apis.feed.services.FeedService;
+import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
@@ -32,10 +35,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient.ResponseSpec;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -44,7 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChallengeService {
 
     private final S3Service s3Service;
-    private final FeedService feedService;
     private final MemberService memberService;
     private final VisionAIService visionAIService;
     private final SnapshotService snapshotService;
@@ -53,6 +55,7 @@ public class ChallengeService {
     private final ChallengeHashTagService challengeHashTagService;
 
     private final ChallengeRepository challengeRepository;
+    private final FeedRepository feedRepository;
 
     @Transactional
     public void createChallengeProcedure(Integer memberId,
@@ -130,8 +133,9 @@ public class ChallengeService {
 
     @Transactional
     public void relayChallenge(Integer memberId, Long feedId, ChallengeRelayRequest request) {
-
-        FeedEntity feed = feedService.getFeedById(feedId);
+        FeedEntity feed = feedRepository.findById(feedId)
+                                        .orElseThrow(() -> new CustomException(
+                                            ErrorCode.NOT_EXIST_FEED));
         List<HashTagOptionEntity> hashTagOptionByFeed = feedHashTagService.getHashTagOptionByFeedId(
             feedId);
         MemberEntity member = memberService.getMemberById(memberId);
@@ -242,20 +246,6 @@ public class ChallengeService {
         snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
-    // TODO: 다른 Util로 이동시키기
-    private InputStreamResource getInputStreamByMultipart(MultipartFile file) {
-
-        InputStreamResource fileInputResource;
-
-        try {
-            fileInputResource = new InputStreamResource(file.getInputStream());
-        } catch (IOException e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-
-        return fileInputResource;
-    }
-
     private void saveChallengeThumbnail(ChallengeEntity challenge, String thumbnailUrl) {
 
         if (challenge.getThumbnailUrl()
@@ -266,10 +256,13 @@ public class ChallengeService {
         }
     }
 
-    public byte[] getDetectedObject(MultipartFile image) {
+    public ResponseSpec getDetectedObject(MultipartFile snapshot) {
 
-        InputStreamResource imageStreamResource = getInputStreamByMultipart(image);
-        return visionAIService.getDetectedObject(imageStreamResource);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
+        body.add("snapshot", snapshotResource);
+
+        return visionAIService.getDetectedObject(body);
     }
 
     private ByteArrayResource getByteArrayResource(MultipartFile file) {
@@ -284,4 +277,27 @@ public class ChallengeService {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public ResponseSpec getChoiceObject(CheckCoordinateRequest request, MultipartFile snapshot) {
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
+        body.add("snapshot", snapshotResource);
+        String convertRequestToJson = convertCheckCoordinateRequestToJson(request);
+        body.add("coordinate", convertRequestToJson);
+
+        return visionAIService.checkCoordinate(body);
+
+    }
+
+    private String convertCheckCoordinateRequestToJson(CheckCoordinateRequest request) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(request);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+
+
