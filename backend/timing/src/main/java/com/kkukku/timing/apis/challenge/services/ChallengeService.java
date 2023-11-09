@@ -2,11 +2,14 @@ package com.kkukku.timing.apis.challenge.services;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
+import com.kkukku.timing.apis.challenge.requests.CheckCoordinateRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
@@ -35,6 +38,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient.ResponseSpec;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -251,7 +255,7 @@ public class ChallengeService {
         }
     }
 
-    public byte[] getDetectedObject(MultipartFile snapshot) {
+    public ResponseSpec getDetectedObject(MultipartFile snapshot) {
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
@@ -272,4 +276,27 @@ public class ChallengeService {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public ResponseSpec getChoiceObject(CheckCoordinateRequest request, MultipartFile snapshot) {
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
+        body.add("snapshot", snapshotResource);
+        String convertRequestToJson = convertCheckCoordinateRequestToJson(request);
+        body.add("coordinate", convertRequestToJson);
+
+        return visionAIService.checkCoordinate(body);
+
+    }
+
+    private String convertCheckCoordinateRequestToJson(CheckCoordinateRequest request) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(request);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+
+
