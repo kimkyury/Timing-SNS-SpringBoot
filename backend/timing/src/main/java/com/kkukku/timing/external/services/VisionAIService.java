@@ -4,6 +4,7 @@ import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class VisionAIService {
 
-    // TODO: Apply Python Server URL (application.yml)
-    private String baseUrl = "";
+    @Value("${external.vision-ai.url}")
+    private String baseUrl;
 
     public ResponseSpec getDetectedObject(MultiValueMap<String, Object> body) {
 
         RestClient restClient = RestClient.create();
         return restClient.post()
-                         .uri(baseUrl + "/objectDetaction")
+                         .uri(baseUrl + "/objectDetection")
                          .contentType(MediaType.MULTIPART_FORM_DATA)
                          .body(body)
                          .retrieve()
@@ -38,7 +39,7 @@ public class VisionAIService {
 
         RestClient restClient = RestClient.create();
         return restClient.post()
-                         .uri(baseUrl + "/objectDetaction/chooseObject")
+                         .uri(baseUrl + "/objectDetection/chooseObject")
                          .contentType(MediaType.MULTIPART_FORM_DATA)
                          .body(body)
                          .retrieve()
@@ -54,7 +55,7 @@ public class VisionAIService {
 
         RestClient restClient = RestClient.create();
         ResponseEntity<Void> result = restClient.post()
-                                                .uri(baseUrl + "/objectDetaction/similarity")
+                                                .uri(baseUrl + "/objectDetection/similarity")
                                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                                                 .body(body)
                                                 .retrieve()
