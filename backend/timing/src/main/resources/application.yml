@@ -59,6 +59,9 @@ management:
   endpoint:
     health:
       show-details: always
+external:
+  vision-ai:
+    url: ${VISION_AI_URL}
 ---
 
 spring:
@@ -91,6 +94,8 @@ spring:
     host: ${LOCAL_REDIS_HOST}
     port: ${LOCAL_REDIS_PORT}
     password: ${LOCAL_REDIS_PASSWORD}
+
+
 
 ---
 

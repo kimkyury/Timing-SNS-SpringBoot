@@ -175,7 +175,11 @@ public class ChallengeController {
         MediaType.MULTIPART_FORM_DATA_VALUE
     })
     public ResponseEntity<byte[]> chooseObjectByCoordinate(
-        @Valid @RequestPart CheckCoordinateRequest request, @RequestPart MultipartFile snapshot) {
+        @PathVariable Long id,
+        @Valid @RequestPart CheckCoordinateRequest request,
+        @RequestPart MultipartFile snapshot) {
+
+        System.out.println("-------hi! this is choice");
 
         ResponseSpec response = challengeService.getChoiceObject(request, snapshot);
 
