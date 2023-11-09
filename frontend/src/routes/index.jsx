@@ -16,6 +16,7 @@ import Login from "../pages/Login/Login";
 import UpdateReview from "../pages/UpdateReview/UpdateReview";
 import KakaoLogin from "../pages/Login/KakaoLogin";
 import PrivateRoute from "./PrivateRoute";
+import UpdateProfile from "../pages/UpdateProfile/UpdateProfile";
 function Router() {
   return (
     <Routes>
@@ -33,6 +34,7 @@ function Router() {
         <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
         <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
         <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
+        <Route path={`/updateprofile/:email`} element={<UpdateProfile />} />
         {/* test */}
         <Route path="/test" element={<Test />} />
         {/* Jeonghui */}

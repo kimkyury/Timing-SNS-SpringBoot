@@ -56,22 +56,33 @@
 .contentContainer {
   display: flex;
   align-items: baseline;
+  margin-bottom: 5px;
 }
 
 .contentContainer .name {
   font-weight: bold;
   margin-right: 2%;
   font-size: 4.5vw;
+  white-space: nowrap; /* 글자 수가 늘어나면 줄 바꾸지 않음 */
+  overflow: hidden; /* 글자 수가 넘치면 숨김 */
+  text-overflow: ellipsis; /* 글자 수가 넘치면 '...'으로 표시 (선택 사항) */
+  max-width: 100vw; /* 부모 요소의 너비를 초과하지 않도록 최대 너비 설정 (선택 사항) */
+  width: 20vw;
 }
 
 .contentContainer .content {
+  width: 80vw;
   font-size: 4.5vw;
+  overflow: hidden; /* 텍스트가 화면을 벗어나면 숨김 */
+  text-overflow: ellipsis; /* 텍스트가 화면을 벗어나면 '...'으로 표시 (선택 사항) */
+  /* max-width: 100%; 부모 요소의 너비를 초과하지 않도록 최대 너비 설정 (선택 사항) */
 }
 
 .hashTagContainer {
   display: flex;
   font-weight: bold;
   font-size: 3.5vw;
+  margin-bottom: 5px;
 }
 .hash {
   margin-right: 10px;
@@ -149,6 +160,11 @@
   font-size: 4vw;
   margin-left: 3%;
   white-space: nowrap;
+  border-radius: 3vw;
+  width: 20vw;
+  border: transparent;
+  background-color: #97d3ff;
+  color: white;
 }
 
 .editbtn {

@@ -11,7 +11,6 @@ import axios from "axios";
 const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 function Feed(data) {
-  console.log(data.data, "feed");
   const navigate = useNavigate();
   const location = useLocation();
   const currentUrl = location.pathname;
@@ -61,9 +60,7 @@ function Feed(data) {
             },
           }
         )
-        .then((response) => {
-          console.log(response);
-          console.log("like");
+        .then(() => {
           getDetailFeed();
         })
         .catch((error) => {
@@ -81,9 +78,7 @@ function Feed(data) {
             Authorization: `Bearer ${accessToken}`,
           },
         })
-        .then((response) => {
-          console.log(response);
-          console.log("dislike");
+        .then(() => {
           getDetailFeed();
         })
         .catch((error) => {
@@ -197,8 +192,6 @@ function Feed(data) {
   //         setComments(updatedComments);
   //     }
   // };
-  console.log(user);
-  console.log(state);
   return (
     <div>
       {state ? (
@@ -280,7 +273,12 @@ function Feed(data) {
           {/* 게시글 본문 */}
           <div className={styles.contentContainer}>
             <div className={styles.name}>{state.writer.nickname}</div>
-            <div className={styles.content}>{state.review}</div>
+            <div
+              className={styles.content}
+              style={{ whiteSpace: currentUrl == "/" ? "nowrap" : "wrap" }}
+            >
+              {state.review}
+            </div>
           </div>
 
           {/* 게시글 해시태그 */}
