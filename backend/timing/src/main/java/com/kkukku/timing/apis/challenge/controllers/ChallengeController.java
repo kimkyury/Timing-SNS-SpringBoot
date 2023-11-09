@@ -127,7 +127,8 @@ public class ChallengeController {
     @Operation(summary = "특정 Challenge의 Snapshot 추가(미완)", tags = {"2. Challenge"},
         description = "특정 Challenge의 Snapshot 추가 시, AI server를 통한 유사도 판정 이후 Snapshot이 저장됩니다."
             + "<br/> *상태코드:400일 시, 객체 유사도가 낮아서 실패한 경우입니다."
-            + " <br/> *상태코드:200일 시, snapshot이 저장됩니다. (현재 무조건 200)")
+            + " <br/> *상태코드:200일 시, snapshot이 저장됩니다. (현재 무조건 200)"
+            + "<br/> *AIServer에는 'snapshot'에 이미지가, 'objectUrl'로 object 이미지가 전송됩니다")
     @PostMapping(value = "/{id}/snapshots", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> setSnapshot(
         @PathVariable Long id, @RequestPart MultipartFile snapshot) {
@@ -143,10 +144,10 @@ public class ChallengeController {
         description =
             "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 객체 탐지를 요청하고 Object 이미지를 리턴(미완)합니다. "
                 + "<br/> *상태코드:4xx일 경우, 객체를 발견하지 못한 것입니다 (현재는 무조건 200)"
-                + "<br/> *상태코드:200일 경우, object.png을 보냅니다 (현재는 안 보내짐) ")
-    @PostMapping(value = "/{id}/snapshots/objects/detection", consumes = {
-        MediaType.MULTIPART_FORM_DATA_VALUE
-    })
+                + "<br/> *상태코드:200일 경우, object.png을 보냅니다 (현재는 안 보내짐) "
+                + "<br/> AIServer에는 'snapshot'이름으로 이미지가 전송됩니다. ")
+    @PostMapping(value = "/{id}/snapshots/objects/detection",
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.IMAGE_PNG_VALUE})
     public ResponseEntity<byte[]> getObjectInSnapshot(@PathVariable Long id,
         @RequestPart MultipartFile snapshot) {
 
