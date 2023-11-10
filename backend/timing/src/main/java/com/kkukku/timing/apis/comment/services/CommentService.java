@@ -33,7 +33,7 @@ public class CommentService {
     public List<CommentResponse> getCommentsByFeedId(Long feedId, Integer page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-        return commentRepository.findByFeedId(feedId, pageable)
+        return commentRepository.findByFeedIdOrderById(feedId, pageable)
                                 .getContent()
                                 .stream()
                                 .map(comment -> new CommentResponse(comment, s3Service))
