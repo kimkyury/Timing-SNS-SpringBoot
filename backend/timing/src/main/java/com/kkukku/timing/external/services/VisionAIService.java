@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -54,17 +53,16 @@ public class VisionAIService {
     public void checkSimilarity(MultiValueMap<String, Object> body) {
 
         RestClient restClient = RestClient.create();
-        ResponseEntity<Void> result = restClient.post()
-                                                .uri(baseUrl + "/objectDetection/similarity")
-                                                .contentType(MediaType.MULTIPART_FORM_DATA)
-                                                .body(body)
-                                                .retrieve()
-                                                .onStatus(HttpStatusCode::is4xxClientError,
-                                                    (request, response) -> {
-                                                        throw new CustomException(
-                                                            ErrorCode.NOT_HIGH_SIMILARITY_SNAPSHOT);
-                                                    })
-                                                .toBodilessEntity();
+        restClient.post()
+                  .uri(baseUrl + "/objectDetection/similarity")
+                  .contentType(MediaType.MULTIPART_FORM_DATA)
+                  .body(body)
+                  .retrieve()
+                  .onStatus(HttpStatusCode::is4xxClientError,
+                      (request, response) -> {
+                          throw new CustomException(
+                              ErrorCode.NOT_HIGH_SIMILARITY_SNAPSHOT);
+                      });
 
     }
 
