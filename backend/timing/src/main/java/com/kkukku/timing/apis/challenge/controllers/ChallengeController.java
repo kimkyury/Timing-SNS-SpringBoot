@@ -125,10 +125,10 @@ public class ChallengeController {
     }
 
     // 이하로 Python Proxy APIs
-    @Operation(summary = "특정 Challenge의 Snapshot 추가(미완)", tags = {"2. Challenge"},
+    @Operation(summary = "특정 Challenge의 Snapshot 추가", tags = {"2. Challenge"},
         description = "특정 Challenge의 Snapshot 추가 시, AI server를 통한 유사도 판정 이후 Snapshot이 저장됩니다."
             + "<br/> *상태코드:400일 시, 객체 유사도가 낮아서 실패한 경우입니다."
-            + " <br/> *상태코드:200일 시, snapshot이 저장됩니다. (현재 무조건 200)"
+            + "<br/> *상태코드:200일 시, snapshot이 저장됩니다."
             + "<br/> *AIServer에는 'snapshot'에 이미지가, 'objectUrl'로 object 이미지가 전송됩니다")
     @PostMapping(value = "/{id}/snapshots", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> setSnapshot(
