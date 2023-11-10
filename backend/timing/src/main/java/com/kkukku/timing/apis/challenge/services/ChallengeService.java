@@ -1,15 +1,11 @@
 package com.kkukku.timing.apis.challenge.services;
 
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
-import com.kkukku.timing.apis.challenge.requests.CheckCoordinateRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
@@ -26,10 +22,7 @@ import com.kkukku.timing.external.services.VisionAIService;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
 import jakarta.transaction.Transactional;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -52,10 +45,9 @@ public class ChallengeService {
     private final VisionAIService visionAIService;
     private final SnapshotService snapshotService;
     private final FeedHashTagService feedHashTagService;
+    private final ChallengeRepository challengeRepository;
     private final HashTagOptionService hashTagOptionService;
     private final ChallengeHashTagService challengeHashTagService;
-
-    private final ChallengeRepository challengeRepository;
 
     @Transactional
     public void createChallengeProcedure(Integer memberId,
@@ -76,8 +68,7 @@ public class ChallengeService {
     public ChallengeEntity saveChallenge(MemberEntity member,
         ChallengeCreateRequest challengeCreateRequest) {
 
-        ChallengeEntity challenge = ChallengeEntity.of(member, challengeCreateRequest);
-        return challengeRepository.save(challenge);
+        return challengeRepository.save(ChallengeEntity.of(member, challengeCreateRequest));
     }
 
 
@@ -97,23 +88,19 @@ public class ChallengeService {
                                .toList());
     }
 
-
-    private long diffDay(LocalDate startedAt, LocalDate yesterday) {
-
-        return ChronoUnit.DAYS.between(startedAt, yesterday);
-    }
-
     @Transactional
     public void deleteChallenge(Integer memberId, Long challengeId) {
 
         checkOwnChallenge(memberId, challengeId);
 
         List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
+
         snapshots.stream()
                  .map(SnapshotEntity::getImageUrl)
                  .forEach(s3Service::deleteFile);
 
         snapshotService.deleteSnapshot(snapshots);
+
         challengeRepository.deleteById(challengeId);
     }
 
@@ -124,15 +111,13 @@ public class ChallengeService {
 
         LocalDate endedAt = challenge.getEndedAt();
         LocalDate extendEndedAt = endedAt.plusDays(21);
-
         challenge.setEndedAt(extendEndedAt);
         challengeRepository.save(challenge);
-
     }
-
 
     @Transactional
     public void relayChallenge(Integer memberId, Long feedId, ChallengeRelayRequest request) {
+
         FeedEntity feed = feedRepository.findById(feedId)
                                         .orElseThrow(() -> new CustomException(
                                             ErrorCode.NOT_EXIST_FEED));
@@ -154,38 +139,18 @@ public class ChallengeService {
 
         String fineName = challenge.getPolygonUrl();
 
-        String polygonToString = "";
-        S3Object s3Object = s3Service.getFile(fineName);
-        try (S3ObjectInputStream s3is = s3Object.getObjectContent();
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(s3is, StandardCharsets.UTF_8))) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line)
-                             .append("\n"); // TODO: 줄바꿈은 필요가 없을 수도 있다
-            }
-            polygonToString = stringBuilder.toString()
-                                           .trim();
-        } catch (IOException e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        } finally {
-            try {
-                s3Object.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        S3Object polygonS3Object = s3Service.getFile(fineName);
+        String polygonToString = s3Service.convertS3ObjectToString(polygonS3Object);
 
         return new ChallengePolygonResponse(polygonToString);
     }
 
 
     public ChallengeEntity getChallengeById(Long challengeId) {
+
         return challengeRepository.findById(challengeId)
                                   .orElseThrow(
                                       () -> new CustomException(ErrorCode.NOT_EXIST_CHALLENGE));
-
     }
 
     public void checkOwnChallenge(Integer memberId, Long challengeId) {
@@ -193,7 +158,6 @@ public class ChallengeService {
         challengeRepository.findByIdAndMemberId(challengeId, memberId)
                            .orElseThrow(
                                () -> new CustomException(ErrorCode.THIS_CHALLENGE_IS_NOT_YOURS));
-
     }
 
     public void checkCompletedChallenge(Long challengeId) {
@@ -212,8 +176,12 @@ public class ChallengeService {
         MultipartFile object) {
 
         ChallengeEntity challenge = getChallengeById(challengeId);
+
         checkOwnChallenge(memberId, challengeId);
-        // TODO: 스냅샷 등록 전적이 있다면 예외 처리
+
+        if (challenge.getObjectUrl() != null) {
+            throw new CustomException(ErrorCode.EXIST_OBJECT_IN_CHALLENGE);
+        }
 
         String savedPolygonUrl = s3Service.uploadStringAsTextFile(polygon, "polygon");
         String savedObjectUrl = s3Service.uploadFile(object);
@@ -222,22 +190,21 @@ public class ChallengeService {
         challenge.setObjectUrl("/" + savedObjectUrl);
 
         challengeRepository.save(challenge);
-
     }
 
     public void setSnapshotProcedure(
         Integer memberId, Long challengeId, MultipartFile snapshot) {
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
-        body.add("snapshot", snapshotResource);
-
         ChallengeEntity challenge = getChallengeById(challengeId);
+
         checkOwnChallenge(memberId, challengeId);
+
         String objectUrl = s3Service.getS3StartUrl() + challenge.getObjectUrl();
-        body.add("objectUrl", objectUrl);
-        
-        visionAIService.checkSimilarity(body);
+        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
+        MultiValueMap<String, Object> requestBody = getCheckSimilarityBody(snapshotResource,
+            objectUrl);
+
+        visionAIService.checkSimilarity(requestBody);
 
         String savedSnapshotUrl = s3Service.uploadFile(snapshot);
 
@@ -246,15 +213,6 @@ public class ChallengeService {
         snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
-    private void saveChallengeThumbnail(ChallengeEntity challenge, String thumbnailUrl) {
-
-        if (challenge.getThumbnailUrl()
-                     .equals("/default_thumbnail.png")) {
-            System.out.println("----------thumbnail change--------");
-            challenge.setThumbnailUrl("/" + thumbnailUrl);
-            challengeRepository.save(challenge);
-        }
-    }
 
     public ResponseSpec getDetectedObject(MultipartFile snapshot) {
 
@@ -263,6 +221,36 @@ public class ChallengeService {
         body.add("snapshot", snapshotResource);
 
         return visionAIService.getDetectedObject(body);
+    }
+
+    public ResponseSpec getChoiceObject(String x, String y, MultipartFile snapshot) {
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
+        body.add("snapshot", snapshotResource);
+        body.add("x", x);
+        body.add("y", y);
+
+        return visionAIService.checkCoordinate(body);
+    }
+
+    private MultiValueMap<String, Object> getCheckSimilarityBody(ByteArrayResource snapshotResource,
+        String objectUrl) {
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("snapshot", snapshotResource);
+        body.add("objectUrl", objectUrl);
+
+        return body;
+    }
+
+    private void saveChallengeThumbnail(ChallengeEntity challenge, String thumbnailUrl) {
+
+        if (challenge.getThumbnailUrl()
+                     .equals("/default_thumbnail.png")) {
+            challenge.setThumbnailUrl("/" + thumbnailUrl);
+            challengeRepository.save(challenge);
+        }
     }
 
     private ByteArrayResource getByteArrayResource(MultipartFile file) {
@@ -278,25 +266,8 @@ public class ChallengeService {
         }
     }
 
-    public ResponseSpec getChoiceObject(String x, String y, MultipartFile snapshot) {
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
-        body.add("snapshot", snapshotResource);
-        body.add("x", x);
-        body.add("y", y);
-
-        return visionAIService.checkCoordinate(body);
-
-    }
-
-    private String convertCheckCoordinateRequestToJson(CheckCoordinateRequest request) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(request);
-        } catch (JsonProcessingException e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+    private long diffDay(LocalDate startedAt, LocalDate yesterday) {
+        return ChronoUnit.DAYS.between(startedAt, yesterday);
     }
 }
 

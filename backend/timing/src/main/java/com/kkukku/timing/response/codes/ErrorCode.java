@@ -28,6 +28,7 @@ public enum ErrorCode {
     NOT_HIGH_SIMILARITY_SNAPSHOT(400, "This snapshot is not High similarity from pythonServer"),
     NOT_PROPER_COORDINATE(400, "This COORDINATE is not Proper coordinate from pythonServer"),
     NOT_FOUNT_OBJECT_IN_IMAGE(400, "This Image is Not found Object from pythonServer"),
+    EXIST_OBJECT_IN_CHALLENGE(400, "This Challenge already has ObjectUrl"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),
