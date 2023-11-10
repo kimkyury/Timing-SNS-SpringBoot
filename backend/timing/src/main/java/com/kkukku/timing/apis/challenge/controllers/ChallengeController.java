@@ -156,8 +156,8 @@ public class ChallengeController {
         ResponseSpec response = challengeService.getDetectedObject(snapshot);
 
         byte[] objectImage = response.body(byte[].class);
-        HttpHeaders httpHeaders = response.toEntity(String.class)
-                                          .getHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.IMAGE_PNG);
 
         return ApiResponseUtil.success(httpHeaders, objectImage);
     }
@@ -170,7 +170,7 @@ public class ChallengeController {
                 + "<br/> *상태코드:4xx일 경우, 올바르지 않은 좌표값입니다. (현재는 무조건 200)"
                 + "<br/> *상태코드:200일 경우, object.png을 Body로, Polygon String값을 헤더로 리턴합니다. (현재는 안 보내짐) "
                 + "<br/> AIServer에는 FormData형식으로, 'snapshot'에 이미지가, 'coordinate'에 좌표 JSON이 String형태로 전송됩니다(NOTION참고). ")
-    @PostMapping(value = "{id}/snapshots/objects/choose", consumes = {
+    @PostMapping(value = "/{id}/snapshots/objects/choose", consumes = {
         MediaType.APPLICATION_JSON_VALUE,
         MediaType.MULTIPART_FORM_DATA_VALUE
     })
