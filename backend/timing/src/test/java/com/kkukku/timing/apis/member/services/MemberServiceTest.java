@@ -43,7 +43,6 @@ public class MemberServiceTest {
 
     private static String testEmail;
     private static String originalNickname;
-    private static String originalProfilePath;
     private static String originalProfileUrl;
 
     private Integer testId;
@@ -52,7 +51,6 @@ public class MemberServiceTest {
     static void init() {
         testEmail = "test@test.com";
         originalNickname = "TESTER";
-        originalProfilePath = "src/test/resources/image/default_profile.png";
         originalProfileUrl = "default_profile.png";
     }
 
