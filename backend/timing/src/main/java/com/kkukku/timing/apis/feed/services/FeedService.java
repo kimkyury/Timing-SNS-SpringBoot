@@ -77,7 +77,7 @@ public class FeedService {
         return feedRepository.findAllByMember_IdAndIsDeleteIsFalse(
                                  SecurityUtil.getLoggedInMemberPrimaryKey())
                              .stream()
-                             .map(FeedSummaryResponse::new)
+                             .map(feed -> new FeedSummaryResponse(feed, s3Service))
                              .toList();
     }
 
@@ -97,7 +97,7 @@ public class FeedService {
                                  memberService.getMemberByEmail(email)
                                               .getId())
                              .stream()
-                             .map(FeedSummaryResponse::new)
+                             .map(feed -> new FeedSummaryResponse(feed, s3Service))
                              .toList();
     }
 
@@ -205,7 +205,7 @@ public class FeedService {
                                      .getId();
         feedRepository.findAllByRoot_Id(rootId)
                       .forEach(feed -> {
-                          FeedNodeResponse node = new FeedNodeResponse(feed);
+                          FeedNodeResponse node = new FeedNodeResponse(feed, s3Service);
                           map.put(feed.getId(), node);
 
                           if (feed.getParent() == null) {
