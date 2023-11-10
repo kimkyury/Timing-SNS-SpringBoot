@@ -6,7 +6,6 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store.jsx";
 import TokenRefresher from "./components/TokenRefresher";
-import { CookiesProvider } from "react-cookie";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

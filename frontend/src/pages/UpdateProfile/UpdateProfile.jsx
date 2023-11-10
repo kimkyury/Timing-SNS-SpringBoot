@@ -15,12 +15,16 @@ function UpdateProfile() {
   const updateProfile = () => {
     // console.log(newProfileIMG);
     const formData = new FormData();
-    formData.append("memberUpdateRequest", { nickname: newNickName }); // file은 업로드할 파일 혹은 이미지
+    formData.append(
+      "memberUpdateRequest",
+      JSON.stringify({ nickname: newNickName })
+    );
+
     formData.append("profileImage", state.profileImageUrl);
     axios
       .patch(`${BASE_URL}/api/v1/members`, formData, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${accessToken}`,
         },
       })

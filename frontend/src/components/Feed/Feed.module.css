@@ -97,6 +97,7 @@
 .commentContainer {
   display: flex;
   margin-bottom: 2%;
+  height: 5vh;
 }
 
 .commentContainerFix {
