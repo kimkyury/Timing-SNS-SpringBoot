@@ -48,6 +48,7 @@ public class ChallengeService {
 
     private final S3Service s3Service;
     private final MemberService memberService;
+    private final FeedRepository feedRepository;
     private final VisionAIService visionAIService;
     private final SnapshotService snapshotService;
     private final FeedHashTagService feedHashTagService;
@@ -55,7 +56,6 @@ public class ChallengeService {
     private final ChallengeHashTagService challengeHashTagService;
 
     private final ChallengeRepository challengeRepository;
-    private final FeedRepository feedRepository;
 
     @Transactional
     public void createChallengeProcedure(Integer memberId,
@@ -208,14 +208,14 @@ public class ChallengeService {
     }
 
     @Transactional
-    public void saveObjectAndPolygon(Integer memberId, Long challengeId, MultipartFile polygon,
+    public void saveObjectAndPolygon(Integer memberId, Long challengeId, String polygon,
         MultipartFile object) {
 
         ChallengeEntity challenge = getChallengeById(challengeId);
         checkOwnChallenge(memberId, challengeId);
         // TODO: 스냅샷 등록 전적이 있다면 예외 처리
 
-        String savedPolygonUrl = s3Service.uploadFile(polygon);
+        String savedPolygonUrl = s3Service.uploadStringAsTextFile(polygon, "polygon");
         String savedObjectUrl = s3Service.uploadFile(object);
 
         challenge.setPolygonUrl("/" + savedPolygonUrl);
