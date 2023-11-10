@@ -3,7 +3,6 @@ package com.kkukku.timing.apis.challenge.controllers;
 
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
-import com.kkukku.timing.apis.challenge.requests.CheckCoordinateRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengePolygonResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
@@ -141,13 +140,13 @@ public class ChallengeController {
         return ApiResponseUtil.success();
     }
 
-    @Operation(summary = "특정 Challenge의 최초 Snapshot 객체 탐지 요청(미완)", tags = {
+    @Operation(summary = "특정 Challenge의 최초 Snapshot 객체 탐지 요청", tags = {
         "2. Challenge"},
         description =
-            "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 객체 탐지를 요청하고 Object 이미지를 리턴(미완)합니다. "
-                + "<br/> *상태코드:4xx일 경우, 객체를 발견하지 못한 것입니다 (현재는 무조건 200)"
-                + "<br/> *상태코드:200일 경우, object.png을 보냅니다 (현재는 안 보내짐) "
-                + "<br/> AIServer에는 'snapshot'이름으로 이미지가 전송됩니다. ")
+            "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 객체 탐지를 요청하고 Object 이미지를 리턴합니다. "
+                + "<br/> *상태코드:4xx일 경우, 객체를 발견하지 못한 것입니다"
+                + "<br/> *상태코드:200일 경우, object.png을 보냅니다"
+                + "<br/> AI Server로 'snapshot' 이름의 이미지가 전송됩니다.")
     @PostMapping(value = "/{id}/snapshots/objects/detection",
         consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.IMAGE_PNG_VALUE})
     public ResponseEntity<byte[]> getObjectInSnapshot(@PathVariable Long id,
@@ -162,33 +161,25 @@ public class ChallengeController {
         return ApiResponseUtil.success(httpHeaders, objectImage);
     }
 
-
     @Operation(summary = "특정 Challenge의 최초 Snapshot추가 시, 객체 선택 및 좌표 유효성 검사", tags = {
         "2. Challenge"},
         description =
-            "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 현재 좌표의 유효성을 요청(미완)합니다. "
-                + "<br/> *상태코드:4xx일 경우, 올바르지 않은 좌표값입니다. (현재는 무조건 200)"
-                + "<br/> *상태코드:200일 경우, object.png을 Body로, Polygon String값을 헤더로 리턴합니다. (현재는 안 보내짐) "
-                + "<br/> AIServer에는 FormData형식으로, 'snapshot'에 이미지가, 'coordinate'에 좌표 JSON이 String형태로 전송됩니다(NOTION참고). ")
-    @PostMapping(value = "/{id}/snapshots/objects/choose", consumes = {
-        MediaType.APPLICATION_JSON_VALUE,
-        MediaType.MULTIPART_FORM_DATA_VALUE
-    })
+            "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 현재 좌표의 유효성을 요청합니다. "
+                + "<br/> *상태코드:400일 경우, 올바르지 않은 좌표값입니다."
+                + "<br/> *상태코드:200일 경우, object.png을 Body로, Polygon String값을 헤더로 리턴합니다. "
+                + "<br/> AI Server에는 FormData 형식으로, </b>'snapshot(사진)', 'x(String)', 'y(String)'</b>이 전송됩니다."
+                + "<br/> Swagger에서는 받아진 Object.png이 보이지 않으나, Postman으로 정확한 응답 확인이 가능합니다.")
+    @PostMapping(value = "/{id}/snapshots/objects/choose",
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<byte[]> chooseObjectByCoordinate(
-        @PathVariable Long id,
-        @Valid @RequestPart CheckCoordinateRequest request,
+        @PathVariable Long id, @RequestPart String x, @RequestPart String y,
         @RequestPart MultipartFile snapshot) {
 
-        System.out.println("-------hi! this is choice");
-
-        ResponseSpec response = challengeService.getChoiceObject(request, snapshot);
-
-        byte[] objectImage = response.body(byte[].class);
-        HttpHeaders httpHeaders = response.toEntity(String.class)
-                                          .getHeaders();
+        ResponseSpec response = challengeService.getChoiceObject(x, y, snapshot);
+        ResponseEntity<byte[]> responseEntity = response.toEntity(byte[].class);
+        byte[] objectImage = responseEntity.getBody();
+        HttpHeaders httpHeaders = responseEntity.getHeaders();
 
         return ApiResponseUtil.success(httpHeaders, objectImage);
     }
-
-
 }
