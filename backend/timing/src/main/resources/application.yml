@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: set1
+    active: dev
     group:
       "local": "local"
       "dev": "dev"
@@ -59,6 +59,10 @@ management:
   endpoint:
     health:
       show-details: always
+
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST}
+
 external:
   vision-ai:
     url: ${VISION_AI_URL}
@@ -66,6 +70,7 @@ external:
 server:
   tomcat:
     max-http-response-header-size: 50KB
+    
 ---
 
 spring:
