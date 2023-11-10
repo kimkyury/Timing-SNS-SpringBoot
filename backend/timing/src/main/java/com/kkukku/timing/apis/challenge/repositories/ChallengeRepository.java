@@ -13,5 +13,5 @@ public interface ChallengeRepository extends JpaRepository<ChallengeEntity, Long
 
     Optional<ChallengeEntity> findByParentId(Long feedId);
 
-    Long countAll();
+    Long countBy();
 }
