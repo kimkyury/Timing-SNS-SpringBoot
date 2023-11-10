@@ -24,6 +24,10 @@ spring:
               - account_email
               - profile_image
               - profile_nickname
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 springdoc:
   packages-to-scan: com.kkukku.timing.apis
@@ -65,6 +69,8 @@ external:
 
 server:
   tomcat:
+    max-swallow-size: 100MB
+    max-http-form-post-size: 100MB
     max-http-response-header-size: 50KB
 ---
 
