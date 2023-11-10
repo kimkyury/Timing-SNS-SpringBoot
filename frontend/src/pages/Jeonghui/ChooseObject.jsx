@@ -3,48 +3,44 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './ChooseObject.module.css';
 
-const BASE_HTTP_URL = `http://k9e203a.p.ssafy.io`;
-// const BASE_HTTP_URL = 'http://localhost:8002';
-
-const email = 'spor1998@naver.com';
+const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 function ChooseObject() {
     const [data, setDate] = useState(null);
+    const [polygon, setPolygon] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
     const origin = location.state.origin;
     const object = location.state.object;
     const timeLaps = location.state.challenge;
+    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
 
     const checkObject = (x, y) => {
         var formData = new FormData();
         formData.append('snapshot', origin);
         formData.append('x', y);
         formData.append('y', x);
-        formData.append('challengeId', timeLaps.id + email);
 
         axios
-            .post(`${BASE_HTTP_URL}/objectDetection/chooseObject`, formData, {
+            .post(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/snapshots/objects/choose`, formData, {
                 headers: {
-                    accept: '*/*',
+                    accept: 'application/json;charset=UTF-8',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
                 responseType: 'blob',
             })
             .then((response) => {
-                console.log(response.headers['poly']);
-
-                if (response.status == 204) {
+                if (response.status == 400) {
                     setDate(null);
                     alert('객체를 제대로 선택해주세요');
                 } else {
                     setDate(new Blob([response.data], { type: 'image/png' }));
-                    // setDate(response.data);
+                    setPolygon(response.headers.get('Polygon'));
                 }
             })
             .catch((error) => {
                 console.log(`Error: ${error}`);
-                console.log(error);
             });
     };
 
@@ -55,40 +51,20 @@ function ChooseObject() {
     };
 
     const save = () => {
-        // var formData = new FormData();
-        // formData.append('img', data);
-        // formData.append('challengeId', timeLaps.id + email);
-
-        // axios
-        //     .post(`${BASE_HTTP_URL}/objectDetaction/objectSave`, formData, {
-        //         headers: {
-        //             accept: '*/*',
-        //             'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-        //         },
-        //     })
-        //     .then(() => {
-        //         navigate('/');
-        //     })
-        //     .catch((error) => {
-        //         console.error(`Error: ${error}`);
-        //     });
         var formData = new FormData();
-        formData.append('img', origin);
-        formData.append(
-            'objectUrl',
-            'https://github-production-user-asset-6210df.s3.amazonaws.com/95354899/266323569-2c6fa00f-b5aa-4a86-a8c6-1a4e166f6b0e.png'
-        );
+        formData.append('object  ', origin);
+        formData.append('polygon', polygon);
 
         axios
-            .post(`${BASE_HTTP_URL}/objectDetection/similarity`, formData, {
+            .post(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/objects`, formData, {
                 headers: {
                     accept: '*/*',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
-                // responseType: 'blob',
             })
-            .then((response) => {
-                console.log(response);
+            .then(() => {
+                navigate('/');
             })
             .catch((error) => {
                 console.log(`Error: ${error}`);
@@ -107,9 +83,6 @@ function ChooseObject() {
                     <img
                         src={URL.createObjectURL(object)}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        // onClick={(event) => {
-                        //     eventListener(event, 'click');
-                        // }}
                     />
                 </div>
             )}
