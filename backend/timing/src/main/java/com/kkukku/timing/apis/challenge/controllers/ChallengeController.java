@@ -66,7 +66,7 @@ public class ChallengeController {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
 
-        challengeService.deleteChallenge(memberId, id);
+        challengeService.deleteChallengeProcedure(memberId, id);
 
         return ApiResponseUtil.success();
     }
