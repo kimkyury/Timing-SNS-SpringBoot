@@ -347,13 +347,7 @@ function Feed(data) {
                     </div>
 
                     {/* 게시글 이미지 */}
-                    <img
-                        src={
-                            'https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com' + state.thumbnailUrl + '.png'
-                        }
-                        className={styles.imageContainer}
-                        onClick={gotoDetailFeed}
-                    />
+                    <img src={state.thumbnailUrl} className={styles.imageContainer} onClick={gotoDetailFeed} />
 
                     {/* 게시글 좋아요, 댓글, 이어가기 정보 */}
                     <div className={styles.tagContainer}>
