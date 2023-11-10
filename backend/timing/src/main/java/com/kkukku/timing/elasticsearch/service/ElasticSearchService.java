@@ -1,6 +1,11 @@
 package com.kkukku.timing.elasticsearch.service;
 
 import com.kkukku.timing.elasticsearch.docs.HashTagDoc;
+import com.kkukku.timing.elasticsearch.response.AutoCompleteDto;
+import com.kkukku.timing.elasticsearch.response.HashtagDto;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,20 +27,34 @@ public class ElasticSearchService {
     private final static String CHOSUNG_HASHTAG_FIELD_NAME = "chosung_hashtag";
     private final static String HASHTAG_FIELD_NAME = "hashtag";
 
-    public void getHashtags(String search) {
-        SearchHits<HashTagDoc> searchHits = operationTermQuery(HASHTAG_FIELD_NAME, search);
-        System.out.println(searchHits.getSearchHits().size());
-        for (SearchHit<HashTagDoc> testItemsSearchHit : searchHits) {
-            System.out.println(testItemsSearchHit.getContent());
+    public AutoCompleteDto.Response getHashTags(String search) {
+        String regEx = "[ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ]*";
+        SearchHits<HashTagDoc> searchHits;
+
+        if (Pattern.matches(regEx, search)) { //초성 검색
+            searchHits = getChosungHashtags(search);
+        } else {
+            searchHits = getHashtags(search);
         }
+
+        List<HashtagDto> hashtags = new ArrayList<>();
+
+        for (SearchHit<HashTagDoc> searchHit : searchHits) {
+            hashtags.add(new HashtagDto(
+                    searchHit.getContent().getId(),
+                    searchHit.getContent().getHashtag()
+            ));
+        }
+
+        return new AutoCompleteDto.Response(hashtags);
     }
 
-    public void getChosungHashtags(String search) {
-        SearchHits<HashTagDoc> searchHits = operationTermQuery(CHOSUNG_HASHTAG_FIELD_NAME, search);
-        System.out.println(searchHits.getSearchHits().size());
-        for (SearchHit<HashTagDoc> testItemsSearchHit : searchHits) {
-            System.out.println(testItemsSearchHit.getContent());
-        }
+    public SearchHits<HashTagDoc> getHashtags(String search) {
+        return operationTermQuery(HASHTAG_FIELD_NAME, search);
+    }
+
+    public SearchHits<HashTagDoc> getChosungHashtags(String search) {
+        return operationTermQuery(CHOSUNG_HASHTAG_FIELD_NAME, search);
     }
 
     SearchHits<HashTagDoc> operationTermQuery(String field, String search) {
