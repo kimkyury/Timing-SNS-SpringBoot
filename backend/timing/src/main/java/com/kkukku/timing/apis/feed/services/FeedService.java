@@ -273,6 +273,7 @@ public class FeedService {
         return s3Service.getFile(getFeedById(id).getTimelapseUrl());
     }
 
+    @Transactional
     public void convertToFeed(Long challengeId) {
         ChallengeEntity challenge = challengeService.getChallengeById(challengeId);
 

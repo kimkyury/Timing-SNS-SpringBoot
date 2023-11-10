@@ -37,6 +37,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final String[] WHITE_LIST_URL = {
+        "/error",
         "/api/v1/feeds/*/videos/streaming",
         "/api/v1/auth/reissue",
         "/oauth2/authorization/kakao/**",
@@ -52,7 +53,7 @@ public class SecurityConfig {
         "/webjars/**",
         "/swagger-ui.html",
         "/api/profile",
-        "/api/v1/test/ping",
+        "/api/v1/test/**",
         "/actuator/health"
     };
 
