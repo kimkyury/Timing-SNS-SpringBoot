@@ -1,5 +1,6 @@
 package com.kkukku.timing.apis.feed.entities;
 
+import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "feeds")
@@ -28,7 +30,7 @@ public class FeedEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
@@ -54,12 +56,15 @@ public class FeedEntity {
     @Column(nullable = false)
     private String timelapseUrl;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(nullable = false, columnDefinition = "TINYINT(1)", insertable = false)
+    @Setter
     private Boolean isPrivate;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(nullable = false, columnDefinition = "TINYINT(1)", insertable = false)
+    @Setter
     private Boolean isDelete;
 
+    @Setter
     private String review;
 
     @Column(nullable = false, insertable = false)
@@ -73,4 +78,21 @@ public class FeedEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public FeedEntity(ChallengeEntity challenge, String timelapseUrl) {
+        this.member = challenge.getMember();
+        this.startedAt = challenge.getStartedAt();
+        this.endedAt = challenge.getEndedAt();
+        this.goalContent = challenge.getGoalContent();
+        this.thumbnailUrl = challenge.getThumbnailUrl();
+        this.timelapseUrl = timelapseUrl;
+    }
+
+    public void setRelation(FeedEntity parent) {
+        if (parent != null) {
+            this.parent = parent;
+            this.root = parent.getRoot();
+        } else {
+            this.root = this;
+        }
+    }
 }

@@ -20,6 +20,17 @@ public enum ErrorCode {
     NOT_EXIST_CHALLENGE(400, "Not exist Challenge"),
     NOT_EXIST_HASHTAG_OPTION(400, "Not exist HashTagOption"),
     NOT_EXIST_FEED(400, "Not exist feed"),
+    THIS_CHALLENGE_IS_NOT_YOURS(400, "This challenge is not your Challenge"),
+    NOT_EXIST_MULTIPART_FILE(400, "Not Exist MultiPart File"),
+    NOT_COMPLETED_CHALLENGE(400, "The number of snapshots is insufficient."),
+    DELETED_FEED(400, "This feed is already delete"),
+    PRIVATE_FEED(400, "Private feed can access only writer"),
+    NOT_HIGH_SIMILARITY_SNAPSHOT(400, "This snapshot is not High similarity from pythonServer"),
+    NOT_PROPER_COORDINATE(400, "This COORDINATE is not Proper coordinate from pythonServer"),
+    NOT_FOUNT_OBJECT_IN_IMAGE(400, "This Image is Not found Object from pythonServer"),
+    EXIST_OBJECT_IN_CHALLENGE(400, "This Challenge already has ObjectUrl"),
+    PROCESSED_CHALLENGE(400, "This Challenge already has Snapshot Today"),
+    NOT_STARTED_CHALLENGE(400, "This Challenge Not Started (Confirm StartDay)"),
 
     UNAUTHORIZED(401, "Unauthorized"),
     TOKEN_EXPIRED(401, "Token is expired"),
@@ -33,7 +44,6 @@ public enum ErrorCode {
     TOKEN_ACCESS_DENIED(403, "JWT token access denied"),
 
     NOT_FOUND(404, "Not Found"),
-
 
     NULL_POINTER(404, "Null Pointer Exception"),
 

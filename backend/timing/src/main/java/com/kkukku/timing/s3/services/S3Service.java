@@ -1,14 +1,20 @@
 package com.kkukku.timing.s3.services;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +29,35 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String BUCKET_NAME;
 
-    @Value("${cloud.aws.s3.url}")
     @Getter
+    @Value("${cloud.aws.s3.url}")
     private String s3StartUrl;
 
     private final AmazonS3 amazonS3;
+
+    public String convertS3ObjectToString(S3Object s3Object) {
+
+        try (S3ObjectInputStream s3is = s3Object.getObjectContent();
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(s3is, StandardCharsets.UTF_8))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line)
+                             .append("\n");
+            }
+            return stringBuilder.toString()
+                                .trim();
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            try {
+                s3Object.close();
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 
     public String uploadFile(MultipartFile file) {
 
@@ -48,21 +78,52 @@ public class S3Service {
         return fileName;
     }
 
+    public String uploadStringAsTextFile(String content, String fileName) {
+        // 문자열을 바이트 배열로 변환
+        byte[] contentAsBytes = content.getBytes(StandardCharsets.UTF_8);
+        fileName = UUID.randomUUID() + "_" + fileName;
+
+        // 바이트 배열을 InputStream으로 변환
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(contentAsBytes);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(contentAsBytes.length);
+        metadata.setContentType("text/plain");
+
+        amazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileName,
+            byteArrayInputStream, metadata));
+
+        return fileName;
+    }
+
     private String clean(final String str) {
         return str == null ? "" : str.trim(); // NULL 방지
     }
 
     public S3Object getFile(String fileName) {
+        String adjustedFileName = fileName.startsWith("/") ? fileName.substring(1) : fileName;
 
-        return amazonS3.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
+        try {
+            S3Object s3Object = amazonS3.getObject(
+                new GetObjectRequest(BUCKET_NAME, adjustedFileName));
+
+            if (s3Object == null) {
+                throw new CustomException(ErrorCode.NOT_EXIST_MULTIPART_FILE);
+            }
+            return s3Object;
+        } catch (AmazonS3Exception e) {
+            throw new CustomException(ErrorCode.NOT_EXIST_MULTIPART_FILE);
+        }
     }
 
     public void deleteFile(String fileName) {
+
         try {
-            amazonS3.deleteObject(new DeleteObjectRequest(BUCKET_NAME, fileName));
+            amazonS3.deleteObject(new DeleteObjectRequest(BUCKET_NAME, fileName.substring(1)));
         } catch (Exception e) {
             throw new CustomException(ErrorCode.FAIL_DELETE_FILE_S3);
         }
     }
+
 
 }

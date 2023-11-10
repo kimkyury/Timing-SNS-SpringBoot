@@ -25,7 +25,7 @@ public class CommentServiceTest {
 
     @BeforeEach
     public void login() {
-        String email = "unit@com";
+        String email = "unit@test.com";
         Authentication authentication = new UsernamePasswordAuthenticationToken(
             memberDetailService.loadUserByUsername(email), null,
             AuthorityUtils.NO_AUTHORITIES);

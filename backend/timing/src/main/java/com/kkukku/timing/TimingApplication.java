@@ -5,11 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
+//@EnableScheduling
 @SpringBootApplication
 public class TimingApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TimingApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TimingApplication.class, args);
+    }
 
 }
