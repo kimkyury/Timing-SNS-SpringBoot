@@ -65,6 +65,14 @@ public class ChallengeService {
         challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptions);
     }
 
+    public void deleteChallenge(ChallengeEntity challenge) {
+        challengeRepository.save(challenge);
+    }
+
+    public List<ChallengeEntity> getAllChallenge() {
+        return challengeRepository.findAll();
+    }
+
     public ChallengeEntity saveChallenge(MemberEntity member,
         ChallengeCreateRequest challengeCreateRequest) {
 
@@ -89,7 +97,7 @@ public class ChallengeService {
     }
 
     @Transactional
-    public void deleteChallenge(Integer memberId, Long challengeId) {
+    public void deleteChallengeProcedure(Integer memberId, Long challengeId) {
 
         checkOwnChallenge(memberId, challengeId);
 
@@ -266,7 +274,7 @@ public class ChallengeService {
         }
     }
 
-    private long diffDay(LocalDate startedAt, LocalDate yesterday) {
+    public long diffDay(LocalDate startedAt, LocalDate yesterday) {
         return ChronoUnit.DAYS.between(startedAt, yesterday);
     }
 }
