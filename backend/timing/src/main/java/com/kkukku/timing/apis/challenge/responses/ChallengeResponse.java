@@ -23,7 +23,8 @@ public class ChallengeResponse {
         private String thumbnailUrl;
         private long countDays;
         private long maxDays;
-        
+        private boolean isUploadToday;
+
     }
 
 }

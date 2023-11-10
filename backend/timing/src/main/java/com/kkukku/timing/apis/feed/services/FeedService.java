@@ -289,7 +289,8 @@ public class FeedService {
         feedHashTagService.saveHashTagsByFeedId(feed.getId(),
             challengeHashTagService.getHashTagOptionByChallengeId(challengeId));
 
-        challengeService.deleteChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
+        challengeService.deleteChallengeProcedure(SecurityUtil.getLoggedInMemberPrimaryKey(),
+            challengeId);
     }
 
     public void jwtCheck(String jwt) {
