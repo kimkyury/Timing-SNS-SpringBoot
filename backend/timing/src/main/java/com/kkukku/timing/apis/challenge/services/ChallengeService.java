@@ -278,13 +278,13 @@ public class ChallengeService {
         }
     }
 
-    public ResponseSpec getChoiceObject(CheckCoordinateRequest request, MultipartFile snapshot) {
+    public ResponseSpec getChoiceObject(String x, String y, MultipartFile snapshot) {
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
         body.add("snapshot", snapshotResource);
-        String convertRequestToJson = convertCheckCoordinateRequestToJson(request);
-        body.add("coordinate", convertRequestToJson);
+        body.add("x", x);
+        body.add("y", y);
 
         return visionAIService.checkCoordinate(body);
 
