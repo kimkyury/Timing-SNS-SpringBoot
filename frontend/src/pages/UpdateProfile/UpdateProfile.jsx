@@ -14,22 +14,16 @@ function UpdateProfile() {
   const navigate = useNavigate();
   const updateProfile = () => {
     // console.log(newProfileIMG);
+    const formData = new FormData();
+    formData.append("memberUpdateRequest", { nickname: newNickName }); // file은 업로드할 파일 혹은 이미지
+    formData.append("profileImage", state.profileImageUrl);
     axios
-      .patch(
-        `${BASE_URL}/api/v1/members`,
-        {
-          memberUpdateRequest: {
-            nickname: newNickName,
-          },
-          profileImage: state.profileImageUrl,
+      .patch(`${BASE_URL}/api/v1/members`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
-        {
-          headers: {
-            "Content-Type": "multiple",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+      })
       .then((res) => {
         console.log(res);
         navigate("/profile");

@@ -57,7 +57,6 @@ function UserProfile(data) {
     }
   }, []);
   const goToUpdateprofile = () => {
-    console.log(state);
     navigate(`/updateprofile/${state.email}`, { state });
   };
   return (
