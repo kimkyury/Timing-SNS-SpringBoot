@@ -41,7 +41,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String accessToken = jwtService.generateAccessToken(email);
         String refreshToken = jwtService.generateRefreshToken(email);
 
-        String redirectURI = UriComponentsBuilder.fromUriString(BASE_URL)
+        String referer = request.getHeader("referer");
+        String baseURL = referer == null ? "" : referer;
+
+        String redirectURI = UriComponentsBuilder.fromUriString(baseURL)
+//        String redirectURI = UriComponentsBuilder.fromUriString(BASE_URL)
                                                  .path("/login/oauth2/redirect/kakao")
                                                  .queryParam("access-token", accessToken)
                                                  .build()
