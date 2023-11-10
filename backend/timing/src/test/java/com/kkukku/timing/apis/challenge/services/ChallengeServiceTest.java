@@ -244,7 +244,7 @@ public class ChallengeServiceTest {
             challengeId);
 
         // when
-        challengeService.deleteChallenge(memberId, challengeId);
+        challengeService.deleteChallengeProcedure(memberId, challengeId);
 
         // then
         Optional<ChallengeEntity> expectedChallenge = challengeRepository.findById(
@@ -271,7 +271,7 @@ public class ChallengeServiceTest {
         Long targetChallengeId = 1L;
 
         assertThrows(CustomException.class, () ->
-            challengeService.deleteChallenge(memberId, targetChallengeId));
+            challengeService.deleteChallengeProcedure(memberId, targetChallengeId));
 
     }
 
@@ -517,6 +517,12 @@ public class ChallengeServiceTest {
 
         assertEquals("/" + afterSnapshotName, actualSnapshot.getImageUrl());
         assertEquals("/" + afterSnapshotName, actualChallenge.getThumbnailUrl());
+    }
+
+
+    @Test
+    void shouldGetDiffDay() {
+
     }
 
 
