@@ -1,8 +1,11 @@
 package com.kkukku.timing.elasticsearch.controllers;
 
 import com.kkukku.timing.elasticsearch.response.AutoCompleteDto;
+import com.kkukku.timing.elasticsearch.response.AutoCompleteDto.Response;
 import com.kkukku.timing.elasticsearch.service.ElasticSearchService;
+import com.kkukku.timing.response.ApiResponseUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +19,10 @@ public class SearchController {
     private final ElasticSearchService searchService;
 
     @PostMapping("/autocomplete")
-    public void getAutoHashtags(@RequestBody AutoCompleteDto.Request request) {
-        searchService.getHashtags(request.getSearch());
-        searchService.getChosungHashtags(request.getSearch());
+    public ResponseEntity<Response> getAutoHashtags(@RequestBody AutoCompleteDto.Request request) {
+
+        AutoCompleteDto.Response hashtagResponse = searchService.getHashTags(request.getSearch());
+        return ApiResponseUtil.success(hashtagResponse);
     }
 
 //    @GetMapping("/api/search")
