@@ -282,16 +282,13 @@ public class FeedService {
 
         challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
         challengeService.checkCompletedChallenge(challengeId);
-
-        // VisionAI Code
+        
         List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
         MultiValueMap<String, Object> requestBody = getMovieBySnapshotRequestBody(challenge,
             snapshots);
         ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
-
-        // TODO: response에서 MP4를 가져오고 저장해야 한다
-//        String timelapseUrl = s3Service.uploadFile(timelapseFile);
-        String timelapseUrl = "";
+        byte[] mp4File = response.body(byte[].class);
+        String timelapseUrl = "/" + s3Service.uploadMp4(mp4File, "video");
 
         FeedEntity feed = feedRepository.save(new FeedEntity(challenge, timelapseUrl));
         feed.setRelation(challenge.getParent());

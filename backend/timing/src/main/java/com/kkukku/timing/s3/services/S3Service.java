@@ -78,6 +78,21 @@ public class S3Service {
         return fileName;
     }
 
+    public String uploadMp4(byte[] mp4Byte, String fileName) {
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(mp4Byte);
+        fileName = UUID.randomUUID() + "_" + fileName;
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(mp4Byte.length);
+        metadata.setContentType("video/mp4");
+
+        amazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileName,
+            byteArrayInputStream, metadata));
+
+        return fileName;
+    }
+
     public String uploadStringAsTextFile(String content, String fileName) {
         // 문자열을 바이트 배열로 변환
         byte[] contentAsBytes = content.getBytes(StandardCharsets.UTF_8);
