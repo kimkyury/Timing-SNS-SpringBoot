@@ -62,6 +62,10 @@ management:
 external:
   vision-ai:
     url: ${VISION_AI_URL}
+
+server:
+  tomcat:
+    max-http-response-header-size: 50KB
 ---
 
 spring:
