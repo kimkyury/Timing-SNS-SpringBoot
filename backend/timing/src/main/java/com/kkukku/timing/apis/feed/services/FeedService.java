@@ -2,6 +2,7 @@ package com.kkukku.timing.apis.feed.services;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
+import com.kkukku.timing.apis.challenge.entities.SnapshotEntity;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.challenge.services.SnapshotService;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
@@ -29,7 +30,9 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient.ResponseSpec;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +77,7 @@ public class FeedService {
         return feedRepository.findAllByMember_IdAndIsDeleteIsFalse(
                                  SecurityUtil.getLoggedInMemberPrimaryKey())
                              .stream()
-                             .map(FeedSummaryResponse::new)
+                             .map(feed -> new FeedSummaryResponse(feed, s3Service))
                              .toList();
     }
 
@@ -94,7 +97,7 @@ public class FeedService {
                                  memberService.getMemberByEmail(email)
                                               .getId())
                              .stream()
-                             .map(FeedSummaryResponse::new)
+                             .map(feed -> new FeedSummaryResponse(feed, s3Service))
                              .toList();
     }
 
@@ -202,7 +205,7 @@ public class FeedService {
                                      .getId();
         feedRepository.findAllByRoot_Id(rootId)
                       .forEach(feed -> {
-                          FeedNodeResponse node = new FeedNodeResponse(feed);
+                          FeedNodeResponse node = new FeedNodeResponse(feed, s3Service);
                           map.put(feed.getId(), node);
 
                           if (feed.getParent() == null) {
@@ -280,9 +283,15 @@ public class FeedService {
         challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
         challengeService.checkCompletedChallenge(challengeId);
 
-        MultipartFile timelapseFile = visionAIService.getMovieBySnapshots(
-            snapshotService.getAllSnapshotByChallenge(challengeId));
-        String timelapseUrl = s3Service.uploadFile(timelapseFile);
+        // VisionAI Code
+        List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
+        MultiValueMap<String, Object> requestBody = getMovieBySnapshotRequestBody(challenge,
+            snapshots);
+        ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
+
+        // TODO: response에서 MP4를 가져오고 저장해야 한다
+//        String timelapseUrl = s3Service.uploadFile(timelapseFile);
+        String timelapseUrl = "";
 
         FeedEntity feed = feedRepository.save(new FeedEntity(challenge, timelapseUrl));
         feed.setRelation(challenge.getParent());
@@ -291,6 +300,24 @@ public class FeedService {
 
         challengeService.deleteChallengeProcedure(SecurityUtil.getLoggedInMemberPrimaryKey(),
             challengeId);
+    }
+
+
+    private MultiValueMap<String, Object> getMovieBySnapshotRequestBody(ChallengeEntity challenge,
+        List<SnapshotEntity> snapshots) {
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("object", s3Service.getS3StartUrl() + challenge);
+        StringBuilder sb = new StringBuilder();
+
+        for (SnapshotEntity snapshot : snapshots) {
+            sb.append(s3Service.getS3StartUrl())
+              .append(snapshot.getImageUrl())
+              .append(",");
+        }
+        body.add("snapshots", sb.toString());
+
+        return body;
     }
 
     public void jwtCheck(String jwt) {
