@@ -35,7 +35,7 @@ public class CheckChallengeTaskTest {
         long beforeChallengeCnt = challengeRepository.countBy();
 
         // when
-//        challengeTask.deleteChallenge();
+        challengeTask.deleteChallengeProcedure();
         // 1. 모든 Challenge를 가져와서
         // 2. 각 객체의 diff(startedAt, now()))-1 만큼 Snapshot이 존재하는지 확인한다
         // 3. 만약, Snapshot이 개수만큼 존재하지 않다면 해당 Challenge와 관련된 모든 Snapshot, S3이미지 등을 삭제한다
