@@ -396,7 +396,8 @@ public class ChallengeServiceTest {
         Long testChallengeId = 1L;
         Integer testMemberId = 1;
 
-        when(s3Service.uploadFile(polygonFile)).thenReturn(afterPolygonName);
+        when(s3Service.uploadStringAsTextFile(polygonContent, "polygon")).thenReturn(
+            afterPolygonName);
         when(s3Service.uploadFile(objectFile)).thenReturn(afterObjectName);
 
         // when
@@ -407,8 +408,8 @@ public class ChallengeServiceTest {
         ChallengeEntity challenge = challengeRepository.findById(testChallengeId)
                                                        .get();
 
-        assertEquals("/" + afterPolygonName, challenge.getPolygonUrl());
         assertEquals("/" + afterObjectName, challenge.getObjectUrl());
+        assertEquals("/" + afterPolygonName, challenge.getPolygonUrl());
 
     }
 
