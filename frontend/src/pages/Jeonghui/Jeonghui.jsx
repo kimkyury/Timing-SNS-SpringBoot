@@ -6,11 +6,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import Webcam from 'react-webcam';
 import { useState } from 'react';
 
-// const BASE_HTTP_URL = 'http://localhost:8001';
-const BASE_HTTP_URL = `http://k9e203a.p.ssafy.io`;
 const BASE_URL = `http://k9e203.p.ssafy.io`;
-
-const email = 'spor1998@naver.com';
 
 function Jeonghui() {
     const photoRef = useRef(null);
@@ -30,7 +26,7 @@ function Jeonghui() {
         setHeight(containerInfo.getBoundingClientRect().height - 1);
         setRatio(containerInfo.getBoundingClientRect().width / containerInfo.getBoundingClientRect().height);
 
-        if (timeLaps.countDays > 0) {
+        if (timeLaps.countDays <= 0) {
             // 여기서 ploy 가져오는 로직
             axios
                 .get(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/polygon`, {
@@ -39,26 +35,11 @@ function Jeonghui() {
                     },
                 })
                 .then((response) => {
-                    console.log(response);
-                    setPoly(response.data);
+                    setPoly(response.data.polygon);
                 })
                 .catch((error) => {
                     console.error(error);
                 });
-            // axios
-            //     .get(`${BASE_HTTP_URL}/objectDetaction/getPoly/${timeLaps.id + email}`, {
-            //         headers: {
-            //             accept: '*/*',
-            //         },
-            //     })
-            //     .then((response) => {
-            //         console.log(response);
-            //         // setPoly(JSON.parse(response.data));
-            //         setPoly(response.data);
-            //     })
-            //     .catch((error) => {
-            //         console.error(`Error: ${error}`);
-            //     });
         }
     }, []);
 
@@ -125,13 +106,14 @@ function Jeonghui() {
         var formData = new FormData();
         formData.append('snapshot', blob);
 
-        if (timeLaps.countDays <= 0) {
+        if (timeLaps.countDays > 0) {
             console.log('객체 인식 실행');
             axios
-                .post(`${BASE_HTTP_URL}/objectDetection`, formData, {
+                .post(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/snapshots/objects/detection`, formData, {
                     headers: {
                         accept: '*/*',
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                     responseType: 'blob',
                 })
@@ -143,21 +125,18 @@ function Jeonghui() {
                     console.error(`Error: ${error}`);
                 });
         } else {
-            formData.append('challengeId', timeLaps.id + email);
-
             axios
-                .post(`${BASE_HTTP_URL}/objectDetection/similarity`, formData, {
+                .post(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/snapshots`, formData, {
                     headers: {
                         accept: '*/*',
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 })
                 .then((response) => {
-                    console.log(response);
-                    if (response.status == 204) {
+                    if (response.status == 400) {
                         alert('비슷한 객체를 찾지 못했습니다. 다시 사진을 찍어주세요');
                     } else {
-                        // closeWebcam();
                         navigate('/');
                     }
                 })
