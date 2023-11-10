@@ -51,7 +51,7 @@ public class FeedDetailResponse {
         this.startedAt = feed.getStartedAt();
         this.endedAt = feed.getEndedAt();
         this.goalContent = feed.getGoalContent();
-        this.thumbnailUrl = feed.getThumbnailUrl();
+        this.thumbnailUrl = s3Service.getS3StartUrl() + feed.getThumbnailUrl();
         this.isPrivate = feed.getIsPrivate();
         this.review = feed.getReview();
         this.createdAt = feed.getCreatedAt();
