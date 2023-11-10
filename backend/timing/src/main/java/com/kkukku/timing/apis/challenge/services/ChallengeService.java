@@ -65,6 +65,11 @@ public class ChallengeService {
         challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptions);
     }
 
+
+    public List<ChallengeEntity> getAllChallenge() {
+        return challengeRepository.findAll();
+    }
+
     public ChallengeEntity saveChallenge(MemberEntity member,
         ChallengeCreateRequest challengeCreateRequest) {
 
@@ -83,13 +88,17 @@ public class ChallengeService {
                                        s3Service.getS3StartUrl() + c.getThumbnailUrl();
                                    long countDays = diffDay(c.getStartedAt(), LocalDate.now());
                                    long maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
-                                   return new Challenge(id, thumbnailUrl, countDays, maxDays);
+
+                                   boolean isUploadToday = isTodayProcessChallenge(c);
+
+                                   return new Challenge(id, thumbnailUrl, countDays, maxDays,
+                                       isUploadToday);
                                })
                                .toList());
     }
 
     @Transactional
-    public void deleteChallenge(Integer memberId, Long challengeId) {
+    public void deleteChallengeProcedure(Integer memberId, Long challengeId) {
 
         checkOwnChallenge(memberId, challengeId);
 
@@ -103,6 +112,7 @@ public class ChallengeService {
 
         challengeRepository.deleteById(challengeId);
     }
+
 
     public void extendChallenge(Integer memberId, Long challengeId) {
 
@@ -199,6 +209,15 @@ public class ChallengeService {
 
         checkOwnChallenge(memberId, challengeId);
 
+        if (challenge.getStartedAt()
+                     .isAfter(LocalDate.now())) {
+            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
+        }
+
+        if (isTodayProcessChallenge(challenge)) {
+            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
+        }
+
         String objectUrl = s3Service.getS3StartUrl() + challenge.getObjectUrl();
         ByteArrayResource snapshotResource = getByteArrayResource(snapshot);
         MultiValueMap<String, Object> requestBody = getCheckSimilarityBody(snapshotResource,
@@ -213,6 +232,15 @@ public class ChallengeService {
         snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
+
+    private boolean isTodayProcessChallenge(ChallengeEntity challenge) {
+
+        LocalDate startedDay = challenge.getStartedAt();
+        long mustDays = diffDay(startedDay, LocalDate.now()) + 1;
+        long countSnapshot = snapshotService.getCntSnapshotByChallenge(challenge.getId());
+
+        return mustDays == countSnapshot;
+    }
 
     public ResponseSpec getDetectedObject(MultipartFile snapshot) {
 
@@ -266,7 +294,7 @@ public class ChallengeService {
         }
     }
 
-    private long diffDay(LocalDate startedAt, LocalDate yesterday) {
+    public long diffDay(LocalDate startedAt, LocalDate yesterday) {
         return ChronoUnit.DAYS.between(startedAt, yesterday);
     }
 }
