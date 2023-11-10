@@ -3,12 +3,22 @@ package com.kkukku.timing.apis.test.controllers;
 import static com.kkukku.timing.response.ApiResponseUtil.success;
 
 import com.amazonaws.services.s3.model.S3Object;
+import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
+import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
+import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
+import com.kkukku.timing.apis.challenge.services.ChallengeService;
+import com.kkukku.timing.apis.challenge.services.SnapshotService;
 import com.kkukku.timing.apis.comment.services.CommentService;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.feed.services.FeedService;
+import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
+import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
+import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
 import com.kkukku.timing.apis.like.services.LikeService;
+import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
+import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.apis.test.requests.FeedDummyRequest;
 import com.kkukku.timing.apis.test.responses.FeedResponse;
 import com.kkukku.timing.apis.test.responses.MemberResponse;
@@ -44,6 +54,12 @@ public class TestController {
     private final FeedRepository feedRepository;
     private final MemberRepository memberRepository;
     private final FeedHashTagService feedHashTagService;
+    private final ChallengeService challengeService;
+    private final HashTagOptionService hashTagOptionService;
+    private final MemberService memberService;
+    private final ChallengeHashTagService challengeHashTagService;
+    private final SnapshotService snapshotService;
+    private final ChallengeRepository challengeRepository;
     private final LikeService likeService;
     private final CommentService commentService;
 
@@ -112,9 +128,34 @@ public class TestController {
             return ResponseEntity.badRequest()
                                  .body("스냅샷 개수가 21의 배수만 가능");
         }
+        // --- Challenge, Hash tag 생성 START ---
+        MemberEntity member = memberService.getMemberById(feedDummyRequest.getMemberId());
+        hashTagOptionService.createHashTagOptions(feedDummyRequest.getHashtags());
+        ChallengeEntity savedChallenge = challengeService.saveChallenge(member,
+            new ChallengeCreateRequest(feedDummyRequest.getStartedAt(),
+                feedDummyRequest.getHashtags(), feedDummyRequest.getGoalContent()));
+        List<HashTagOptionEntity> hashTagOptions = hashTagOptionService.getHashTagOption(
+            feedDummyRequest.getHashtags());
+        challengeHashTagService.createChallengeHashTag(savedChallenge, hashTagOptions);
+        // --- Challenge, Hash tag 생성 END ---
 
-        System.out.println(feedDummyRequest);
-        System.out.println(snapshots);
+        // --- Snapshot 생성, 종료일, 썸네일 수정 START ---
+        savedChallenge.setEndedAt(savedChallenge.getStartedAt()
+                                                .plusDays(snapshots.size()));
+        snapshots.forEach(snapshot -> {
+            String url = s3Service.uploadFile(snapshot);
+            snapshotService.createSnapshot(savedChallenge, url);
+
+            if (savedChallenge.getThumbnailUrl() == null) {
+                savedChallenge.setThumbnailUrl(url);
+            }
+        });
+        challengeRepository.save(savedChallenge);
+        // --- SnapShot 생성 END ---
+
+        // -- Challenge to Feed Convert START ---
+//        feedService.convertToFeed(savedChallenge.getId());
+        // --- Challenge to Feed Convert END ---
 
         return ApiResponseUtil.success();
 
