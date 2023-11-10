@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: set1
+    active: dev
     group:
       "local": "local"
       "dev": "dev"
@@ -58,6 +58,9 @@ management:
   endpoint:
     health:
       show-details: always
+
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST}
 ---
 
 spring:

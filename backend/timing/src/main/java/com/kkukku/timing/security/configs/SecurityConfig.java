@@ -52,7 +52,13 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/api/profile",
             "/api/v1/test/ping",
-            "/actuator/health"
+            "/actuator/health",
+            "/api/search",
+            "/api/search2",
+            "/api/v1/test/search",
+            "/api/search/nori",
+            "/api/v1/test/search/nori",
+            "/api/v1/hashtags/autocomplete"
     };
 
     @Bean
