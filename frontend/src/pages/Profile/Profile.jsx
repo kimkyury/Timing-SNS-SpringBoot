@@ -1,6 +1,6 @@
 import TimeLapse from "../../components/TimeLapse/TimeLapse";
 import styles from "./Profile.module.css";
-import UserProfile from "../../components/UserProfile/USerProfile";
+import UserProfile from "../../components/UserProfile/UserProfile";
 import MyFeed from "../../components/Feed/FeedList";
 import { useEffect, useState } from "react";
 import axios from "axios";

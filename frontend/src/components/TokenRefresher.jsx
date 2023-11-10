@@ -15,8 +15,9 @@ function TokenRefresher() {
       },
       async function (error) {
         const originalConfig = error.config;
-        const msg = error.response.data.message;
-        const status = error.response.status;
+        console.log(error);
+        const msg = error.message;
+        const status = error.code;
         if (status == 401) {
           if (msg == "access token expired") {
             await axios({
@@ -34,7 +35,7 @@ function TokenRefresher() {
                   "Bearer " + res.data.accessToken;
                 return refreshAPI(originalConfig);
               })
-              .then((res) => {
+              .then(() => {
                 window.location.reload();
               });
           } else if (msg == "refresh token expired") {

@@ -7,10 +7,10 @@ import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import axios from "axios";
-
+import _ from "lodash";
 const BASE_URL = `http://k9e203.p.ssafy.io`;
-
 function Feed(data) {
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const location = useLocation();
   const currentUrl = location.pathname;
@@ -19,20 +19,7 @@ function Feed(data) {
   const [comment, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const accessToken = sessionStorage.getItem("accessToken");
-  const getComment = () => {
-    axios
-      .get(`${BASE_URL}/api/v1/feeds/${state.id}/comments?page=1`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        setComments(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+
   const getDetailFeed = () => {
     axios
       .get(`${BASE_URL}/api/v1/feeds/${data.data.id}`, {
@@ -102,11 +89,27 @@ function Feed(data) {
       .catch((error) => {
         console.error(error);
       });
-    if (currentUrl != "/") {
-      getComment();
-    }
-  }, []);
-
+    // if (currentUrl != "/") {
+    //   getComment();
+    // }
+  }, [accessToken]);
+  useEffect(() => {
+    console.log(page);
+    axios
+      .get(`${BASE_URL}/api/v1/feeds/${state.id}/comments?page=${page}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setComments((prevData) => [...prevData, ...response.data]);
+        console.log(response.data, page);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    console.log("page", page);
+  }, [page]);
   const gotoDetailComment = () => {
     console.log(state);
     navigate(`/detailcomment/${state.id}`, { state });
@@ -143,12 +146,20 @@ function Feed(data) {
     }
   };
   const formatT = (c) => {
+    // console.log(new Date());
+    // console.log(c);
     if (c / 60 < 1) {
+      console.log("a");
       return (c & 60).toFixed(0) + "초전";
     } else if (c / 60 >= 1 && c / 60 / 60 < 1) {
+      console.log("s");
       return (c / 60).toFixed(0) + "분전";
     } else if (c / 60 / 60 > 1) {
+      console.log("d");
       return (c / 60 / 60).toFixed(0) + "시간전 ";
+    } else if (c / 60 / 60 / 24 > 1) {
+      console.log("f");
+      return c;
     }
   };
   const formatEmail = (t) => {
@@ -168,7 +179,7 @@ function Feed(data) {
           }
         )
         .then(() => {
-          getComment();
+          window.location.reload();
         })
         .catch((error) => {
           console.error(error);
@@ -192,6 +203,33 @@ function Feed(data) {
   //         setComments(updatedComments);
   //     }
   // };
+  useEffect(() => {
+    if (currentUrl != "/") {
+      // 스크롤 이벤트 리스너 등록
+      window.addEventListener("scroll", handleScroll);
+
+      // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
+  const handleScroll = () => {
+    const scrollHeight = window.scrollY;
+    const windowHeight = window.innerHeight;
+    if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
+      console.log("바닥");
+      console.log(state.commentCount);
+      if (state.commentCount % 10 != page) {
+        console.log("되ㅏ나");
+        setPage(page + 1);
+      }
+    }
+  };
+
+  console.log(page);
+  console.log(comment.length);
+  console.log(state.commentCount);
   return (
     <div>
       {state ? (
@@ -237,11 +275,7 @@ function Feed(data) {
               <div className={styles.tagitemicon}>
                 <SmsOutlinedIcon style={{ width: "4vw", height: "4vw" }} />
               </div>
-              {currentUrl == "/" ? (
-                <div>{formatK(state.commentCount)}</div>
-              ) : (
-                <div>{formatK(comment.length)}</div>
-              )}
+              <div>{formatK(state.commentCount)}</div>
             </div>
             <div className={styles.tagitem}>
               <div className={styles.tagitemicon}>
@@ -308,6 +342,7 @@ function Feed(data) {
                       <div className={styles.name}>{v.writer.nickname}</div>
                       <div className={styles.time}>
                         {formatT(new Date() - v.createdAt)}
+                        {v.createdAt}
                       </div>
                     </div>
                     <div className={styles.comment}>{v.content}</div>
