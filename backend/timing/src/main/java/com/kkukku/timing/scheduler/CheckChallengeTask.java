@@ -23,11 +23,11 @@ public class CheckChallengeTask {
 
     @Scheduled(cron = "0 0 0 * * *")
     private void job() {
-        deleteChallengeProcedure();
+//        deleteChallengeProcedure();
     }
 
     public void deleteChallengeProcedure() {
-        // 1. 모든 Challenge를 가져와서
+
         List<ChallengeEntity> challenges = challengeService.getAllChallenge()
                                                            .stream()
                                                            .filter(
