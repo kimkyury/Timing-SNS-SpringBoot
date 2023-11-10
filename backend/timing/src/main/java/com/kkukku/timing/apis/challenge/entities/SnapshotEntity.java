@@ -30,10 +30,20 @@ public class SnapshotEntity {
     @JoinColumn(name = "challenge_id", nullable = false)
     private ChallengeEntity challenge;
 
+    @Getter
     @Column(nullable = false)
     private String imageUrl;
 
     @Column(nullable = false, insertable = false)
     private LocalDateTime createdAt;
+
+    private SnapshotEntity(ChallengeEntity challenge, String imageUrl) {
+        this.challenge = challenge;
+        this.imageUrl = imageUrl;
+    }
+
+    public static SnapshotEntity of(ChallengeEntity challenge, String imageUrl) {
+        return new SnapshotEntity(challenge, imageUrl);
+    }
 
 }

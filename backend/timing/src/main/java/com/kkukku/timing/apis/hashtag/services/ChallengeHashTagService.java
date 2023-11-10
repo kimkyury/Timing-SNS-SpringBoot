@@ -26,4 +26,13 @@ public class ChallengeHashTagService {
                                                                              .toList();
         challengeHashTagRepository.saveAll(challengeHashTagList);
     }
+
+    public List<HashTagOptionEntity> getHashTagOptionByChallengeId(Long challengeId) {
+        return challengeHashTagRepository.findAllByChallengeId(challengeId)
+                                         .stream()
+                                         .map(ChallengeHashTagEntity::getHashTagOption)
+                                         .toList();
+    }
+
+
 }

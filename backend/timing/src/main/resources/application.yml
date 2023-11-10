@@ -33,6 +33,7 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
     operations-sorter: alpha
+    tags-sorter: alpha
 cloud:
   aws:
     credentials:
@@ -61,6 +62,15 @@ management:
 
 elasticsearch:
   host: ${ELASTICSEARCH_HOST}
+
+external:
+  vision-ai:
+    url: ${VISION_AI_URL}
+
+server:
+  tomcat:
+    max-http-response-header-size: 50KB
+    
 ---
 
 spring:
@@ -93,6 +103,8 @@ spring:
     host: ${LOCAL_REDIS_HOST}
     port: ${LOCAL_REDIS_PORT}
     password: ${LOCAL_REDIS_PASSWORD}
+
+
 
 ---
 
