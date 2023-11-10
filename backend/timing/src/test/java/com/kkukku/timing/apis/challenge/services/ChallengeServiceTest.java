@@ -385,6 +385,7 @@ public class ChallengeServiceTest {
 
         // given
         String afterPolygonName = "test_polygon.png";
+        String polygonContent = "testPolygon";
         String afterPolygonPath = "src/test/resources/image/" + afterPolygonName;
         MockMultipartFile polygonFile = getSampleText(afterPolygonPath, afterPolygonName);
 
@@ -400,7 +401,7 @@ public class ChallengeServiceTest {
 
         // when
         challengeService.saveObjectAndPolygon(
-            testMemberId, testChallengeId, polygonFile, objectFile);
+            testMemberId, testChallengeId, polygonContent, objectFile);
 
         // then
         ChallengeEntity challenge = challengeRepository.findById(testChallengeId)
@@ -516,6 +517,6 @@ public class ChallengeServiceTest {
         assertEquals("/" + afterSnapshotName, actualSnapshot.getImageUrl());
         assertEquals("/" + afterSnapshotName, actualChallenge.getThumbnailUrl());
     }
-    
+
 
 }
