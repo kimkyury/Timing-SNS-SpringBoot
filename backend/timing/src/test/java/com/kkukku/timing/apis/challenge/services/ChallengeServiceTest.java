@@ -408,8 +408,8 @@ public class ChallengeServiceTest {
         ChallengeEntity challenge = challengeRepository.findById(testChallengeId)
                                                        .get();
 
-        assertEquals("/" + afterPolygonName, challenge.getPolygonUrl());
         assertEquals("/" + afterObjectName, challenge.getObjectUrl());
+        assertEquals("/" + afterPolygonName, challenge.getPolygonUrl());
 
     }
 
