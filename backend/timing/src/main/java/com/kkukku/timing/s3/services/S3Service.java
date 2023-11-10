@@ -9,7 +9,9 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,24 @@ public class S3Service {
         } catch (IOException e) {
             throw new CustomException(ErrorCode.FAIL_SAVE_FILE_S3);
         }
+
+        return fileName;
+    }
+
+    public String uploadStringAsTextFile(String content, String fileName) {
+        // 문자열을 바이트 배열로 변환
+        byte[] contentAsBytes = content.getBytes(StandardCharsets.UTF_8);
+        fileName = UUID.randomUUID() + "_" + fileName;
+
+        // 바이트 배열을 InputStream으로 변환
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(contentAsBytes);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(contentAsBytes.length);
+        metadata.setContentType("text/plain");
+
+        amazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileName,
+            byteArrayInputStream, metadata));
 
         return fileName;
     }
