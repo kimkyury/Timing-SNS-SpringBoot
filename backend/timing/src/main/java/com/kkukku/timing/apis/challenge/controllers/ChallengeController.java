@@ -115,7 +115,7 @@ public class ChallengeController {
         description = "특정 Challenge의 Snapshot 최초 등록시, 사진의 객체 최종 확정을 통해 Polygon, Object가 저장됩니다")
     @PostMapping(value = "/{id}/objects", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> savePolygonAndObject(@PathVariable Long id,
-        @RequestPart MultipartFile polygon,
+        @RequestPart String polygon,
         @RequestPart MultipartFile object) {
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
