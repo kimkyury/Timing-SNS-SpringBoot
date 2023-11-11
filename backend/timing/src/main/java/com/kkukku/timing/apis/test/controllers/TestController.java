@@ -8,20 +8,20 @@ import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.challenge.services.SnapshotService;
-import com.kkukku.timing.apis.comment.services.CommentService;
+import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.feed.services.FeedService;
 import com.kkukku.timing.apis.hashtag.entities.HashTagOptionEntity;
 import com.kkukku.timing.apis.hashtag.services.ChallengeHashTagService;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
 import com.kkukku.timing.apis.hashtag.services.HashTagOptionService;
-import com.kkukku.timing.apis.like.services.LikeService;
 import com.kkukku.timing.apis.member.entities.MemberEntity;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
 import com.kkukku.timing.apis.member.services.MemberService;
 import com.kkukku.timing.apis.test.requests.FeedDummyRequest;
 import com.kkukku.timing.apis.test.responses.FeedResponse;
 import com.kkukku.timing.apis.test.responses.MemberResponse;
+import com.kkukku.timing.external.services.VisionAIService;
 import com.kkukku.timing.response.ApiResponseUtil;
 import com.kkukku.timing.response.codes.ErrorCode;
 import com.kkukku.timing.s3.services.S3Service;
@@ -60,8 +60,7 @@ public class TestController {
     private final ChallengeHashTagService challengeHashTagService;
     private final SnapshotService snapshotService;
     private final ChallengeRepository challengeRepository;
-    private final LikeService likeService;
-    private final CommentService commentService;
+    private final VisionAIService visionAIService;
 
     @Operation(summary = "응답테스트", tags = {"0. Test"})
     @GetMapping("/ping")
@@ -154,7 +153,22 @@ public class TestController {
         // --- SnapShot 생성 END ---
 
         // -- Challenge to Feed Convert START ---
-//        feedService.convertToFeed(savedChallenge.getId());
+        ChallengeEntity challenge = challengeService.getChallengeById(savedChallenge.getId());
+
+        challengeService.checkOwnChallenge(feedDummyRequest.getMemberId(), savedChallenge.getId());
+        challengeService.checkCompletedChallenge(savedChallenge.getId());
+
+        MultipartFile timelapseFile = visionAIService.getMovieBySnapshots(
+            snapshotService.getAllSnapshotByChallenge(savedChallenge.getId()));
+        String timelapseUrl = s3Service.uploadFile(timelapseFile);
+
+        FeedEntity feed = feedRepository.save(new FeedEntity(challenge, timelapseUrl));
+        feed.setRelation(challenge.getParent());
+        feedHashTagService.saveHashTagsByFeedId(feed.getId(),
+            challengeHashTagService.getHashTagOptionByChallengeId(savedChallenge.getId()));
+
+        challengeService.deleteChallenge(feedDummyRequest.getMemberId(), savedChallenge.getId());
+        feedService.convertToFeed(savedChallenge.getId());
         // --- Challenge to Feed Convert END ---
 
         return ApiResponseUtil.success();
