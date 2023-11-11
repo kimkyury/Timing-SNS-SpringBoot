@@ -231,7 +231,6 @@ public class ChallengeServiceTest {
         }
     }
 
-
     @Test
     @Transactional
     @Order(4)
@@ -245,7 +244,7 @@ public class ChallengeServiceTest {
             challengeId);
 
         // when
-        challengeService.deleteChallenge(memberId, challengeId);
+        challengeService.deleteChallengeProcedure(memberId, challengeId);
 
         // then
         Optional<ChallengeEntity> expectedChallenge = challengeRepository.findById(
@@ -272,7 +271,7 @@ public class ChallengeServiceTest {
         Long targetChallengeId = 1L;
 
         assertThrows(CustomException.class, () ->
-            challengeService.deleteChallenge(memberId, targetChallengeId));
+            challengeService.deleteChallengeProcedure(memberId, targetChallengeId));
 
     }
 
@@ -352,16 +351,19 @@ public class ChallengeServiceTest {
     @Test
     @Transactional
     @Order(8)
-    @DisplayName("특정 챌린지의 Polygon 정보를 String값으로 반환한다")
+    @DisplayName("특정 챌린지의 Polygon 정보를 String 값으로 반환한다")
     void shouldGetPolygonStringByChallenge() throws IOException {
 
+        // given
         String afterPolygonName = "test_polygon.png";
         String afterPolygonPath = "src/test/resources/image/" + afterPolygonName;
         MockMultipartFile testPolygonFile = getSampleText(afterPolygonPath, afterPolygonName);
         S3Object mockS3Object = createS3ObjectFromMultipartFile(testPolygonFile);
-        when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
+        String expectedPolygonStr = new String(testPolygonFile.getBytes(), StandardCharsets.UTF_8);
 
-        // given
+        when(s3Service.getFile(any(String.class))).thenReturn(mockS3Object);
+        when(s3Service.convertS3ObjectToString(mockS3Object)).thenReturn(expectedPolygonStr);
+
         Long challengeId = 2L;
         Integer memberId = 1;
 
@@ -370,8 +372,6 @@ public class ChallengeServiceTest {
             challengeId);
 
         // then
-        String expectedPolygonStr = new String(testPolygonFile.getBytes(), StandardCharsets.UTF_8);
-
         assertEquals(expectedPolygonStr, response.getPolygon());
 
     }
@@ -380,7 +380,7 @@ public class ChallengeServiceTest {
     @Test
     @Transactional
     @Order(9)
-    @DisplayName("특정 Cahllenge에 대하여 Object와 Polygon 파일을 저장합니다.")
+    @DisplayName("특정 Cahllenge에 대하여 Object와 Polygon 파일을 저장한다.")
     void shouldSaveObjectAndPolygonFile() {
 
         // given
@@ -393,10 +393,11 @@ public class ChallengeServiceTest {
         String afterObjectPath = "src/test/resources/image/" + afterObjectName;
         MockMultipartFile objectFile = getSampleImage(afterObjectPath, afterObjectName);
 
-        Long testChallengeId = 1L;
+        Long testChallengeId = 3L;
         Integer testMemberId = 1;
 
-        when(s3Service.uploadFile(polygonFile)).thenReturn(afterPolygonName);
+        when(s3Service.uploadStringAsTextFile(polygonContent, "polygon")).thenReturn(
+            afterPolygonName);
         when(s3Service.uploadFile(objectFile)).thenReturn(afterObjectName);
 
         // when
@@ -407,8 +408,8 @@ public class ChallengeServiceTest {
         ChallengeEntity challenge = challengeRepository.findById(testChallengeId)
                                                        .get();
 
-        assertEquals("/" + afterPolygonName, challenge.getPolygonUrl());
         assertEquals("/" + afterObjectName, challenge.getObjectUrl());
+        assertEquals("/" + afterPolygonName, challenge.getPolygonUrl());
 
     }
 
@@ -516,6 +517,12 @@ public class ChallengeServiceTest {
 
         assertEquals("/" + afterSnapshotName, actualSnapshot.getImageUrl());
         assertEquals("/" + afterSnapshotName, actualChallenge.getThumbnailUrl());
+    }
+
+
+    @Test
+    void shouldGetDiffDay() {
+
     }
 
 

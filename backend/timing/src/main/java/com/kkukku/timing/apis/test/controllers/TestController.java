@@ -32,11 +32,14 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -61,6 +64,8 @@ public class TestController {
     private final SnapshotService snapshotService;
     private final ChallengeRepository challengeRepository;
     private final VisionAIService visionAIService;
+    private final TestRepository testRepository;
+    private final TestFeedRepository testFeedRepository;
 
     @Operation(summary = "응답테스트", tags = {"0. Test"})
     @GetMapping("/ping")
@@ -173,5 +178,17 @@ public class TestController {
 
         return ApiResponseUtil.success();
 
+        @PostMapping("/search")
+        public void searchTest(@RequestBody SearchTestDto searchTestDto, Pageable pageable) {
+            List<Test> list = testRepository.findAllByNameContaining(searchTestDto.getName(), pageable);
+        }
+
+        @PostMapping("/search/nori")
+        public void searchTest2(@RequestBody SearchTestDto searchTestDto, Pageable pageable) {
+            List<TestFeed> list = testFeedRepository.findAllByContentsContaining(searchTestDto.getName(), pageable);
+//        System.out.println(list.size());
+//        for(TestFeed t : list) {
+//            System.out.println(t);
+//        }
+        }
     }
-}
