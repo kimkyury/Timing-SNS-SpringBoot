@@ -11,5 +11,5 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
     Long countByFeedId(Long feedId);
 
     @EntityGraph(attributePaths = {"member"})
-    Slice<CommentEntity> findByFeedId(Long feedId, Pageable pageable);
+    Slice<CommentEntity> findByFeedIdOrderById(Long feedId, Pageable pageable);
 }

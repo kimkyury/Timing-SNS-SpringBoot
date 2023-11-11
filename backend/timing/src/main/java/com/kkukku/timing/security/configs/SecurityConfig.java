@@ -54,7 +54,8 @@ public class SecurityConfig {
         "/swagger-ui.html",
         "/api/profile",
         "/api/v1/test/**",
-        "/actuator/health"
+        "/actuator/health",
+        "/api/v1/hashtags/autocomplete"
     };
 
     @Bean

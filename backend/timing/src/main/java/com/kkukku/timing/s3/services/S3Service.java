@@ -7,10 +7,13 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.kkukku.timing.exception.CustomException;
 import com.kkukku.timing.response.codes.ErrorCode;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import lombok.Getter;
@@ -26,11 +29,35 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String BUCKET_NAME;
 
-    @Value("${cloud.aws.s3.url}")
     @Getter
+    @Value("${cloud.aws.s3.url}")
     private String s3StartUrl;
 
     private final AmazonS3 amazonS3;
+
+    public String convertS3ObjectToString(S3Object s3Object) {
+
+        try (S3ObjectInputStream s3is = s3Object.getObjectContent();
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(s3is, StandardCharsets.UTF_8))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line)
+                             .append("\n");
+            }
+            return stringBuilder.toString()
+                                .trim();
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            try {
+                s3Object.close();
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 
     public String uploadFile(MultipartFile file) {
 
@@ -47,6 +74,21 @@ public class S3Service {
         } catch (IOException e) {
             throw new CustomException(ErrorCode.FAIL_SAVE_FILE_S3);
         }
+
+        return fileName;
+    }
+
+    public String uploadMp4(byte[] mp4Byte, String fileName) {
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(mp4Byte);
+        fileName = UUID.randomUUID() + "_" + fileName;
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(mp4Byte.length);
+        metadata.setContentType("video/mp4");
+
+        amazonS3.putObject(new PutObjectRequest(BUCKET_NAME, fileName,
+            byteArrayInputStream, metadata));
 
         return fileName;
     }
