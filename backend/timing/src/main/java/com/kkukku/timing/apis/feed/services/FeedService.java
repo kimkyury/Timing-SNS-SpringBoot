@@ -284,7 +284,7 @@ public class FeedService {
         challengeService.checkCompletedChallenge(challengeId);
 
         List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
-        MultiValueMap<String, Object> requestBody = getMovieBySnapshotRequestBody(challenge,
+        Map<String, String> requestBody = getMovieBySnapshotRequestBody(challenge,
             snapshots);
         ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
         byte[] mp4File = response.body(byte[].class);
@@ -300,11 +300,11 @@ public class FeedService {
     }
 
 
-    private MultiValueMap<String, Object> getMovieBySnapshotRequestBody(ChallengeEntity challenge,
+    private Map<String, String> getMovieBySnapshotRequestBody(ChallengeEntity challenge,
         List<SnapshotEntity> snapshots) {
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("object", s3Service.getS3StartUrl() + challenge.getObjectUrl());
+        Map<String, String> body = new HashMap<>();
+        body.put("object", s3Service.getS3StartUrl() + challenge.getObjectUrl());
         StringBuilder sb = new StringBuilder();
 
         for (SnapshotEntity snapshot : snapshots) {
@@ -312,7 +312,7 @@ public class FeedService {
               .append(snapshot.getImageUrl())
               .append(",");
         }
-        body.add("snapshots", sb.toString());
+        body.put("snapshots", sb.toString());
 
         return body;
     }
