@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedDummyRequest {
 
-    @NotNull(message = "Must need hashtags")
-    private List<String> hashtags;
-    @NotNull(message = "Must need memberId")
-    private Integer memberId;
+    @NotNull(message = "Must need hashTags")
+    private List<String> hashTags;
+    @NotNull(message = "Must need memberEmail")
+    private String memberEmail;
     private Long parentId;
     @NotNull(message = "Must need startedAt")
     private LocalDate startedAt;
