@@ -282,7 +282,7 @@ public class FeedService {
 
         challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
         challengeService.checkCompletedChallenge(challengeId);
-        
+
         List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
         MultiValueMap<String, Object> requestBody = getMovieBySnapshotRequestBody(challenge,
             snapshots);
@@ -304,7 +304,7 @@ public class FeedService {
         List<SnapshotEntity> snapshots) {
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("object", s3Service.getS3StartUrl() + challenge);
+        body.add("object", s3Service.getS3StartUrl() + challenge.getObjectUrl());
         StringBuilder sb = new StringBuilder();
 
         for (SnapshotEntity snapshot : snapshots) {
