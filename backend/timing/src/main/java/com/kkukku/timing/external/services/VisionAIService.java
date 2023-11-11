@@ -10,6 +10,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClient.ResponseSpec;
 
+import java.util.Map;
+
 @Service
 public class VisionAIService {
 
@@ -63,12 +65,12 @@ public class VisionAIService {
 
     }
 
-    public ResponseSpec getMovieBySnapshots(MultiValueMap<String, Object> body) {
+    public ResponseSpec getMovieBySnapshots(Map<String, String> body) {
 
         RestClient restClient = RestClient.create();
         return restClient.post()
                          .uri(baseUrl + "/objectDetection/makeVideo")
-                         .contentType(MediaType.MULTIPART_FORM_DATA)
+                         .contentType(MediaType.APPLICATION_JSON)
                          .body(body)
                          .retrieve()
                          .onStatus(HttpStatusCode::is4xxClientError,
