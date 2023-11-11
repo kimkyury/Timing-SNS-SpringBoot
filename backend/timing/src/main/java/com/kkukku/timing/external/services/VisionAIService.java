@@ -67,7 +67,7 @@ public class VisionAIService {
 
         RestClient restClient = RestClient.create();
         return restClient.post()
-                         .uri(baseUrl + "....몰라!")
+                         .uri(baseUrl + "/objectDetection/makeVideo")
                          .contentType(MediaType.MULTIPART_FORM_DATA)
                          .body(body)
                          .retrieve()
