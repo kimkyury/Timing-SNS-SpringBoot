@@ -95,4 +95,22 @@ public class FeedEntity {
             this.root = this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "FeedEntity{" +
+            "id=" + id +
+            ", member=" + member +
+            ", startedAt=" + startedAt +
+            ", endedAt=" + endedAt +
+            ", goalContent='" + goalContent + '\'' +
+            ", thumbnailUrl='" + thumbnailUrl + '\'' +
+            ", timelapseUrl='" + timelapseUrl + '\'' +
+            ", isPrivate=" + isPrivate +
+            ", isDelete=" + isDelete +
+            ", review='" + review + '\'' +
+            ", updatedAt=" + updatedAt +
+            ", createdAt=" + createdAt +
+            '}';
+    }
 }

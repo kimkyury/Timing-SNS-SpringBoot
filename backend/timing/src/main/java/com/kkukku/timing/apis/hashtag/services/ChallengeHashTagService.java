@@ -28,6 +28,9 @@ public class ChallengeHashTagService {
     }
 
     public List<HashTagOptionEntity> getHashTagOptionByChallengeId(Long challengeId) {
+        System.out.println(challengeId);
+        System.out.println(challengeHashTagRepository.findAllByChallengeId(challengeId));
+
         return challengeHashTagRepository.findAllByChallengeId(challengeId)
                                          .stream()
                                          .map(ChallengeHashTagEntity::getHashTagOption)
