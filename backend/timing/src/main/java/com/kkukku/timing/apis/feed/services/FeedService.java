@@ -28,7 +28,9 @@ import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient.ResponseSpec;
 
@@ -287,10 +289,19 @@ public class FeedService {
         Map<String, String> requestBody = getMovieBySnapshotRequestBody(challenge,
             snapshots);
         ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
-        byte[] mp4File = response.body(byte[].class);
-        String timelapseUrl = "/" + s3Service.uploadMp4(mp4File, "video");
+        ResponseEntity<String> responseEntity = response.toEntity(String.class);
+        System.out.println(responseEntity);
+
+        byte[] mp4File = Objects.requireNonNull(responseEntity.getBody())
+                                .getBytes();
+        String timelapseUrl = "/" + s3Service.uploadMp4(mp4File,
+            "video");
+
+        System.out.println("Result Save Url: " + timelapseUrl);
 
         FeedEntity feed = feedRepository.save(new FeedEntity(challenge, timelapseUrl));
+        System.out.println("CreatedFeedInfo: " + feed);
+
         feed.setRelation(challenge.getParent());
         feedHashTagService.saveHashTagsByFeedId(feed.getId(),
             challengeHashTagService.getHashTagOptionByChallengeId(challengeId));
