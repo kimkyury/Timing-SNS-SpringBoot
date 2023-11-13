@@ -28,9 +28,7 @@ import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient.ResponseSpec;
 
@@ -289,11 +287,8 @@ public class FeedService {
         Map<String, String> requestBody = getMovieBySnapshotRequestBody(challenge,
             snapshots);
         ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
-        ResponseEntity<String> responseEntity = response.toEntity(String.class);
-        System.out.println(responseEntity);
 
-        byte[] mp4File = Objects.requireNonNull(responseEntity.getBody())
-                                .getBytes();
+        byte[] mp4File = response.body(byte[].class);
         String timelapseUrl = "/" + s3Service.uploadMp4(mp4File,
             "video");
 
