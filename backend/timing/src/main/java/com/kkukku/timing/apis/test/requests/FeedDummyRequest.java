@@ -17,9 +17,11 @@ public class FeedDummyRequest {
     @NotNull(message = "Must need memberEmail")
     private String memberEmail;
     private Long parentId;
-    @NotNull(message = "Must need startedAt")
-    private LocalDate startedAt;
+    @NotNull(message = "Must need endedAt")
+    private LocalDate endedAt;
     private String goalContent;
     private String review;
-
+    @NotNull(message = "Must need polygon")
+    private String polygon;
+    
 }
