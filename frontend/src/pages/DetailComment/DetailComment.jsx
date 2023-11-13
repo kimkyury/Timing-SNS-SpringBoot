@@ -3,6 +3,7 @@ import Feed from "../../components/Feed/Feed";
 import { useLocation } from "react-router";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 function DetailComment() {
   const location = useLocation();
   const ID = location.state.id;
@@ -40,12 +41,18 @@ function DetailComment() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [state]);
 
   return state ? (
-    <div className={styles.container}>
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.4 }}
+      className={styles.container}
+    >
       <Feed data={state} />
-    </div>
+    </motion.div>
   ) : (
     <></>
   );

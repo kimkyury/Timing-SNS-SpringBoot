@@ -35,7 +35,6 @@ function Feed(data) {
       });
   };
   const Like = () => {
-    console.log(state);
     if (user.email != state.writer.email) {
       axios
         .post(
@@ -58,7 +57,6 @@ function Feed(data) {
   const Dislike = () => {
     if (state && state.id) {
       // state 및 state.id가 존재하는지 확인
-      console.log(state.id, "dislike");
       axios
         .delete(`${BASE_URL}/api/v1/feeds/${state.id}/likes`, {
           headers: {
@@ -94,7 +92,6 @@ function Feed(data) {
     // }
   }, [accessToken]);
   useEffect(() => {
-    console.log(page);
     if (currentUrl != "/") {
       axios
         .get(`${BASE_URL}/api/v1/feeds/${state.id}/comments?page=${page}`, {
@@ -104,7 +101,6 @@ function Feed(data) {
         })
         .then((response) => {
           setComments((prevData) => [...prevData, ...response.data]);
-          console.log(response.data, page);
         })
         .catch((error) => {
           console.error(error);
@@ -112,7 +108,6 @@ function Feed(data) {
     }
   }, [page]);
   const gotoDetailComment = () => {
-    console.log(state);
     navigate(`/detailcomment/${state.id}`, { state });
   };
   const gotoDetailFeed = () => {
@@ -129,8 +124,7 @@ function Feed(data) {
           Authorization: `Bearer ${accessToken}`,
         },
       })
-      .then((response) => {
-        console.log(response.data);
+      .then(() => {
         navigate(`/profile/?email=${state.writer.email}`);
       })
       .catch((error) => {
