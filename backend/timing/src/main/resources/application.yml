@@ -79,9 +79,9 @@ server:
     max-swallow-size: 100MB
     max-http-form-post-size: 100MB
     max-http-response-header-size: 50KB
+    connection-timeout: 1800000
 
 ---
-
 spring:
   config:
     activate:
