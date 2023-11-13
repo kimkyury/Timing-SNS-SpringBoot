@@ -278,7 +278,7 @@ public class FeedService {
     public void convertToFeed(Long challengeId) {
         ChallengeEntity challenge = challengeService.getChallengeById(challengeId);
 
-        challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
+        // challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
 
         // TODO: On Checking, 테스트를 위하여 주석처리
         // challengeService.checkCompletedChallenge(challengeId);
