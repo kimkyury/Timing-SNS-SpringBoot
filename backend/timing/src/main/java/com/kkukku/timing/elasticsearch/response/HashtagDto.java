@@ -9,4 +9,5 @@ public class HashtagDto {
 
     private Long id;
     private String hashtag;
+    private Long count;
 }
