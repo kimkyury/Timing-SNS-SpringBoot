@@ -312,6 +312,8 @@ public class FeedService {
               .append(snapshot.getImageUrl())
               .append(",");
         }
+        sb.deleteCharAt(sb.length() - 1);
+
         body.put("snapshots", sb.toString());
 
         return body;
