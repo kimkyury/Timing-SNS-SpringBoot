@@ -4,6 +4,7 @@ import Textarea from "@mui/joy/Textarea";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 function UpdateProfile() {
   const { state } = useLocation();
   console.log(state);
@@ -29,7 +30,6 @@ function UpdateProfile() {
         },
       })
       .then((res) => {
-        console.log(res);
         navigate("/profile");
       })
       .catch((error) => {
@@ -43,7 +43,13 @@ function UpdateProfile() {
     setNewProfileIMG([...selectedFiles]);
   };
   return (
-    <div className={styles.container}>
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.4 }}
+      className={styles.container}
+    >
       <Textarea
         minRows={4}
         className={styles.contentbox}
@@ -60,7 +66,7 @@ function UpdateProfile() {
       <button onClick={updateProfile} className={styles.summitbtn}>
         수정
       </button>
-    </div>
+    </motion.div>
   );
 }
 

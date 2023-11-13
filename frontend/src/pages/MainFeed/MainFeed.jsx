@@ -26,9 +26,6 @@ function MainFeed() {
       })
       .then((response) => {
         dispatch(setFeed(response.data));
-        const updatedState = store.getState().feed.feeds;
-        console.log(updatedState); // 업데이트된 상태를 확인
-        console.log(feedState);
       })
       .catch((error) => {
         console.error(error);
@@ -63,7 +60,6 @@ function MainFeed() {
       getRecFeed();
     }
   }, 100);
-  console.log(feedState);
   return (
     <ReactPullToRefresh onRefresh={handleRefresh}>
       <div className={styles.container}>
