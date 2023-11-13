@@ -209,14 +209,15 @@ public class ChallengeService {
 
         checkOwnChallenge(memberId, challengeId);
 
-        if (challenge.getStartedAt()
-                     .isAfter(LocalDate.now())) {
-            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
-        }
+//        if (challenge.getStartedAt()
+//                     .isAfter(LocalDate.now())) {
+//            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
+//        }
 
-        if (isTodayProcessChallenge(challenge)) {
-            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
-        }
+        // TODO: On checking (더미 데이터 생성을 위해 삭제함)
+//        if (isTodayProcessChallenge(challenge)) {
+//            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
+//        }
 
         String objectUrl = s3Service.getS3StartUrl() + challenge.getObjectUrl();
         ByteArrayResource snapshotResource = getByteArrayResource(snapshot);

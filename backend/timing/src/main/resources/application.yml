@@ -28,6 +28,9 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+#  threads:
+#    virtual:
+#      enabled: true
 
 springdoc:
   packages-to-scan: com.kkukku.timing.apis
@@ -76,7 +79,7 @@ server:
     max-swallow-size: 100MB
     max-http-form-post-size: 100MB
     max-http-response-header-size: 50KB
-    
+
 ---
 
 spring:
