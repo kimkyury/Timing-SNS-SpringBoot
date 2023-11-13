@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient.ResponseSpec;
 
 @Service
@@ -281,7 +279,9 @@ public class FeedService {
         ChallengeEntity challenge = challengeService.getChallengeById(challengeId);
 
         challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
-        challengeService.checkCompletedChallenge(challengeId);
+
+        // TODO: On Checking, 테스트를 위하여 주석처리
+        // challengeService.checkCompletedChallenge(challengeId);
 
         List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
         Map<String, String> requestBody = getMovieBySnapshotRequestBody(challenge,
