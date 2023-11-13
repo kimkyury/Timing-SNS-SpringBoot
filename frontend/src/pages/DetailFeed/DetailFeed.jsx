@@ -8,6 +8,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 function DetailFeed() {
   const navigate = useNavigate();
   const BASE_URL = `http://k9e203.p.ssafy.io`;
@@ -153,7 +154,13 @@ function DetailFeed() {
       });
   }, []);
   return newState && user ? (
-    <div className={styles.container}>
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.4 }}
+      className={styles.container}
+    >
       {newState && user && (
         <>
           <div className={styles.lock}>
@@ -202,7 +209,7 @@ function DetailFeed() {
           </div>
         </>
       )}
-    </div>
+    </motion.div>
   ) : (
     <></>
   );

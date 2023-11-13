@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 import FeedList from "../Feed/FeedList";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import axios from "axios";
 import dog from "../../assets/dog.jpg";
 import dog2 from "../../assets/dog2.jpg";
-
 function SearchBar() {
   const [inputValue, setInputValue] = useState("");
   const [state, setState] = useState([]);
   const [wordList, setWordList] = useState([]);
-
+  const BASE_URL = `http://k9e203.p.ssafy.io`;
+  const accessToken = useState(sessionStorage.getItem("accessToken"));
   const formatK = (count) => {
     if (count >= 100000) {
       return (count / 1000000).toFixed(1) + "백만";
@@ -39,14 +40,24 @@ function SearchBar() {
   useEffect(() => {
     if (inputValue.length != 0) {
       // 예상 단어 가져오기
-      const result = [
-        { word: "축구", count: 120 },
-        { word: "하성호", count: 120 },
-        { word: "첼시", count: 120 },
-        { word: "첼시 승", count: 1203123 },
-        { word: "첼시 우승", count: 120 },
-      ];
-      setWordList(result);
+      console.log("asdfasfsd");
+      axios
+        .post(
+          `${BASE_URL}/api/v1/hashtags/autocomplete`,
+          { search: inputValue },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          setWordList(response.data.hashtags);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } else {
       setWordList([]);
     }
@@ -88,19 +99,23 @@ function SearchBar() {
         </div>
       </div>
       <div>
-        {wordList.map((v, i) => (
-          <div
-            key={i}
-            className={styles.nameContainer}
-            onClick={() => searchWord(v.word)}
-          >
-            <div className={styles.profileimage}>#</div>
-            <div className={styles.namebox}>
-              <div className={styles.name}>#{v.word}</div>
-              <div className={styles.id}>게시글 {formatK(v.count)}</div>
+        {wordList.length > 0 ? (
+          wordList.map((v, i) => (
+            <div
+              key={i}
+              className={styles.nameContainer}
+              onClick={() => searchWord(v.word)}
+            >
+              <div className={styles.profileimage}>#</div>
+              <div className={styles.namebox}>
+                <div className={styles.name}>#{v.hashtag}</div>
+                <div className={styles.id}>게시글 {formatK(v.count)}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <></>
+        )}
       </div>
 
       {inputValue.length == 0 && (

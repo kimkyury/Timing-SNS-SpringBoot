@@ -4,6 +4,7 @@ import Textarea from "@mui/joy/Textarea";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 function UpdateReview() {
   const { state } = useLocation();
   const BASE_URL = `http://k9e203.p.ssafy.io`;
@@ -11,11 +12,7 @@ function UpdateReview() {
   const [NewReview, setNewReivew] = useState(state.review);
   const [isPrivate] = useState(state.isPrivate);
   const navigate = useNavigate();
-  console.log(isPrivate);
   const updateReview = () => {
-    console.log(state);
-    console.log("asdfasdf");
-    console.log(NewReview);
     axios
       .patch(
         `${BASE_URL}/api/v1/feeds/${state.id}`,
@@ -28,13 +25,20 @@ function UpdateReview() {
       )
       .then(() => {
         navigate("/");
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
       });
   };
   return (
-    <div className={styles.container}>
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.4 }}
+      className={styles.container}
+    >
       <Textarea
         minRows={4}
         className={styles.contentbox}
@@ -43,8 +47,8 @@ function UpdateReview() {
       />
       <button onClick={updateReview} className={styles.summitbtn}>
         수정
-      </button>
-    </div>
+      </button>{" "}
+    </motion.div>
   );
 }
 
