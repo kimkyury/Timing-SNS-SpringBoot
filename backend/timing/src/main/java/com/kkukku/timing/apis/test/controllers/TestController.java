@@ -4,6 +4,7 @@ import static com.kkukku.timing.response.ApiResponseUtil.success;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.kkukku.timing.apis.challenge.entities.ChallengeEntity;
+import com.kkukku.timing.apis.challenge.repositories.ChallengeRepository;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCreateRequest;
 import com.kkukku.timing.apis.challenge.requests.ChallengeRelayRequest;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
@@ -63,6 +64,7 @@ public class TestController {
     private final TestRepository testRepository;
     private final TestFeedRepository testFeedRepository;
     private final FeedService feedService;
+    private final ChallengeRepository challengeRepository;
 
     private boolean isFind;
 
@@ -179,6 +181,11 @@ public class TestController {
         snapshots.forEach(snapshot -> {
             String url = "/" + s3Service.uploadFile(snapshot);
             snapshotService.createSnapshot(challenge, url);
+
+            if ("/default_thumbnail.png".equals(challenge.getThumbnailUrl())) {
+                challenge.setThumbnailUrl("/" + url);
+                challengeRepository.save(challenge);
+            }
         });
         // Todo Create Snapshots END
 
