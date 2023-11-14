@@ -1,17 +1,21 @@
 import styles from './SearchBar.module.css';
 import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import FeedList from '../Feed/FeedList';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import axios from 'axios';
-import dog from '../../assets/dog.jpg';
 import dog2 from '../../assets/dog2.jpg';
 function SearchBar() {
     const [inputValue, setInputValue] = useState('');
     const [state, setState] = useState([]);
+    const [page, setPage] = useState(1);
+    const navigate = useNavigate();
+    const location = useLocation();
     const [wordList, setWordList] = useState([]);
     const BASE_URL = `http://k9e203.p.ssafy.io`;
     const accessToken = useState(sessionStorage.getItem('accessToken'));
+    const currentUrl = location.pathname;
     const formatK = (count) => {
         if (count >= 100000) {
             return (count / 1000000).toFixed(1) + '백만';
@@ -21,21 +25,7 @@ function SearchBar() {
             return count;
         }
     };
-    useEffect(() => {
-        const state = [
-            { image: `${dog}`, isPublic: true },
-            { image: `${dog}`, isPublic: false },
-            { image: `${dog}`, isPublic: false },
-            { image: `${dog}`, isPublic: false },
-            { image: `${dog}`, isPublic: false },
-            { image: `${dog}`, isPublic: true },
-            { image: `${dog}`, isPublic: false },
-            { image: `${dog}`, isPublic: true },
-            { image: `${dog}`, isPublic: false },
-            { image: `${dog}`, isPublic: false },
-        ];
-        setState(state);
-    }, []);
+    useEffect(() => {}, []);
 
     useEffect(() => {
         if (inputValue.length != 0) {
@@ -52,7 +42,6 @@ function SearchBar() {
                     }
                 )
                 .then((response) => {
-                    console.log(response.data);
                     setWordList(response.data.hashtags);
                 })
                 .catch((error) => {
@@ -63,26 +52,54 @@ function SearchBar() {
         }
     }, [inputValue]);
 
-    const searchWord = () => {
+    const searchWord = (v) => {
         // 검색 단어에 맞는 피드 가져오기
-        const state = [
-            { image: `${dog2}`, isPublic: true },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: true },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: true },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: false },
-            { image: `${dog2}`, isPublic: false },
-        ];
-        setState(state);
-        setInputValue('');
+        getSearcgResult(v);
     };
+    useEffect(() => {
+        if (currentUrl != '/') {
+            // 스크롤 이벤트 리스너 등록
+            window.addEventListener('scroll', handleScroll);
 
+            // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+            return () => {
+                window.removeEventListener('scroll', handleScroll);
+            };
+        }
+    }, []);
+    const getSearcgResult = (i) => {
+        console.log(i);
+        axios
+            .get(`${BASE_URL}/api/v1/feeds/${i.id}/search?page=${page}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((response) => {
+                console.log(response.data.feeds);
+                console.log(response.data);
+                setState(response.data.feeds);
+                setInputValue('');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+    const handleScroll = () => {
+        const scrollHeight = window.scrollY;
+        const windowHeight = window.innerHeight;
+        if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
+            setPage((prevPage) => {
+                if (prevPage != Math.floor(state.commentCount / 10) + (state.commentCount % 10 > 0 ? 1 : 0)) {
+                    const newPage = prevPage + 1; // 예시로 이전 페이지에서 1 증가
+                    return newPage; // 새로운 상태를 반환
+                } else {
+                    const newPage = prevPage;
+                    return newPage;
+                }
+            });
+        }
+    };
     return (
         <>
             <div className={styles.searchBar}>
@@ -101,7 +118,7 @@ function SearchBar() {
             <div>
                 {wordList.length > 0 ? (
                     wordList.map((v, i) => (
-                        <div key={i} className={styles.nameContainer} onClick={() => searchWord(v.word)}>
+                        <div key={i} className={styles.nameContainer} onClick={() => searchWord(v)}>
                             <div className={styles.profileimage}>#</div>
                             <div className={styles.namebox}>
                                 <div className={styles.name}>#{v.hashtag}</div>
@@ -115,8 +132,8 @@ function SearchBar() {
             </div>
 
             {inputValue.length == 0 && (
-                <div>
-                    <FeedList state={state.filter((content) => content.isPublic == false)} />
+                <div className={styles.searchResult}>
+                    <FeedList state={state.filter((content) => content.isPrivate == false)} />
                 </div>
             )}
         </>

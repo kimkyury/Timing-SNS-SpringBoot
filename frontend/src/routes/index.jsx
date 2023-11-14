@@ -17,6 +17,7 @@ import UpdateReview from '../pages/UpdateReview/UpdateReview';
 import KakaoLogin from '../pages/Login/KakaoLogin';
 import PrivateRoute from './PrivateRoute';
 import UpdateProfile from '../pages/UpdateProfile/UpdateProfile';
+import PullToRefresh from '../components/PullToRefresh';
 function Router() {
     return (
         <Routes>
@@ -36,7 +37,7 @@ function Router() {
                 <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
                 <Route path={`/updateProfile`} element={<UpdateProfile />} />
                 {/* test */}
-                <Route path="/test" element={<Test />} />
+                <Route path="/test" element={<PullToRefresh />} />
                 {/* Jeonghui */}
                 <Route path="/jeonghui" element={<Jeonghui />} />
                 <Route path="/chooseObject" element={<ChooseObject />} />
