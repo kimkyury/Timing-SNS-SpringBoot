@@ -40,6 +40,7 @@ public class SnapshotEntity {
     private SnapshotEntity(ChallengeEntity challenge, String imageUrl) {
         this.challenge = challenge;
         this.imageUrl = imageUrl;
+        this.createdAt = LocalDateTime.now();
     }
 
     public static SnapshotEntity of(ChallengeEntity challenge, String imageUrl) {
