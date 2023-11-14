@@ -56,8 +56,11 @@ public class FeedService {
     private final VisionAIService visionAIService;
     private final FeedHashTagRepository feedHashTagRepository;
 
-    public List<FeedDetailResponse> getRecommendFeeds() {
-        return feedRepository.findRandomFeeds()
+    public List<FeedDetailResponse> getRecommendFeeds(Integer page) {
+
+        Pageable pageable = PageRequest.of(page - 1, 10);
+
+        return feedRepository.findFeedsOrderById(SecurityUtil.getLoggedInMemberPrimaryKey(), pageable)
                 .stream()
                 .map(feed -> getFeedDetail(feed.getId()))
                 .toList();
@@ -404,8 +407,7 @@ public class FeedService {
     }
 
     public FeedSearchResponse getFeedsByHashtag(Long id, Integer page) {
-        Pageable pageable = PageRequest.of(page - 1, 12
-        );
+        Pageable pageable = PageRequest.of(page - 1, 12);
 
         List<FeedEntity> feedList = feedHashTagRepository.findByFeedId(id, pageable).toList();
         FeedSearchResponse response = new FeedSearchResponse();
