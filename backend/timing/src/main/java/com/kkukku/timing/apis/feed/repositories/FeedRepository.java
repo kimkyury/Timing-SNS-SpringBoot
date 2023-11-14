@@ -3,14 +3,16 @@ package com.kkukku.timing.apis.feed.repositories;
 import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 
-    @Query(value = "SELECT * FROM feeds WHERE is_delete = false AND is_private = false ORDER BY RAND() LIMIT 10", nativeQuery = true)
-    List<FeedEntity> findRandomFeeds();
+    @Query(value = "SELECT * FROM feeds WHERE member_id != :memberId AND is_delete = false AND is_private = false ORDER BY id desc", nativeQuery = true)
+    Page<FeedEntity> findFeedsOrderById(Integer memberId, Pageable pageable);
 
     Long countByMember_IdAndIsDeleteIsFalse(Integer memberId);
 
