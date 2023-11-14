@@ -40,10 +40,10 @@ public class FeedController {
     private final FeedService feedService;
 
     @Operation(summary = "추천 피드 상세 조회", tags = {"3. Feed"},
-            description = "현재는 랜덤 피드를 뽑아옵니다.")
+            description = "현재는 피드 최신 순으로 뽑아옵니다.")
     @GetMapping("/recommended")
-    public ResponseEntity<List<FeedDetailResponse>> getRecommendFeeds() {
-        return ApiResponseUtil.success(feedService.getRecommendFeeds());
+    public ResponseEntity<List<FeedDetailResponse>> getRecommendFeeds(@RequestParam(name = "page") Integer page) {
+        return ApiResponseUtil.success(feedService.getRecommendFeeds(page));
     }
 
     @Operation(summary = "피드 상세 조회", tags = {
