@@ -101,11 +101,11 @@ function TimeLapse() {
             <div className={styles.timeLaps} onClick={() => navigate(`/create`)}>
                 <div className={styles.timeLaps}>
                     <CircularProgressbar
-                        value="40"
+                        value="100"
                         text="+"
                         strokeWidth="10"
                         styles={buildStyles({
-                            pathColor: 'red',
+                            pathColor: 'yellow',
                             textColor: 'black',
                             textSize: '50px',
                         })}
