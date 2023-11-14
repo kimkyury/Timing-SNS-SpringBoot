@@ -26,4 +26,5 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
     List<FeedEntity> findAllByMember_Id(Integer memberId);
 
     Optional<FeedEntity> findByIdAndMember_Id(Long id, Integer memberId);
+
 }
