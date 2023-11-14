@@ -104,8 +104,15 @@ public class ChallengeService {
 
         List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
 
+        String thumbnailUrl = challengeRepository.findById(challengeId)
+                                                 .get()
+                                                 .getThumbnailUrl();
+
+        snapshots.remove(0);
         snapshots.stream()
                  .map(SnapshotEntity::getImageUrl)
+                 .filter(imageUrl -> !imageUrl
+                     .equals(thumbnailUrl))
                  .forEach(s3Service::deleteFile);
 
         snapshotService.deleteSnapshot(snapshots);
