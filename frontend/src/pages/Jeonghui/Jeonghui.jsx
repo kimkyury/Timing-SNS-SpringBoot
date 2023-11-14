@@ -190,7 +190,7 @@ function Jeonghui() {
                     {/* <div className={styles.video}>
                 <video ref={videoRef} style={{ width: '100vw', height: '100%', objectFit: 'cover' }}></video>
             </div> */}
-                    <div className={styles.camera} onClick={makeVideo}>
+                    <div className={styles.camera} onClick={capture}>
                         <PhotoCameraIcon style={{ width: '13vw', height: '13vw' }} />
                     </div>
                     <div>
