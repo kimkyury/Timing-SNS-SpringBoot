@@ -177,7 +177,7 @@ public class TestController {
 
         // TODO Create Snapshots START
         snapshots.forEach(snapshot -> {
-            String url = s3Service.uploadFile(snapshot);
+            String url = "/" + s3Service.uploadFile(snapshot);
             snapshotService.createSnapshot(challenge, url);
         });
         // Todo Create Snapshots END
