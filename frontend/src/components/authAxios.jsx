@@ -1,35 +1,35 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: "https://j9e203.p.ssafy.io/api/v1/private",
+    baseURL: 'https://j9e203.p.ssafy.io/api/v1/private',
 });
 
 export const setAuthToken = (token) => {
-  localStorage.setItem("token", token);
+    localStorage.setItem('token', token);
 };
 
 const getAuthToken = () => {
-  return localStorage.getItem("token");
+    return localStorage.getItem('token');
 };
 
 const authAxios = (config) => {
-  const token = getAuthToken();
+    const token = getAuthToken();
 
-  console.log(token);
+    console.log(token);
 
-  const headers = {
-    Authorization: token,
-  };
+    const headers = {
+        Authorization: token,
+    };
 
-  config.headers = headers;
+    config.headers = headers;
 
-  api(config)
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((e) => {
-      console.error(e);
-    });
+    api(config)
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((e) => {
+            console.error(e);
+        });
 };
 
 export default authAxios;
