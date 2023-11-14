@@ -84,7 +84,7 @@ public class ChallengeController {
     }
 
     @Operation(summary = "타 멤버의 특정 Challenge 이어하기", tags = {"2. Challenge"},
-        description = "타 회원의 Feed 정보를 이어서 본인의 Challenge로 생성합니다. HastTag 정보가 연동됩니다. GoalContent 정보는 연동되지 않습니다.(별도 작성) ")
+        description = "타 회원의 Feed 정보(FeedId를 입력해주세요)를 이어서 본인의 Challenge로 생성합니다. HastTag 정보가 연동됩니다. GoalContent 정보는 연동되지 않습니다.(별도 작성) ")
     @PostMapping(value = "/{id}/relay")
     public ResponseEntity<Void> relayChallenge(@PathVariable Long id,
         @Valid @RequestBody ChallengeRelayRequest request) {
