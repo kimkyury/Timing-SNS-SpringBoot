@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function Login() {
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken, setAccessToken] = useState(null);
     const gotokakao = () => {
         window.location.href = `${BASE_URL}/oauth2/authorization/kakao`;

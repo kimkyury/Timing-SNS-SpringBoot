@@ -9,7 +9,7 @@ function TimeLapse() {
     const navigate = useNavigate();
     const [timeLaps, setTimeLaps] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
 
     const finishTimeLaps = (id) => {

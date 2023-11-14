@@ -9,7 +9,7 @@ function DetailComment() {
     const ID = location.state.id;
     const [state, setState] = useState();
     const [user, setUser] = useState(null);
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
     const getDetailFeed = () => {
         axios

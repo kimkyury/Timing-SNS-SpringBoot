@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 function UpdateReview() {
     const { state } = useLocation();
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [NewReview, setNewReivew] = useState(state.review);
     const [isPrivate] = useState(state.isPrivate);

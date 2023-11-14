@@ -8,7 +8,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import axios from 'axios';
 import _ from 'lodash';
-const BASE_URL = `http://k9e203.p.ssafy.io`;
+const BASE_URL = `https://timingkuku.shop`;
 function Feed(data) {
     const [page, setPage] = useState(1);
     const navigate = useNavigate();

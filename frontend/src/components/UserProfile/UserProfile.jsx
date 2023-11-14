@@ -8,7 +8,7 @@ import SelectMenu from './SelectMenu';
 
 function UserProfile(data) {
     const navigate = useNavigate();
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [info] = useState(data.data);
     const [state, setState] = useState([]);

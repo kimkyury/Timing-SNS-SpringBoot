@@ -5,15 +5,16 @@ import FeedList from '../Feed/FeedList';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import axios from 'axios';
-import dog2 from '../../assets/dog2.jpg';
+const BASE_URL = `https://timingkuku.shop`;
 function SearchBar() {
     const [inputValue, setInputValue] = useState('');
     const [state, setState] = useState([]);
     const [page, setPage] = useState(1);
+    const [ID, setID] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
     const [wordList, setWordList] = useState([]);
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+
     const accessToken = useState(sessionStorage.getItem('accessToken'));
     const currentUrl = location.pathname;
     const formatK = (count) => {
@@ -25,7 +26,6 @@ function SearchBar() {
             return count;
         }
     };
-    useEffect(() => {}, []);
 
     useEffect(() => {
         if (inputValue.length != 0) {
@@ -51,10 +51,17 @@ function SearchBar() {
             setWordList([]);
         }
     }, [inputValue]);
-
+    useEffect(() => {
+        // ID 상태가 업데이트될 때마다 실행되는 부분
+        console.log(ID, page);
+        if (ID !== null) {
+            getSearchResult();
+        }
+    }, [ID, page]);
     const searchWord = (v) => {
         // 검색 단어에 맞는 피드 가져오기
-        getSearcgResult(v);
+        console.log(v);
+        setID(v.id);
     };
     useEffect(() => {
         if (currentUrl != '/') {
@@ -67,32 +74,32 @@ function SearchBar() {
             };
         }
     }, []);
-    const getSearcgResult = (i) => {
-        console.log(i);
+    const getSearchResult = () => {
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${i.id}/search?page=${page}`, {
+            .get(`${BASE_URL}/api/v1/feeds/${ID}/search?page=${page}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
             .then((response) => {
-                console.log(response.data.feeds);
-                console.log(response.data);
-                setState(response.data.feeds);
+                setState((prevData) => [...prevData, ...response.data.feeds]);
                 setInputValue('');
             })
             .catch((error) => {
                 console.error(error);
             });
     };
+
     const handleScroll = () => {
         const scrollHeight = window.scrollY;
         const windowHeight = window.innerHeight;
         if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
+            console.log('바닥');
+            console.log(ID);
             setPage((prevPage) => {
-                if (prevPage != Math.floor(state.commentCount / 10) + (state.commentCount % 10 > 0 ? 1 : 0)) {
-                    const newPage = prevPage + 1; // 예시로 이전 페이지에서 1 증가
-                    return newPage; // 새로운 상태를 반환
+                if (prevPage !== Math.floor(state.length / 12) + (state.length % 12 > 0 ? 1 : 0)) {
+                    const newPage = prevPage + 1;
+                    return newPage;
                 } else {
                     const newPage = prevPage;
                     return newPage;
@@ -100,6 +107,8 @@ function SearchBar() {
             });
         }
     };
+    console.log(ID);
+
     return (
         <>
             <div className={styles.searchBar}>

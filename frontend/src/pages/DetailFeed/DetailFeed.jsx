@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 function DetailFeed() {
     const navigate = useNavigate();
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
     const location = useLocation();
     const data = location.state;

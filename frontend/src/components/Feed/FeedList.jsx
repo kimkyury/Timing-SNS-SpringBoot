@@ -4,7 +4,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
 import { useState } from 'react';
 
-const BASE_URL = `http://k9e203.p.ssafy.io`;
+const BASE_URL = `https://timingkuku.shop`;
 function FeedList(data) {
     const [state, setState] = useState(data.state);
     const navigate = useNavigate();

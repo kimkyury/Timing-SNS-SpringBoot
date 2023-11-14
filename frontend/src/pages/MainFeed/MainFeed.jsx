@@ -7,15 +7,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setFeed } from '../../store/slices/feedSlice';
 import store from '../../store/store';
 import PullToRefresh from '../../components/PullToRefresh';
-const BASE_URL = `http://k9e203.p.ssafy.io`;
+const BASE_URL = `https://timingkuku.shop`;
+// const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 function MainFeed() {
     const feedState = useSelector((state) => state.feed);
+    const [page, setPage] = useState(1);
     const dispatch = useDispatch();
     const getRecFeed = () => {
         const accessToken = sessionStorage.getItem('accessToken');
+        console.log(page);
         axios
-            .get(`${BASE_URL}/api/v1/feeds/recommended`, {
+            .get(`${BASE_URL}/api/v1/feeds/recommended?page=${page}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -52,10 +55,15 @@ function MainFeed() {
         const windowHeight = window.innerHeight;
         // 화면 바닥에 도달했을 때 추가 데이터 로드
         if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
-            console.log('바닥');
-            getRecFeed();
+            setPage((prevPage) => {
+                const newPage = prevPage + 1; // 예시로 이전 페이지에서 1 증가
+                return newPage; // 새로운 상태를 반환
+            });
         }
     }, 100);
+    useEffect(() => {
+        getRecFeed();
+    }, [page]);
     const handleRefresh = () => {
         if (window.scrollY <= 0) {
             window.location.reload();

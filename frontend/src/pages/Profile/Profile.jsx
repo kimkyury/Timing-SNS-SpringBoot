@@ -11,7 +11,7 @@ function Profile() {
     const currentUrl = location.pathname;
     const [searchParams] = useSearchParams();
     const email = searchParams.get('email');
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [state, setState] = useState([]);
     useEffect(() => {

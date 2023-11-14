@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 function UpdateProfile() {
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [nickname, setNickName] = useState('');
     const [img, setImg] = useState(null);

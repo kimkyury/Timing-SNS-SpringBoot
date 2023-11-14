@@ -9,7 +9,7 @@ import axios from 'axios';
 import './Calendar.css';
 import { motion } from 'framer-motion';
 function CreateFeed() {
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+    const BASE_URL = `https://timingkuku.shop`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [tags, setTags] = useState([]);
     const [currentTag, setCurrentTag] = useState('');
