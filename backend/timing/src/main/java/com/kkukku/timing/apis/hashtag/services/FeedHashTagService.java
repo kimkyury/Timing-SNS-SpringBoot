@@ -16,22 +16,23 @@ public class FeedHashTagService {
 
     public List<FeedHashTagResponse> getHashTagsByFeedId(Long feedId) {
         return feedHashTagRepository.findAllByFeedId(feedId)
-                                    .stream()
-                                    .map(FeedHashTagResponse::new)
-                                    .toList();
+                .stream()
+                .map(FeedHashTagResponse::new)
+                .toList();
     }
 
     public List<HashTagOptionEntity> getHashTagOptionByFeedId(Long feedId) {
         return feedHashTagRepository.findAllByFeedId(feedId)
-                                    .stream()
-                                    .map(FeedHashTagEntity::getHashTagOption)
-                                    .toList();
+                .stream()
+                .map(FeedHashTagEntity::getHashTagOption)
+                .toList();
     }
 
     public void saveHashTagsByFeedId(Long feedId, List<HashTagOptionEntity> hashTags) {
         feedHashTagRepository.saveAll(hashTags.stream()
-                                              .map(
-                                                  hashTag -> new FeedHashTagEntity(hashTag, feedId))
-                                              .toList());
+                .map(
+                        hashTag -> new FeedHashTagEntity(hashTag, feedId))
+                .toList());
     }
+
 }
