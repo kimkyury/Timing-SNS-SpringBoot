@@ -1,5 +1,3 @@
-import { message } from 'antd';
-import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const Error = (message) => toast.error(message);
@@ -8,7 +6,10 @@ const Celebrate = (message) =>
     toast(message, {
         icon: '🎉',
     });
-const Normal = (message) => toast(message);
+const Normal = (message) =>
+    toast(message, {
+        duration: 5000,
+    });
 
 function Toast() {
     return (
@@ -19,6 +20,7 @@ function Toast() {
                 className: '',
                 style: {
                     marginBottom: '60px',
+                    zIndex: 100,
                 },
             }}
         />

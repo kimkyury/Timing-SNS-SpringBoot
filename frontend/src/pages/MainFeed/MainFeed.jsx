@@ -1,21 +1,17 @@
 import styles from './MainFeed.module.css';
 import Feed from '../../components/Feed/Feed';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import ReactPullToRefresh from 'react-pull-to-refresh';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFeed } from '../../store/slices/feedSlice';
 import store from '../../store/store';
+import PullToRefresh from '../../components/PullToRefresh';
 const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 function MainFeed() {
     const feedState = useSelector((state) => state.feed);
     const dispatch = useDispatch();
-    const handleRefresh = () => {
-        console.log('refresh');
-        window.location.reload();
-    };
     const getRecFeed = () => {
         const accessToken = sessionStorage.getItem('accessToken');
         axios
@@ -60,13 +56,19 @@ function MainFeed() {
             getRecFeed();
         }
     }, 100);
+    const handleRefresh = () => {
+        if (window.scrollY <= 0) {
+            window.location.reload();
+        }
+    };
+
     return (
-        <ReactPullToRefresh onRefresh={handleRefresh}>
+        <PullToRefresh onRefresh={handleRefresh}>
             <div className={styles.container}>
                 {feedState.feeds.length != 0 &&
                     feedState.feeds.map((value, index) => <Feed key={index} data={value} />)}
             </div>
-        </ReactPullToRefresh>
+        </PullToRefresh>
     );
 }
 
