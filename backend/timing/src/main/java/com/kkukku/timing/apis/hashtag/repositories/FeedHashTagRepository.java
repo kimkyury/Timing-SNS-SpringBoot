@@ -14,7 +14,7 @@ public interface FeedHashTagRepository extends JpaRepository<FeedHashTagEntity, 
     @EntityGraph(attributePaths = {"hashTagOption"})
     List<FeedHashTagEntity> findAllByFeedId(Long feedId);
 
-    @Query("SELECT f FROM FeedEntity f WHERE f.id IN (SELECT fh.feedId FROM FeedHashTagEntity fh WHERE fh.hashTagOption.id = :feedId) ORDER BY f.id desc")
+    @Query("SELECT f FROM FeedEntity f WHERE f.id IN (SELECT fh.feedId FROM FeedHashTagEntity fh WHERE fh.hashTagOption.id = :feedId) AND f.isDelete = false AND f.isPrivate = false ORDER BY f.id desc")
     Page<FeedEntity> findByFeedId(Long feedId, Pageable page);
 
 }
