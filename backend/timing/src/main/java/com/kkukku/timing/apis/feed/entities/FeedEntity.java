@@ -85,6 +85,11 @@ public class FeedEntity {
         this.goalContent = challenge.getGoalContent();
         this.thumbnailUrl = challenge.getThumbnailUrl();
         this.timelapseUrl = timelapseUrl;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.isDelete = false;
+        this.isPrivate = true;
+
     }
 
     public void setRelation(FeedEntity parent) {
