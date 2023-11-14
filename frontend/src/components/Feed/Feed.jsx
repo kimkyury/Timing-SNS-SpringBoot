@@ -311,7 +311,7 @@ function Feed(data) {
                         {state.length != 0 &&
                             state.hashTags.map((v, i) => (
                                 <div key={i} className={styles.hash}>
-                                    <div>{v.content}</div>
+                                    <div>#{v.content}</div>
                                 </div>
                             ))}
                     </div>

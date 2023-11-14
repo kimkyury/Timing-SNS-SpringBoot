@@ -1,43 +1,71 @@
 import styles from './UpdateProfile.module.css';
 import { useLocation } from 'react-router';
 import Textarea from '@mui/joy/Textarea';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 function UpdateProfile() {
-    const { state } = useLocation();
-    console.log(state);
     const BASE_URL = `http://k9e203.p.ssafy.io`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
-    const [newNickName, setNewNickName] = useState(state.nickname);
-    const [newProfileIMG, setNewProfileIMG] = useState(state.profileImageUrl);
+    const [nickname, setNickName] = useState('');
+    const [img, setImg] = useState(null);
+    const [state, setState] = useState(null);
     const navigate = useNavigate();
-    const updateProfile = () => {
-        // console.log(newProfileIMG);
-        const formData = new FormData();
-        formData.append('memberUpdateRequest', JSON.stringify({ nickname: newNickName }));
 
-        formData.append('profileImage', state.profileImageUrl);
+    useEffect(() => {
+        getProfile();
+    }, []);
+
+    const getProfile = () => {
         axios
-            .patch(`${BASE_URL}/api/v1/members`, formData, {
+            .get(`${BASE_URL}/api/v1/members`, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
-            .then((res) => {
-                navigate('/profile');
+            .then((response) => {
+                setState(response.data);
+                setImg(response.data.profileImageUrl);
+                setNickName(response.data.nickname);
             })
             .catch((error) => {
                 console.error(error);
             });
     };
+
     const handleFileChange = (e) => {
-        const selectedFiles = e.target.files;
-        console.log(e.target.value);
-        console.log(e.target);
-        setNewProfileIMG([...selectedFiles]);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImg(reader.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
+
+    const updateProfile = () => {
+        // const formData = new FormData();
+        // if (nickname != state.nickname) formData.append('memberUpdateRequest', { nickname: nickname });
+        // if (img != state.profileImageUrl) formData.append('profileImage', img);
+
+        const dynamicObject = new Object();
+        if (nickname != state.nickname) dynamicObject.memberUpdateRequest = { nickname: nickname };
+        if (img != state.profileImageUrl) dynamicObject.profileImage = img;
+
+        console.log(dynamicObject);
+
+        axios
+            .patch(`${BASE_URL}/api/v1/members`, dynamicObject, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then(() => {
+                navigate('/profile');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
     return (
         <motion.div
@@ -47,19 +75,13 @@ function UpdateProfile() {
             transition={{ duration: 0.4 }}
             className={styles.container}
         >
-            <Textarea
-                minRows={4}
-                className={styles.contentbox}
-                value={newNickName}
-                onChange={(e) => setNewNickName(e.target.value)}
-            />
-            <input
-                type="file"
-                id="file"
-                multiple="multipart"
-                // value={newProfileIMG}
-                onChange={handleFileChange}
-            ></input>
+            <div className={styles.name}>
+                <div>이름 : </div>
+                <input type="text" id="text" value={nickname} onChange={(event) => setNickName(event.target.value)} />
+            </div>
+            <img className={styles.profileImage} src={img}></img>
+            <input type="file" id="file" multiple="multipart" onChange={handleFileChange}></input>
+
             <button onClick={updateProfile} className={styles.summitbtn}>
                 수정
             </button>

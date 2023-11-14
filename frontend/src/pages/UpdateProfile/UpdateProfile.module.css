@@ -1,22 +1,26 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin-bottom: 10px;
-  padding: 2%;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-top: 4%;
+    align-items: center;
+    justify-content: space-between;
 }
+
+.profileImage {
+    margin-top: 4%;
+    width: 80vw;
+}
+
+.name {
+    display: flex;
+}
+
 .summitbtn {
-  width: 60%;
-  height: 40px !important;
-  border-radius: 20px;
-  align-self: center;
-  background-color: #97d3ff;
-  color: white;
-}
-.contentbox {
-  width: 100%;
-  border-radius: 40px !important;
-  background-color: #efefef !important;
-  margin-bottom: 5%;
+    width: 60%;
+    height: 40px !important;
+    border-radius: 20px;
+    align-self: center;
+    background-color: #97d3ff;
+    color: white;
+    margin-top: 4%;
 }

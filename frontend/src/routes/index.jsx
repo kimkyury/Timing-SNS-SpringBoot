@@ -34,7 +34,7 @@ function Router() {
                 <Route path={`/detailcomment/:pk`} element={<DetailComment />} />
                 <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
                 <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
-                <Route path={`/updateprofile/:email`} element={<UpdateProfile />} />
+                <Route path={`/updateProfile`} element={<UpdateProfile />} />
                 {/* test */}
                 <Route path="/test" element={<Test />} />
                 {/* Jeonghui */}
