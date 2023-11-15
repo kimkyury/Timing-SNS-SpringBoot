@@ -183,7 +183,7 @@ public class TestController {
             snapshotService.createSnapshot(challenge, url);
 
             if ("/default_thumbnail.png".equals(challenge.getThumbnailUrl())) {
-                challenge.setThumbnailUrl("/" + url);
+                challenge.setThumbnailUrl(url);
                 challengeRepository.save(challenge);
             }
         });
