@@ -2,12 +2,11 @@ import styles from './UpdateReview.module.css';
 import { useLocation } from 'react-router';
 import Textarea from '@mui/joy/Textarea';
 import { useState } from 'react';
-import axios from 'axios';
+import axios from '../../server';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 function UpdateReview() {
     const { state } = useLocation();
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [NewReview, setNewReivew] = useState(state.review);
     const [isPrivate] = useState(state.isPrivate);
@@ -15,7 +14,7 @@ function UpdateReview() {
     const updateReview = () => {
         axios
             .patch(
-                `${BASE_URL}/api/v1/feeds/${state.id}`,
+                `/api/v1/feeds/${state.id}`,
                 { isPrivate: isPrivate, review: NewReview },
                 {
                     headers: {

@@ -1,21 +1,20 @@
 import styles from './MainFeed.module.css';
 import Feed from '../../components/Feed/Feed';
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFeed } from '../../store/slices/feedSlice';
-import store from '../../store/store';
 import PullToRefresh from '../../components/PullToRefresh';
-const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 function MainFeed() {
     const feedState = useSelector((state) => state.feed);
     const dispatch = useDispatch();
+
     const getRecFeed = () => {
         const accessToken = sessionStorage.getItem('accessToken');
         axios
-            .get(`${BASE_URL}/api/v1/feeds/recommended`, {
+            .get(`/api/v1/feeds/recommended`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -27,13 +26,13 @@ function MainFeed() {
                 console.error(error);
             });
     };
+
     useEffect(() => {
-        console.log('load');
         if (feedState.feeds.length == 0) {
-            console.log('start');
             getRecFeed();
         }
     }, []);
+
     useEffect(() => {
         // 스크롤 이벤트 리스너 등록
         window.addEventListener('scroll', handleScroll);
@@ -43,6 +42,7 @@ function MainFeed() {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
     // 스크롤 이벤트 핸들러
     const handleScroll = _.debounce(() => {
         // 현재 스크롤 위치
@@ -52,7 +52,6 @@ function MainFeed() {
         const windowHeight = window.innerHeight;
         // 화면 바닥에 도달했을 때 추가 데이터 로드
         if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
-            console.log('바닥');
             getRecFeed();
         }
     }, 100);

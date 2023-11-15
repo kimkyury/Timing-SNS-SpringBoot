@@ -7,10 +7,8 @@ import Profile from '../pages/Profile/Profile';
 import Create from '../pages/CreateFeed/CreateFeed';
 import DetailComment from '../pages/DetailComment/DetailComment';
 import Tree from '../components/Tree/TreeGraph';
-import Test from '../components/SearchBar/SearchBar';
 import Jeonghui from '../pages/Jeonghui/Jeonghui';
 import ChooseObject from '../pages/Jeonghui/ChooseObject';
-// import DoChallenge from "../pages/Jeonghui/DoChallenge";
 import DetailFeed from '../pages/DetailFeed/DetailFeed';
 import Login from '../pages/Login/Login';
 import UpdateReview from '../pages/UpdateReview/UpdateReview';
@@ -18,11 +16,14 @@ import KakaoLogin from '../pages/Login/KakaoLogin';
 import PrivateRoute from './PrivateRoute';
 import UpdateProfile from '../pages/UpdateProfile/UpdateProfile';
 import PullToRefresh from '../components/PullToRefresh';
+import Influence from '../pages/Influence/Influence';
+
 function Router() {
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/login/oauth2/redirect/kakao" element={<KakaoLogin />} />
+            <Route path={`/influence`} element={<Influence />} />
             <Route element={<PrivateRoute />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/time" element={<Time />} />
@@ -36,6 +37,7 @@ function Router() {
                 <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
                 <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
                 <Route path={`/updateProfile`} element={<UpdateProfile />} />
+
                 {/* test */}
                 <Route path="/test" element={<PullToRefresh />} />
                 {/* Jeonghui */}

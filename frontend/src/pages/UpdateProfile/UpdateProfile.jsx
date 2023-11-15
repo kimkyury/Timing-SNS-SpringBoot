@@ -1,12 +1,10 @@
 import styles from './UpdateProfile.module.css';
-import { useLocation } from 'react-router';
-import Textarea from '@mui/joy/Textarea';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../server';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+
 function UpdateProfile() {
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [nickname, setNickName] = useState('');
     const [img, setImg] = useState(null);
@@ -19,7 +17,7 @@ function UpdateProfile() {
 
     const getProfile = () => {
         axios
-            .get(`${BASE_URL}/api/v1/members`, {
+            .get(`/api/v1/members`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -51,10 +49,8 @@ function UpdateProfile() {
         if (nickname != state.nickname) dynamicObject.memberUpdateRequest = { nickname: nickname };
         if (img != state.profileImageUrl) dynamicObject.profileImage = img;
 
-        console.log(dynamicObject);
-
         axios
-            .patch(`${BASE_URL}/api/v1/members`, dynamicObject, {
+            .patch(`/api/v1/members`, dynamicObject, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${accessToken}`,

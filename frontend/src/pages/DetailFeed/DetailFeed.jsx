@@ -18,8 +18,8 @@ function DetailFeed() {
     const [user, setUser] = useState(null);
     const [state, setState] = useState(data);
     const [newState, setNewstate] = useState();
-    const [NewReview, setNewReivew] = useState(state.review);
-    const [isPrivate] = useState(state.isPrivate);
+    // const [NewReview, setNewReivew] = useState(data.review);
+    // const [isPrivate] = useState(state.isPrivate);
     const updateReview = () => {
         axios
             .patch(
@@ -122,6 +122,7 @@ function DetailFeed() {
             });
     };
     const getDetailFeed = () => {
+        console.log(data);
         axios
             .get(`${BASE_URL}/api/v1/feeds/${data.id}`, {
                 headers: {
