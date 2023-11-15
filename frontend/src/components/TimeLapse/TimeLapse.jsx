@@ -54,11 +54,7 @@ function TimeLapse() {
     };
     const getChallenge = () => {
         axios
-            .get(`/api/v1/challenges`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
+            .get(`/api/v1/challenges`)
             .then((response) => {
                 setTimeLaps(response.data.challenges);
 
