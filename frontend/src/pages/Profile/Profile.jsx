@@ -64,8 +64,12 @@ function Profile() {
                 <UserProfile data={state} />
             </div>
 
-            <div className={styles.timeContainerName}>진행중인 타입랩스</div>
-            <TimeLapse />
+            {currentUrl == '/profile' && (
+                <>
+                    <div className={styles.timeContainerName}>진행중인 타입랩스</div>
+                    <TimeLapse />
+                </>
+            )}
             <div className={styles.timeContainerName}>공개 타입랩스</div>
             {state.feeds.length != 0 ? (
                 <div className={styles.my_timelapse}>

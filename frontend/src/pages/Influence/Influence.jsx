@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../../server';
 // import styles from './Influence.module.css';
 import { useState } from 'react';
@@ -7,11 +7,12 @@ import { AnimatedTree } from 'react-tree-graph';
 
 function Influence() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const id = location.state;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [state, setState] = useState(null);
 
     useEffect(() => {
-        const id = 28;
         axios
             .get(`/api/v1/feeds/${id}/influence`, {
                 headers: {
@@ -34,8 +35,8 @@ function Influence() {
             labelProp: 'label',
             shape: 'image',
             nodeProps: {
-                height: 20,
-                width: 20,
+                height: 100,
+                width: 100,
                 href: original.thumbnailUrl,
             },
             children: original.childs.map((child) => convertObject(child)),
@@ -43,6 +44,7 @@ function Influence() {
     };
 
     const handleClick = (node) => {
+        console.log(node);
         axios
             .get(`/api/v1/feeds/${node}`, {
                 headers: {
@@ -67,7 +69,7 @@ function Influence() {
                     width={300}
                     gProps={{
                         className: 'node',
-                        onClick: (node) => handleClick(node),
+                        onClick: (event, node) => handleClick(node),
                     }}
                 />
             )}

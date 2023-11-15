@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <PersistGate loading={null} persistor={persistor}>
             {/* <CookiesProvider> */}
             <BrowserRouter>
-                <TokenRefresher />
+                {/* <TokenRefresher /> */}
                 <App />
             </BrowserRouter>
             {/* </CookiesProvider> */}
