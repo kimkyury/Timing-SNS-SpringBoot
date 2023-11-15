@@ -3,8 +3,6 @@ import TimeLapse from '../../components/TimeLapse/TimeLapse';
 import MainFeed from '../MainFeed/MainFeed';
 import { motion } from 'framer-motion';
 function Home() {
-    // const cookies = document.cookie;
-    // console.log(cookies);
     return (
         <motion.div
             initial={{ opacity: 0, x: 100 }}

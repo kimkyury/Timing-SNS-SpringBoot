@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import styles from './FeedList.module.css';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import axios from 'axios';
+import axios from '../../server';
 import { useState } from 'react';
 
-const BASE_URL = `http://k9e203.p.ssafy.io`;
 function FeedList(data) {
     const [state, setState] = useState(data.state);
     const navigate = useNavigate();
@@ -14,7 +13,7 @@ function FeedList(data) {
     };
     const getDetailFeed = (i) => {
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${i}`, {
+            .get(`/api/v1/feeds/${i}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

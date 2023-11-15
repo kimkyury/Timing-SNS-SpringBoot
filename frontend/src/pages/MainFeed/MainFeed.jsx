@@ -1,7 +1,7 @@
 import styles from './MainFeed.module.css';
 import Feed from '../../components/Feed/Feed';
 import { useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../server';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFeed } from '../../store/slices/feedSlice';

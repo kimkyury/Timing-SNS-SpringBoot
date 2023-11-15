@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axios from '../../server';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './ChooseObject.module.css';
-
-const BASE_URL = `http://k9e203.p.ssafy.io`;
 
 function ChooseObject() {
     const [data, setDate] = useState(null);
@@ -13,7 +11,7 @@ function ChooseObject() {
     const origin = location.state.origin;
     const object = location.state.object;
     const timeLaps = location.state.challenge;
-    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
 
     const checkObject = (x, y) => {
         var formData = new FormData();
@@ -22,7 +20,7 @@ function ChooseObject() {
         formData.append('y', x);
 
         axios
-            .post(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/snapshots/objects/choose`, formData, {
+            .post(`/api/v1/challenges/${timeLaps.id}/snapshots/objects/choose`, formData, {
                 headers: {
                     accept: 'application/json;charset=UTF-8',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
@@ -56,7 +54,7 @@ function ChooseObject() {
         formData.append('polygon', polygon);
 
         axios
-            .post(`${BASE_URL}/api/v1/challenges/${timeLaps.id}/objects`, formData, {
+            .post(`/api/v1/challenges/${timeLaps.id}/objects`, formData, {
                 headers: {
                     accept: '*/*',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,

@@ -1,19 +1,17 @@
 import styles from './SearchBar.module.css';
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import FeedList from '../Feed/FeedList';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import axios from 'axios';
-import dog2 from '../../assets/dog2.jpg';
+import axios from '../../server';
+
 function SearchBar() {
     const [inputValue, setInputValue] = useState('');
     const [state, setState] = useState([]);
     const [page, setPage] = useState(1);
-    const navigate = useNavigate();
     const location = useLocation();
     const [wordList, setWordList] = useState([]);
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
     const accessToken = useState(sessionStorage.getItem('accessToken'));
     const currentUrl = location.pathname;
     const formatK = (count) => {
@@ -30,10 +28,9 @@ function SearchBar() {
     useEffect(() => {
         if (inputValue.length != 0) {
             // 예상 단어 가져오기
-            console.log('asdfasfsd');
             axios
                 .post(
-                    `${BASE_URL}/api/v1/hashtags/autocomplete`,
+                    `/api/v1/hashtags/autocomplete`,
                     { search: inputValue },
                     {
                         headers: {
@@ -68,16 +65,13 @@ function SearchBar() {
         }
     }, []);
     const getSearcgResult = (i) => {
-        console.log(i);
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${i.id}/search?page=${page}`, {
+            .get(`/api/v1/feeds/${i.id}/search?page=${page}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
             .then((response) => {
-                console.log(response.data.feeds);
-                console.log(response.data);
                 setState(response.data.feeds);
                 setInputValue('');
             })

@@ -1,5 +1,5 @@
 import styles from './UserProfile.module.css';
-import axios from 'axios';
+import axios from '../../server';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
@@ -12,10 +12,7 @@ import { padding } from '@mui/system';
 
 function SelectMenu() {
     const navigate = useNavigate();
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
-
-    const location = useLocation();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -32,7 +29,7 @@ function SelectMenu() {
 
     const deleteProfile = () => {
         axios
-            .delete(`${BASE_URL}/api/v1/members`, {
+            .delete(`/api/v1/members`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

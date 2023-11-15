@@ -6,24 +6,22 @@ import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../server';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 function DetailFeed() {
     const navigate = useNavigate();
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
-    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const location = useLocation();
     const data = location.state;
     const [user, setUser] = useState(null);
     const [state, setState] = useState(data);
     const [newState, setNewstate] = useState();
-    // const [NewReview, setNewReivew] = useState(data.review);
-    // const [isPrivate] = useState(state.isPrivate);
+
     const updateReview = () => {
         axios
             .patch(
-                `${BASE_URL}/api/v1/feeds/${newState.id}`,
+                `/api/v1/feeds/${newState.id}`,
                 { isPrivate: !newState.isPrivate, review: newState.review },
                 {
                     headers: {
@@ -32,27 +30,13 @@ function DetailFeed() {
                 }
             )
             .then(() => {
-                // navigate('/');
                 getDetailFeed();
             })
             .catch((error) => {
                 console.error(error);
             });
     };
-    const getStream = () => {
-        axios
-            .get(`${BASE_URL}/api/v1/feeds/${data.id}/videos/stream`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
+
     const gotodetail = () => {
         setState(newState);
         navigate(`/detailcomment/${data.id}`, { state });
@@ -60,14 +44,13 @@ function DetailFeed() {
     const download = () => {
         // 여기서 파일 다운로드 로직 실행
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${data.id}/videos`, {
+            .get(`/api/v1/feeds/${data.id}/videos`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
                 responseType: 'blob',
             })
             .then((response) => {
-                console.log(response);
                 const url = window.URL.createObjectURL(response.data);
                 const a = document.createElement('a');
                 a.href = url;
@@ -87,7 +70,7 @@ function DetailFeed() {
     const deleteFeed = () => {
         // 여기서 피드 삭제 로직 실행
         axios
-            .delete(`${BASE_URL}/api/v1/feeds/${data.id}`, {
+            .delete(`/api/v1/feeds/${data.id}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -103,7 +86,7 @@ function DetailFeed() {
     const relay = () => {
         axios
             .post(
-                `${BASE_URL}/api/v1/challenges/${data.id}/relay`,
+                `/api/v1/challenges/${data.id}/relay`,
                 {
                     startedAt: new Date().toISOString().split('T')[0],
                     goalContent: '',
@@ -122,9 +105,8 @@ function DetailFeed() {
             });
     };
     const getDetailFeed = () => {
-        console.log(data);
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${data.id}`, {
+            .get(`/api/v1/feeds/${data.id}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -140,7 +122,7 @@ function DetailFeed() {
     useEffect(() => {
         getDetailFeed();
         axios
-            .get(`${BASE_URL}/api/v1/members`, {
+            .get(`/api/v1/members`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -152,6 +134,7 @@ function DetailFeed() {
                 console.error(error);
             });
     }, []);
+
     return newState && user ? (
         <motion.div
             initial={{ opacity: 0, x: 100 }}
@@ -175,7 +158,9 @@ function DetailFeed() {
                     {/* <img src={newState.thumbnailUrl} className={styles.imageContainer} /> */}
                     <video muted autoPlay loop className={styles.imageContainer}>
                         <source
-                            src={`${BASE_URL}/api/v1/feeds/${newState.id}/videos/streaming?access-token=${accessToken}`}
+                            src={`${import.meta.env.VITE_APP_API}/api/v1/feeds/${
+                                newState.id
+                            }/videos/streaming?access-token=${accessToken}`}
                             type="video/mp4"
                         />
                     </video>

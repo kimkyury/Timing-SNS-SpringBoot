@@ -3,13 +3,12 @@ import Input from '@mui/joy/Input';
 import Textarea from '@mui/joy/Textarea';
 import Calendar from 'react-calendar';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Calendar.css';
 import { motion } from 'framer-motion';
 function CreateFeed() {
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [tags, setTags] = useState([]);
     const [currentTag, setCurrentTag] = useState('');
@@ -33,14 +32,14 @@ function CreateFeed() {
         setTags(updatedTags);
     };
     const createChallenge = () => {
-        const accessToken = sessionStorage.getItem('accessToken');
+        // const accessToken = sessionStorage.getItem('accessToken');
         console.log(accessToken);
         console.log(value.toISOString().split('T')[0]);
         console.log(tags);
         console.log(contentValue.target.value);
         axios
             .post(
-                `${BASE_URL}/api/v1/challenges`,
+                `/api/v1/challenges`,
                 {
                     startedAt: value.toISOString().split('T')[0],
                     hashTags: tags,
@@ -59,11 +58,11 @@ function CreateFeed() {
                 console.error(error);
             });
     };
-    useEffect(() => {
-        console.log(tags);
-        console.log(value.toDateString());
-        console.log(typeof tags);
-    }, [value]);
+    // useEffect(() => {
+    //     console.log(tags);
+    //     console.log(value.toDateString());
+    //     console.log(typeof tags);
+    // }, [value]);
     return (
         <motion.div
             initial={{ opacity: 0, x: 100 }}

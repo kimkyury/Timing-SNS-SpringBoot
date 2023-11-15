@@ -6,9 +6,9 @@ import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import SmsOutlinedIcon from '@mui/icons-material/SmsOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import axios from 'axios';
+import axios from '../../server';
 import _ from 'lodash';
-const BASE_URL = `http://k9e203.p.ssafy.io`;
+
 function Feed(data) {
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ function Feed(data) {
 
     const getDetailFeed = () => {
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${data.data.id}`, {
+            .get(`/api/v1/feeds/${data.data.id}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -38,7 +38,7 @@ function Feed(data) {
         if (user.email != state.writer.email) {
             axios
                 .post(
-                    `${BASE_URL}/api/v1/feeds/${state.id}/likes`,
+                    `/api/v1/feeds/${state.id}/likes`,
                     {},
                     {
                         headers: {
@@ -58,7 +58,7 @@ function Feed(data) {
         if (state && state.id) {
             // state 및 state.id가 존재하는지 확인
             axios
-                .delete(`${BASE_URL}/api/v1/feeds/${state.id}/likes`, {
+                .delete(`/api/v1/feeds/${state.id}/likes`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
@@ -76,7 +76,7 @@ function Feed(data) {
 
     useEffect(() => {
         axios
-            .get(`${BASE_URL}/api/v1/members`, {
+            .get(`/api/v1/members`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -94,7 +94,7 @@ function Feed(data) {
     useEffect(() => {
         if (currentUrl != '/') {
             axios
-                .get(`${BASE_URL}/api/v1/feeds/${state.id}/comments?page=${page}`, {
+                .get(`/api/v1/feeds/${state.id}/comments?page=${page}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
@@ -119,7 +119,7 @@ function Feed(data) {
     };
     const gotowriterprofile = () => {
         axios
-            .get(`${BASE_URL}/api/v1/feeds?email=${state.writer.email}`, {
+            .get(`/api/v1/feeds?email=${state.writer.email}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -177,7 +177,7 @@ function Feed(data) {
         if (newComment.trim() !== '') {
             axios
                 .post(
-                    `${BASE_URL}/api/v1/feeds/${state.id}/comments`,
+                    `/api/v1/feeds/${state.id}/comments`,
                     { content: newComment },
                     {
                         headers: {

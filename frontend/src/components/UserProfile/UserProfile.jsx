@@ -1,5 +1,5 @@
 import styles from './UserProfile.module.css';
-import axios from 'axios';
+import axios from '../../server';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
@@ -8,7 +8,6 @@ import SelectMenu from './SelectMenu';
 
 function UserProfile(data) {
     const navigate = useNavigate();
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [info] = useState(data.data);
     const [state, setState] = useState([]);
@@ -23,7 +22,7 @@ function UserProfile(data) {
     };
     const getProfile = () => {
         axios
-            .get(`${BASE_URL}/api/v1/members`, {
+            .get(`/api/v1/members`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -38,7 +37,7 @@ function UserProfile(data) {
     };
     const getWriterProfile = () => {
         axios
-            .get(`${BASE_URL}/api/v1/members?email=${email}`, {
+            .get(`/api/v1/members?email=${email}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -58,9 +57,9 @@ function UserProfile(data) {
             getWriterProfile();
         }
     }, []);
-    const goToUpdateprofile = () => {
-        navigate(`/updateprofile/${state.email}`, { state });
-    };
+    // const goToUpdateprofile = () => {
+    //     navigate(`/updateprofile/${state.email}`, { state });
+    // };
     return (
         <>
             {isLoading ? (
@@ -81,32 +80,6 @@ function UserProfile(data) {
                             <div className={styles.text}>contribute </div>
                         </div>
                     </div>
-                    {/* <div className={styles.containerBox}>
-                        <div className={styles.imagebox}>
-                            <img src={state.profileImageUrl} className={styles.imageContainer} />
-                        </div>
-                        <div className={styles.mainContainer}>
-                            <div className={styles.upper}>
-                                <div className={styles.articlebox}>
-                                    <div className={styles.name}>
-                                        {state.nickname}
-                                        <SelectMenu />
-                                    </div>
-                                    <div>{formatEmail(state.email)}</div>
-                                </div>
-                            </div>
-                            <div className={styles.lower}>
-                                <div className={styles.innerlower}>
-                                    <div className={styles.innerhead}>{info.feedCount}</div>
-                                    <div className={styles.innerfooter}>timelabs </div>
-                                </div>
-                                <div className={styles.innerlower}>
-                                    <div className={styles.innerhead}>{info.contributeCount}</div>
-                                    <div className={styles.innerfooter}>contribute </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
                 </div>
             ) : (
                 <></>

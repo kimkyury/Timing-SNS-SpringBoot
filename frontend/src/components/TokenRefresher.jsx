@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
-import axios from 'axios';
+import axios from '../server';
 import { useNavigate } from 'react-router-dom';
 function TokenRefresher() {
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
     const navigate = useNavigate;
     useEffect(() => {
         console.log('실행됨?');
         const refreshAPI = axios.create({
-            baseURL: `${BASE_URL}`,
+            baseURL: `${import.meta.env.VITE_APP_API}`,
         });
         const interceptor = axios.interceptors.response.use(
             function (response) {
@@ -21,7 +20,7 @@ function TokenRefresher() {
                 if (status == 401) {
                     if (msg == 'access token expired') {
                         await axios({
-                            url: `${BASE_URL}/api/v1/auth/reissue`,
+                            url: `/api/v1/auth/reissue`,
                             method: 'POST',
                             headers: {
                                 accesstoken: sessionStorage.getItem('accessToken'),

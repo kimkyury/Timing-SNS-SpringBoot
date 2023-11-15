@@ -1,7 +1,7 @@
 import styles from './DetailComment.module.css';
 import Feed from '../../components/Feed/Feed';
 import { useLocation } from 'react-router';
-import axios from 'axios';
+import axios from '../../server';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 function DetailComment() {
@@ -9,11 +9,11 @@ function DetailComment() {
     const ID = location.state.id;
     const [state, setState] = useState();
     const [user, setUser] = useState(null);
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
-    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
+
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const getDetailFeed = () => {
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${ID}`, {
+            .get(`/api/v1/feeds/${ID}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -28,7 +28,7 @@ function DetailComment() {
     useEffect(() => {
         getDetailFeed();
         axios
-            .get(`${BASE_URL}/api/v1/members`, {
+            .get(`/api/v1/members`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

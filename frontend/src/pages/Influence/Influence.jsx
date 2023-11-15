@@ -1,22 +1,19 @@
-import { useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import styles from './Influence.module.css';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from '../../server';
+// import styles from './Influence.module.css';
 import { useState } from 'react';
-// import { Tree } from 'react-tree-graph';
 import { AnimatedTree } from 'react-tree-graph';
-
-const BASE_URL = `https://timingkuku.shop`;
 
 function Influence() {
     const navigate = useNavigate();
-    const [accessToken, setAccessToken] = useState(sessionStorage.getItem('accessToken'));
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [state, setState] = useState(null);
 
     useEffect(() => {
         const id = 28;
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${id}/influence`, {
+            .get(`/api/v1/feeds/${id}/influence`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -45,9 +42,9 @@ function Influence() {
         };
     };
 
-    const handleClick = (event, node) => {
+    const handleClick = (node) => {
         axios
-            .get(`${BASE_URL}/api/v1/feeds/${node}`, {
+            .get(`/api/v1/feeds/${node}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -70,7 +67,7 @@ function Influence() {
                     width={300}
                     gProps={{
                         className: 'node',
-                        onClick: (event, node) => handleClick(event, node),
+                        onClick: (node) => handleClick(node),
                     }}
                 />
             )}

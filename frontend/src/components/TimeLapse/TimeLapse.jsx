@@ -4,17 +4,17 @@ import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } fro
 import 'react-circular-progressbar/dist/styles.css';
 import { useEffect, useState } from 'react';
 import ConfettiExplosion from 'react-confetti-explosion';
-import axios from 'axios';
+import axios from '../../server';
 function TimeLapse() {
     const navigate = useNavigate();
     const [timeLaps, setTimeLaps] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
-    const BASE_URL = `http://k9e203.p.ssafy.io`;
+
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
 
     const finishTimeLaps = (id) => {
         setIsFinished(!isFinished);
-        setFinishedChallangeId(id);
+        // setFinishedChallangeId(id);
     };
 
     const takePhoto = (element) => {
@@ -26,7 +26,7 @@ function TimeLapse() {
         // setIsFinished(false);
 
         axios
-            .patch(`${BASE_URL}/api/v1/challenges/${finishedChallangeId}/extension`, {
+            .patch(`/api/v1/challenges/${finishedChallangeId}/extension`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -54,14 +54,13 @@ function TimeLapse() {
     };
     const getChallenge = () => {
         axios
-            .get(`${BASE_URL}/api/v1/challenges`, {
+            .get(`/api/v1/challenges`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
             .then((response) => {
                 setTimeLaps(response.data.challenges);
-                console.log(response.data.challenges);
 
                 for (let i = 0; i < response.data.challenges.length; i++) {
                     if (response.data.challenges[i].countDays == 21) {
@@ -74,9 +73,11 @@ function TimeLapse() {
                 console.error(error);
             });
     };
+
     useEffect(() => {
         getChallenge();
     }, []);
+
     return (
         <div className={styles.container}>
             {timeLaps.length != 0 ? (
