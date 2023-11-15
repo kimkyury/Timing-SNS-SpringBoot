@@ -58,7 +58,7 @@ public class FeedService {
 
     public List<FeedDetailResponse> getRecommendFeeds(Integer page) {
 
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 9);
 
         return feedRepository.findFeedsOrderById(SecurityUtil.getLoggedInMemberPrimaryKey(), pageable)
                 .stream()
