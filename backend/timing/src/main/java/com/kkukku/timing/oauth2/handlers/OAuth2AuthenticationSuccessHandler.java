@@ -23,7 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Value("${application.security.cors.domain}")
+    @Value("${application.security.cors.front-domain}")
     private String BASE_URL;
 
     private final JwtService jwtService;
