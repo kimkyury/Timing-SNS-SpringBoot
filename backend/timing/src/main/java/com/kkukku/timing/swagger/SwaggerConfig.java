@@ -31,8 +31,8 @@ public class SwaggerConfig {
             .security(Arrays.asList(securityRequirement))
             .info(apiInfo())
             .servers(Collections.singletonList(
-                new Server().url("https://timingkuku.shop/swagger-ui/index")
-                            .description("test server")));
+                new Server().url("https://timingkuku.shop")
+                            .description("Publish")));
 
     }
 
