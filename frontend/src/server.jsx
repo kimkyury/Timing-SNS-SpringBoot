@@ -26,14 +26,13 @@ const getRefreshToken = mem(
         try {
             const {
                 data: { accessToken },
-            } = await server.get(REFRESH_URL, { withCredentials: true });
+            } = await server.post(REFRESH_URL, { withCredentials: true });
 
             sessionStorage.setItem('accessToken', accessToken);
 
             return accessToken;
         } catch (e) {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            sessionStorage.removeItem('accessToken');
         }
     },
     { maxAge: 1000 }
