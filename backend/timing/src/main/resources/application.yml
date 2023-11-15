@@ -60,7 +60,8 @@ application:
       refresh-token:
         expiration: 604800
     cors:
-      domain: ${FRONT_DOMAIN_URI}
+      front-domain: ${FRONT_DOMAIN_URI}
+      back-domain: ${BACK_DOMAIN_URI}
 
 management:
   endpoint:

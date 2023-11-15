@@ -12,14 +12,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class CorsConfig {
 
-    @Value("${application.security.cors.domain}")
-    private String domain;
+    @Value("${application.security.cors.back-domain}")
+    private String backDomain;
+
+    @Value("${application.security.cors.front-domain}")
+    private String frontDomain;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:3000", domain));
+        config.setAllowedOrigins(List.of("http://localhost:3000", backDomain, frontDomain));
         config.setAllowedMethods(
             Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
