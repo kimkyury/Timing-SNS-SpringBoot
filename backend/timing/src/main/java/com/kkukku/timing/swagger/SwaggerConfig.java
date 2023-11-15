@@ -8,12 +8,16 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import java.util.Arrays;
 import java.util.Collections;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${application.security.cors.back-domain}")
+    private String SERVER_URL;
 
     @Bean
     public OpenAPI openAPI() {
@@ -31,7 +35,7 @@ public class SwaggerConfig {
             .security(Arrays.asList(securityRequirement))
             .info(apiInfo())
             .servers(Collections.singletonList(
-                new Server().url("https://timingkuku.shop")
+                new Server().url(SERVER_URL)
                             .description("Publish")));
 
     }
