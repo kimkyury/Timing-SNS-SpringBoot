@@ -8,42 +8,23 @@ import axios from '../../server';
 function TimeLapse() {
     const navigate = useNavigate();
     const [timeLaps, setTimeLaps] = useState([]);
-    const [isFinished, setIsFinished] = useState(false);
+    const [finished, setFinished] = useState(null);
 
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
-
-    const finishTimeLaps = (id) => {
-        setIsFinished(!isFinished);
-        // setFinishedChallangeId(id);
-    };
 
     const takePhoto = (element) => {
         navigate(`/jeonghui`, { state: element });
     };
 
     const continueTimeLaps = () => {
-        // 타입랩스 이어가기 위한 로직 추가
-        // setIsFinished(false);
-
-        axios
-            .patch(`/api/v1/challenges/${finishedChallangeId}/extension`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
-            .then(() => {
-                getChallenge();
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        finishTimeLaps(null);
+        // 타입랩스 이어가기
+        setFinished(null);
     };
 
     const discontinueTimeLaps = () => {
-        // 타입랩스를 피드로 변환하는 로직 추가
-        // setIsFinished(false);
-        finishTimeLaps(null);
+        // 타입랩스를 피드로 변환
+        axios.post(`/api/v1/feeds`, { challengeId: finished });
+        setFinished(null);
     };
     const largeProps = {
         force: 0.8,
@@ -60,7 +41,7 @@ function TimeLapse() {
 
                 for (let i = 0; i < response.data.challenges.length; i++) {
                     if (response.data.challenges[i].countDays == 21) {
-                        finishTimeLaps(response.data.challenges[i].id);
+                        setFinished(response.data.challenges[i].id);
                         break;
                     }
                 }
@@ -110,7 +91,7 @@ function TimeLapse() {
                 </div>
             </div>
 
-            {isFinished && (
+            {finished && (
                 <div className={styles.finish}>
                     <ConfettiExplosion {...largeProps} />
                     <div className={styles.finishContainer}>
