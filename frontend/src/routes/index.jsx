@@ -9,6 +9,7 @@ import DetailComment from '../pages/DetailComment/DetailComment';
 import Tree from '../components/Tree/TreeGraph';
 import Jeonghui from '../pages/Jeonghui/Jeonghui';
 import ChooseObject from '../pages/Jeonghui/ChooseObject';
+import Test from '../pages/Jeonghui/Test';
 import DetailFeed from '../pages/DetailFeed/DetailFeed';
 import Login from '../pages/Login/Login';
 import UpdateReview from '../pages/UpdateReview/UpdateReview';
@@ -37,6 +38,7 @@ function Router() {
                 <Route path={`/detailfeed/:pk`} element={<DetailFeed />} />
                 <Route path={`/updatereview/:pk`} element={<UpdateReview />} />
                 <Route path={`/updateProfile`} element={<UpdateProfile />} />
+                <Route path={`/cameraTest`} element={<Test />} />
 
                 {/* test */}
                 <Route path="/test" element={<PullToRefresh />} />
