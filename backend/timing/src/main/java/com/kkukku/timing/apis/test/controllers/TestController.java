@@ -12,7 +12,6 @@ import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.challenge.services.SnapshotService;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
-import com.kkukku.timing.apis.feed.responses.FeedDetailResponse;
 import com.kkukku.timing.apis.feed.services.FeedService;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
 import com.kkukku.timing.apis.member.repositories.MemberRepository;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -235,24 +233,5 @@ public class TestController {
 //        for(TestFeed t : list) {
 //            System.out.println(t);
 //        }
-    }
-
-
-    @Operation(summary = "추천 피드 상세 조회", tags = {"0.Test"},
-        description = "개발 중입니다. ")
-    @GetMapping("/feed/recommend")
-    public ResponseEntity<List<FeedDetailResponse>> recommendTest(
-        @RequestParam(name = "page") Integer page) {
-
-        Pageable pageable = PageRequest.of(page - 1, 3);
-
-        Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
-        List<FeedDetailResponse> feeds = feedRepository.findFeedsWithScore(memberId, pageable)
-                                                       .stream()
-                                                       .map(feed -> feedService.getTestFeedDetail(
-                                                           feed.getId()))
-                                                       .toList();
-
-        return ApiResponseUtil.success(feeds);
     }
 }
