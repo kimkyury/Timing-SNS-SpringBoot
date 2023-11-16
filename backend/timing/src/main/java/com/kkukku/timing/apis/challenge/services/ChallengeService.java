@@ -245,6 +245,7 @@ public class ChallengeService {
         snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
+    @Transactional
     public void setChallengeIsProcess(Long challengeId) {
 
         challengeRepository.findById(challengeId)

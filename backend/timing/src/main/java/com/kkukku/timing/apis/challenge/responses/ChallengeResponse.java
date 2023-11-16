@@ -21,10 +21,10 @@ public class ChallengeResponse {
 
         private Long id;
         private String thumbnailUrl;
-        private long countDays;
-        private long maxDays;
-        private boolean isUploadToday;
-        private boolean isProcess;
+        private Long countDays;
+        private Long maxDays;
+        private Boolean isUploadToday;
+        private Boolean isProcess;
 
     }
 
