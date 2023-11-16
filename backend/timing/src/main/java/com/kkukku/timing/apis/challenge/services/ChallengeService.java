@@ -76,6 +76,10 @@ public class ChallengeService {
         return challengeRepository.save(ChallengeEntity.of(member, challengeCreateRequest));
     }
 
+    public ChallengeEntity saveChallengeByEntity(ChallengeEntity challenge) {
+        return challengeRepository.save(challenge);
+    }
+
 
     public ChallengeResponse getChallenge(Integer memberId) {
 
@@ -90,9 +94,10 @@ public class ChallengeService {
                                    long maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
 
                                    boolean isUploadToday = isTodayProcessChallenge(c);
+                                   boolean isProcess = c.getIsProcess();
 
                                    return new Challenge(id, thumbnailUrl, countDays, maxDays,
-                                       isUploadToday);
+                                       isUploadToday, isProcess);
                                })
                                .toList());
     }
@@ -238,6 +243,17 @@ public class ChallengeService {
         saveChallengeThumbnail(challenge, savedSnapshotUrl);
 
         snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
+    }
+
+    public void setChallengeIsProcess(Long challengeId) {
+
+        challengeRepository.findById(challengeId)
+                           .ifPresent(
+                               challenge -> {
+                                   challenge.setIsProcess(true);
+                                   challengeRepository.save(challenge);
+                               }
+                           );
     }
 
 

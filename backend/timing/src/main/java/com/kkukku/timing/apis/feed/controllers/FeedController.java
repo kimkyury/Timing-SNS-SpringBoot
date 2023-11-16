@@ -3,6 +3,7 @@ package com.kkukku.timing.apis.feed.controllers;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.kkukku.timing.apis.challenge.requests.ChallengeCompleteRequest;
+import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.comment.requests.CommentSaveRequest;
 import com.kkukku.timing.apis.comment.responses.CommentResponse;
 import com.kkukku.timing.apis.feed.requests.FeedUpdateRequest;
@@ -38,6 +39,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class FeedController {
 
     private final FeedService feedService;
+    private final ChallengeService challengeService;
 
     @Operation(summary = "최신순 피드 상세 조회", tags = {"3. Feed"},
         description = "현재는 피드 최신 순으로 뽑아옵니다.")
@@ -135,6 +137,8 @@ public class FeedController {
     @PostMapping("")
     public void convertToFeed(
         @Valid @RequestBody ChallengeCompleteRequest challengeCompleteRequest) {
+
+        challengeService.setChallengeIsProcess(challengeCompleteRequest.getChallengeId());
         feedService.convertToFeed(challengeCompleteRequest.getChallengeId());
     }
 
