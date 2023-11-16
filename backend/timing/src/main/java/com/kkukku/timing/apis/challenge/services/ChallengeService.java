@@ -76,8 +76,8 @@ public class ChallengeService {
         return challengeRepository.save(ChallengeEntity.of(member, challengeCreateRequest));
     }
 
-    public ChallengeEntity saveChallengeByEntity(ChallengeEntity challenge) {
-        return challengeRepository.save(challenge);
+    public void saveChallengeByEntity(ChallengeEntity challenge) {
+        challengeRepository.save(challenge);
     }
 
 
