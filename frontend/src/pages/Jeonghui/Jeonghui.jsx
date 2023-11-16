@@ -43,13 +43,13 @@ function Jeonghui() {
         }
 
         return () => {
-            closeWebcam();
+            // closeWebcam();
         };
     }, []);
 
     const setupWebcam = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             videoRef.current.srcObject = stream;
             // 비디오 로딩이 완료된 후에 play()를 호출합니다.
             videoRef.current.onloadedmetadata = () => {
@@ -175,10 +175,7 @@ function Jeonghui() {
     return (
         <>
             <div className={styles.container}>
-                <video
-                    ref={videoRef}
-                    style={{ width: width, height: height, facingMode: 'environment', aspectRatio: ratio }}
-                ></video>
+                <video ref={videoRef} style={{ width: width, height: height, aspectRatio: ratio }}></video>
                 {/* <Webcam
                     height={height}
                     width={width}
