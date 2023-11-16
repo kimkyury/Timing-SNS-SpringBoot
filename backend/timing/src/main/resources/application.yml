@@ -82,9 +82,9 @@ server:
     max-http-response-header-size: 50KB
     connection-timeout: 1800000
 
-threads:
-  virtual:
-    enabled: true
+#threads:
+#  virtual:
+#    enabled: true
 
 ---
 spring:

@@ -418,14 +418,16 @@ public class FeedService {
         return response;
     }
 
+    public List<FeedDetailResponse> getRecommendFeedsByScore(Integer page) {
 
-    // TODO: Delete
-    public FeedDetailResponse getTestFeedDetail(Long id) {
-        FeedEntity feed = getFeedById(id);
+        Pageable pageable = PageRequest.of(page - 1, 3);
 
-        return new FeedDetailResponse(feed, likeService.isLiked(id),
-            feedHashTagService.getHashTagsByFeedId(id),
-            commentService.getCommentCountByFeedId(id),
-            likeService.getLikeCountByFeedId(id), countInfluencedFeeds(id), s3Service);
+        Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
+
+        return feedRepository.findFeedsWithScore(memberId, pageable)
+                             .stream()
+                             .map(feed -> getFeedDetail(
+                                 feed.getId()))
+                             .toList();
     }
 }
