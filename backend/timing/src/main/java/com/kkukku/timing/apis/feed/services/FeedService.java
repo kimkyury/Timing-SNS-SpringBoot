@@ -31,10 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient.ResponseSpec;
 
@@ -60,10 +58,11 @@ public class FeedService {
 
         Pageable pageable = PageRequest.of(page - 1, 9);
 
-        return feedRepository.findFeedsOrderById(SecurityUtil.getLoggedInMemberPrimaryKey(), pageable)
-                .stream()
-                .map(feed -> getFeedDetail(feed.getId()))
-                .toList();
+        return feedRepository.findFeedsOrderById(SecurityUtil.getLoggedInMemberPrimaryKey(),
+                                 pageable)
+                             .stream()
+                             .map(feed -> getFeedDetail(feed.getId()))
+                             .toList();
     }
 
     public FeedDetailResponse getFeedDetail(Long id) {
@@ -72,47 +71,47 @@ public class FeedService {
         accessCheck(feed);
 
         return new FeedDetailResponse(feed, likeService.isLiked(id),
-                feedHashTagService.getHashTagsByFeedId(id),
-                commentService.getCommentCountByFeedId(id),
-                likeService.getLikeCountByFeedId(id), countInfluencedFeeds(id), s3Service);
+            feedHashTagService.getHashTagsByFeedId(id),
+            commentService.getCommentCountByFeedId(id),
+            likeService.getLikeCountByFeedId(id), countInfluencedFeeds(id), s3Service);
     }
 
     public Long countOwnFeeds() {
         return feedRepository.countByMember_IdAndIsDeleteIsFalse(
-                SecurityUtil.getLoggedInMemberPrimaryKey());
+            SecurityUtil.getLoggedInMemberPrimaryKey());
     }
 
     public List<FeedSummaryResponse> getOwnSummaryFeeds() {
         return feedRepository.findAllByMember_IdAndIsDeleteIsFalse(
-                        SecurityUtil.getLoggedInMemberPrimaryKey())
-                .stream()
-                .map(feed -> new FeedSummaryResponse(feed, s3Service))
-                .toList();
+                                 SecurityUtil.getLoggedInMemberPrimaryKey())
+                             .stream()
+                             .map(feed -> new FeedSummaryResponse(feed, s3Service))
+                             .toList();
     }
 
     public FeedSummaryWithCountResponse getOwnSummaryFeedsWithCount() {
         return new FeedSummaryWithCountResponse(getOwnSummaryFeeds(), countOwnFeeds(),
-                countAllInfluencedOwnFeeds());
+            countAllInfluencedOwnFeeds());
     }
 
     public Long countOtherFeeds(String email) {
         return feedRepository.countByMember_IdAndIsDeleteIsFalseAndIsPrivateFalse(
-                memberService.getMemberByEmail(email)
-                        .getId());
+            memberService.getMemberByEmail(email)
+                         .getId());
     }
 
     public List<FeedSummaryResponse> getOtherSummaryFeeds(String email) {
         return feedRepository.findAllByMember_IdAndIsDeleteIsFalseAndIsPrivateFalse(
-                        memberService.getMemberByEmail(email)
-                                .getId())
-                .stream()
-                .map(feed -> new FeedSummaryResponse(feed, s3Service))
-                .toList();
+                                 memberService.getMemberByEmail(email)
+                                              .getId())
+                             .stream()
+                             .map(feed -> new FeedSummaryResponse(feed, s3Service))
+                             .toList();
     }
 
     public FeedSummaryWithCountResponse getOtherSummaryFeedsWithCount(String email) {
         return new FeedSummaryWithCountResponse(getOtherSummaryFeeds(email), countOtherFeeds(email),
-                countAllInfluencedOtherFeeds(email));
+            countAllInfluencedOtherFeeds(email));
     }
 
     public List<FeedEntity> getFeedsByRootId(Long rootId) {
@@ -125,7 +124,7 @@ public class FeedService {
 
     public Integer countInfluencedFeeds(Long id) {
         List<FeedEntity> feeds = getFeedsByRootId(getFeedById(id).getRoot()
-                .getId());
+                                                                 .getId());
 
         int size = feeds.size();
         Integer[] parent = new Integer[size];
@@ -138,7 +137,7 @@ public class FeedService {
 
         for (int i = size - 1; i >= 0; i--) {
             FeedEntity parentFeed = feeds.get(i)
-                    .getParent();
+                                         .getParent();
 
             if (parentFeed == null) {
                 continue;
@@ -167,7 +166,7 @@ public class FeedService {
 
     public Integer countAllInfluencedOtherFeeds(String email) {
         List<FeedEntity> feeds = getFeedsByMemberId(memberService.getMemberByEmail(email)
-                .getId());
+                                                                 .getId());
 
         Integer count = 0;
 
@@ -211,34 +210,34 @@ public class FeedService {
         Map<Long, FeedNodeResponse> map = new HashMap<>();
 
         Long rootId = getFeedById(id).getRoot()
-                .getId();
+                                     .getId();
         feedRepository.findAllByRoot_Id(rootId)
-                .forEach(feed -> {
-                    FeedNodeResponse node = new FeedNodeResponse(feed, s3Service);
-                    map.put(feed.getId(), node);
+                      .forEach(feed -> {
+                          FeedNodeResponse node = new FeedNodeResponse(feed, s3Service);
+                          map.put(feed.getId(), node);
 
-                    if (feed.getParent() == null) {
-                        return;
-                    }
+                          if (feed.getParent() == null) {
+                              return;
+                          }
 
-                    FeedNodeResponse parent = map.get(feed.getParent()
-                            .getId());
-                    parent.getChilds()
-                            .add(node);
-                });
+                          FeedNodeResponse parent = map.get(feed.getParent()
+                                                                .getId());
+                          parent.getChilds()
+                                .add(node);
+                      });
 
         return map.get(rootId);
     }
 
     public FeedEntity getFeedByIdAndMemberId(Long id, Integer memberId) {
         return feedRepository.findByIdAndMember_Id(id, memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FEED));
+                             .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FEED));
     }
 
     public FeedEntity getFeedById(Long id) {
         return feedRepository.findById(id)
-                .orElseThrow(() -> new CustomException(
-                        ErrorCode.NOT_EXIST_FEED));
+                             .orElseThrow(() -> new CustomException(
+                                 ErrorCode.NOT_EXIST_FEED));
     }
 
     public List<CommentResponse> getCommentsByFeedId(Long id, Integer page) {
@@ -296,12 +295,12 @@ public class FeedService {
 
         List<SnapshotEntity> snapshots = snapshotService.getAllSnapshotByChallenge(challengeId);
         Map<String, String> requestBody = getMovieBySnapshotRequestBody(challenge,
-                snapshots);
+            snapshots);
         ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
 
         byte[] mp4File = response.body(byte[].class);
         String timelapseUrl = "/" + s3Service.uploadMp4(mp4File,
-                "video");
+            "video");
 
         System.out.println("Result Save Url: " + timelapseUrl);
 
@@ -310,15 +309,15 @@ public class FeedService {
 
         feed.setRelation(challenge.getParent());
         feedHashTagService.saveHashTagsByFeedId(feed.getId(),
-                challengeHashTagService.getHashTagOptionByChallengeId(challengeId));
+            challengeHashTagService.getHashTagOptionByChallengeId(challengeId));
 
         challengeService.deleteChallengeProcedure(SecurityUtil.getLoggedInMemberPrimaryKey(),
-                challengeId);
+            challengeId);
     }
 
 
     private Map<String, String> getMovieBySnapshotRequestBody(ChallengeEntity challenge,
-            List<SnapshotEntity> snapshots) {
+        List<SnapshotEntity> snapshots) {
 
         Map<String, String> body = new HashMap<>();
         body.put("object", s3Service.getS3StartUrl() + challenge.getObjectUrl());
@@ -326,8 +325,8 @@ public class FeedService {
 
         for (SnapshotEntity snapshot : snapshots) {
             sb.append(s3Service.getS3StartUrl())
-                    .append(snapshot.getImageUrl())
-                    .append(",");
+              .append(snapshot.getImageUrl())
+              .append(",");
         }
         sb.deleteCharAt(sb.length() - 1);
 
@@ -356,8 +355,8 @@ public class FeedService {
             throw new CustomException(ErrorCode.DELETED_FEED);
         }
         if (!feed.getMember()
-                .getId()
-                .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
+                 .getId()
+                 .equals(SecurityUtil.getLoggedInMemberPrimaryKey()) && feed.getIsPrivate()) {
             throw new CustomException(ErrorCode.PRIVATE_FEED);
         }
     }
@@ -390,7 +389,7 @@ public class FeedService {
         while (l <= r) {
             mid = (l + r) / 2;
             Long id = feeds.get(mid)
-                    .getId();
+                           .getId();
 
             if (id.equals(parentId)) {
                 break;
@@ -409,12 +408,24 @@ public class FeedService {
     public FeedSearchResponse getFeedsByHashtag(Long id, Integer page) {
         Pageable pageable = PageRequest.of(page - 1, 12);
 
-        List<FeedEntity> feedList = feedHashTagRepository.findByFeedId(id, pageable).toList();
+        List<FeedEntity> feedList = feedHashTagRepository.findByFeedId(id, pageable)
+                                                         .toList();
         FeedSearchResponse response = new FeedSearchResponse();
         for (FeedEntity feed : feedList) {
             response.setFeed(feed, s3Service);
         }
 
         return response;
+    }
+
+
+    // TODO: Delete
+    public FeedDetailResponse getTestFeedDetail(Long id) {
+        FeedEntity feed = getFeedById(id);
+
+        return new FeedDetailResponse(feed, likeService.isLiked(id),
+            feedHashTagService.getHashTagsByFeedId(id),
+            commentService.getCommentCountByFeedId(id),
+            likeService.getLikeCountByFeedId(id), countInfluencedFeeds(id), s3Service);
     }
 }

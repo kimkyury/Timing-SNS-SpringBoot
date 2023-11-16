@@ -41,7 +41,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -243,17 +242,19 @@ public class TestController {
         description = "개발 중입니다. member_id를 id 자리에 넣어주세요")
     @GetMapping("/feed/recommend/{member_id}")
     public ResponseEntity<List<FeedDetailResponse>> recommendTest(
-        @PathVariable(name = "member_id") Integer memberId,
         @RequestParam(name = "page") Integer page) {
 
         Pageable pageable = PageRequest.of(page - 1, 3);
 
+        Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
         List<FeedDetailResponse> feeds = feedRepository.findFeedsWithScore(memberId, pageable)
                                                        .stream()
-                                                       .map(feed -> feedService.getFeedDetail(
+                                                       .map(feed -> feedService.getTestFeedDetail(
                                                            feed.getId()))
                                                        .toList();
 
         return ApiResponseUtil.success(feeds);
     }
+
+
 }
