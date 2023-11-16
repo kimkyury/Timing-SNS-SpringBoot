@@ -1,19 +1,23 @@
 import styles from './SearchBar.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import FeedList from '../Feed/FeedList';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import axios from '../../server';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSearch, setPageID, setIsStop, setTagID, resetsearchState } from '../../store/slices/searchSlice';
 
 function SearchBar() {
     const [inputValue, setInputValue] = useState('');
-    const [state, setState] = useState([]);
-    const [page, setPage] = useState(1);
-    const location = useLocation();
+    const searchState = useSelector((state) => state.search.searchs);
+    const page = useSelector((state) => state.search.searchPageId);
+    const isStop = useSelector((state) => state.search.isStop);
+    const tagID = useSelector((state) => state.search.tagID);
+    const dispatch = useDispatch();
     const [wordList, setWordList] = useState([]);
-    const accessToken = useState(sessionStorage.getItem('accessToken'));
-    const currentUrl = location.pathname;
+    const accessToken = sessionStorage.getItem('accessToken');
+    const [feedListKey, setFeedListKey] = useState(0);
     const formatK = (count) => {
         if (count >= 100000) {
             return (count / 1000000).toFixed(1) + '백만';
@@ -23,11 +27,12 @@ function SearchBar() {
             return count;
         }
     };
-    useEffect(() => {}, []);
+    useEffect(() => {
+        dispatch(resetsearchState());
+    }, []);
 
     useEffect(() => {
-        if (inputValue.length != 0) {
-            // 예상 단어 가져오기
+        if (inputValue.length !== 0) {
             axios
                 .post(
                     `/api/v1/hashtags/autocomplete`,
@@ -50,50 +55,61 @@ function SearchBar() {
     }, [inputValue]);
 
     const searchWord = (v) => {
-        // 검색 단어에 맞는 피드 가져오기
-        getSearcgResult(v);
+        dispatch(resetsearchState());
+        dispatch(setTagID(v.id));
     };
-    useEffect(() => {
-        if (currentUrl != '/') {
-            // 스크롤 이벤트 리스너 등록
-            window.addEventListener('scroll', handleScroll);
 
-            // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
-            return () => {
-                window.removeEventListener('scroll', handleScroll);
-            };
-        }
-    }, []);
-    const getSearcgResult = (i) => {
+    const getSearcgResult = useCallback(() => {
         axios
-            .get(`/api/v1/feeds/${i.id}/search?page=${page}`, {
+            .get(`/api/v1/feeds/${tagID}/search?page=${page}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
             .then((response) => {
-                setState(response.data.feeds);
+                if (response.data.feeds.length < 12) {
+                    dispatch(setIsStop(true));
+                }
+                dispatch(setSearch(response.data.feeds));
                 setInputValue('');
+                setFeedListKey((prevKey) => prevKey + 1);
             })
             .catch((error) => {
                 console.error(error);
             });
-    };
-    const handleScroll = () => {
-        const scrollHeight = window.scrollY;
-        const windowHeight = window.innerHeight;
-        if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
-            setPage((prevPage) => {
-                if (prevPage != Math.floor(state.commentCount / 10) + (state.commentCount % 10 > 0 ? 1 : 0)) {
-                    const newPage = prevPage + 1; // 예시로 이전 페이지에서 1 증가
-                    return newPage; // 새로운 상태를 반환
-                } else {
-                    const newPage = prevPage;
-                    return newPage;
-                }
-            });
+    }, [tagID, page, dispatch, accessToken]);
+
+    useEffect(() => {
+        if (tagID !== 0 && searchState.length === 0) {
+            getSearcgResult();
         }
-    };
+    }, [tagID, searchState, getSearcgResult]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollHeight = window.scrollY;
+            const windowHeight = window.innerHeight;
+
+            if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
+                if (!isStop) {
+                    dispatch(setPageID(page + 1));
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [isStop, page, dispatch]);
+
+    useEffect(() => {
+        if (page !== 1 && !isStop) {
+            getSearcgResult();
+        }
+    }, [page, isStop, getSearcgResult]);
+    console.log(searchState);
     return (
         <>
             <div className={styles.searchBar}>
@@ -125,11 +141,11 @@ function SearchBar() {
                 )}
             </div>
 
-            {inputValue.length == 0 && (
-                <div className={styles.searchResult}>
-                    <FeedList state={state.filter((content) => content.isPrivate == false)} />
-                </div>
-            )}
+            <div className={styles.searchResult}>
+                {searchState.length != 0 && (
+                    <FeedList key={feedListKey} state={searchState.filter((content) => content.isPrivate == false)} />
+                )}
+            </div>
         </>
     );
 }

@@ -16,12 +16,14 @@ function Profile() {
     const [state, setState] = useState([]);
 
     useEffect(() => {
-        if (currentUrl == '/profile') {
+        console.log(location);
+        console.log(location.search == '' ? true : false);
+        if (location.search == '') {
             getFeed();
         } else {
             getWriterFeed();
         }
-    }, []);
+    }, [location.search]);
 
     const getFeed = () => {
         axios
@@ -52,6 +54,7 @@ function Profile() {
                 console.error(error);
             });
     };
+    console.log(state);
     return state.length != 0 ? (
         <motion.div
             initial={{ opacity: 0, x: 100 }}
@@ -64,8 +67,8 @@ function Profile() {
                 <UserProfile data={state} />
             </div>
 
-            <div className={styles.timeContainerName}>진행중인 타입랩스</div>
-            <TimeLapse />
+            {location.search == '' ? <div className={styles.timeContainerName}>진행중인 타입랩스</div> : <></>}
+            {location.search == '' ? <TimeLapse /> : <></>}
             <div className={styles.timeContainerName}>공개 타입랩스</div>
             {state.feeds.length != 0 ? (
                 <div className={styles.my_timelapse}>
