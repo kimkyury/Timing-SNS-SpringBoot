@@ -190,6 +190,7 @@ public class TestController {
         // Todo Create Snapshots END
 
         // TODO Convert to Feed START
+        challengeService.setChallengeIsProcess(challengeId);
         feedService.convertToFeed(challengeId);
         // TODO Convert to Feed END
 
