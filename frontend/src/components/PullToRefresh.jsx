@@ -16,11 +16,9 @@ const PullToRefresh = ({ onRefresh, children }) => {
         const moveY = event.touches[0].clientY;
         const pullDistance = moveY - startY;
 
-        if (pullDistance > 0) {
+        if (pullDistance > 0 && window.scrollY === 0) {
             if (pullDistance > 80) {
-                if (startY == 0) {
-                    setRefreshing(true);
-                }
+                setRefreshing(true);
             }
         }
 
