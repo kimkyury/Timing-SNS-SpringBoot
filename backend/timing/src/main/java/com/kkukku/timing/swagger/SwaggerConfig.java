@@ -7,7 +7,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import java.util.Arrays;
-import java.util.Collections;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,10 +33,11 @@ public class SwaggerConfig {
             .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
             .security(Arrays.asList(securityRequirement))
             .info(apiInfo())
-            .servers(Collections.singletonList(
+            .servers(Arrays.asList(
+                new Server().url("http://localhost:8080") // 로컬 서버 URL
+                            .description("Local server"),
                 new Server().url(SERVER_URL)
-                            .description("Publish")));
-
+                            .description("Publish server")));
     }
 
     private Info apiInfo() {
