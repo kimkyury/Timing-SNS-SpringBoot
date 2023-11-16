@@ -43,7 +43,9 @@ function Jeonghui() {
                 });
         }
 
-        return closeWebcam();
+        return () => {
+            closeWebcam();
+        };
     }, []);
 
     const setupWebcam = async () => {
