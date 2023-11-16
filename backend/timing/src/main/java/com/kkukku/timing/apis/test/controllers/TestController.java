@@ -239,8 +239,8 @@ public class TestController {
 
 
     @Operation(summary = "추천 피드 상세 조회", tags = {"0.Test"},
-        description = "개발 중입니다. member_id를 id 자리에 넣어주세요")
-    @GetMapping("/feed/recommend/{member_id}")
+        description = "개발 중입니다. ")
+    @GetMapping("/feed/recommend")
     public ResponseEntity<List<FeedDetailResponse>> recommendTest(
         @RequestParam(name = "page") Integer page) {
 
@@ -255,6 +255,4 @@ public class TestController {
 
         return ApiResponseUtil.success(feeds);
     }
-
-
 }
