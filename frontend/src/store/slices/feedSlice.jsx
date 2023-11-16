@@ -3,6 +3,8 @@ import { PURGE } from 'redux-persist';
 
 const initialState = {
     feeds: [],
+    pageID: 1,
+    isStop: false,
 };
 
 const feedSlice = createSlice({
@@ -12,6 +14,15 @@ const feedSlice = createSlice({
         setFeed: (state, action) => {
             state.feeds = [...state.feeds, ...action.payload];
         },
+        setPageID: (state, action) => {
+            state.pageID = action.payload;
+        },
+        setIsStop: (state, action) => {
+            state.isStop = action.payload;
+        },
+        resetFeedState: (state) => {
+            return initialState;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(PURGE, () => {
@@ -20,5 +31,5 @@ const feedSlice = createSlice({
     },
 });
 
-export const { setFeed } = feedSlice.actions;
+export const { setFeed, setPageID, setIsStop, resetFeedState } = feedSlice.actions;
 export default feedSlice.reducer;

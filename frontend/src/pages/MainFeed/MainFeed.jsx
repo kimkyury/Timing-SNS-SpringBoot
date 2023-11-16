@@ -1,29 +1,34 @@
 import styles from './MainFeed.module.css';
 import Feed from '../../components/Feed/Feed';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../server';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFeed } from '../../store/slices/feedSlice';
+import { setFeed, setPageID, setIsStop, resetFeedState } from '../../store/slices/feedSlice';
 import store from '../../store/store';
 import PullToRefresh from '../../components/PullToRefresh';
 import { Co2Sharp } from '@mui/icons-material';
 
 function MainFeed() {
     const feedState = useSelector((state) => state.feed);
-    const [page, setPage] = useState(1);
+    // const [page, setPage] = useState(1);
+    const page = useSelector((state) => state.feed.pageID);
+    const isStop = useSelector((state) => state.feed.isStop);
     const dispatch = useDispatch();
     const accessToken = sessionStorage.getItem('accessToken');
     const getRecFeed = () => {
-        console.log(page);
+        console.log(page, 'asdfasdfsad');
         axios
-            .get(`${import.meta.env.VITE_APP_API}/api/v1/feeds/recommended?page=${page}`, {
+            .get(`/api/v1/feeds/recommended?page=${page}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
             .then((response) => {
-                console.log(response.data);
+                console.log(response.data.length, 'aaaaaaaaaaaaa');
+                if (response.data.length < 9) {
+                    dispatch(setIsStop(true));
+                }
                 dispatch(setFeed(response.data));
             })
             .catch((error) => {
@@ -38,6 +43,21 @@ function MainFeed() {
         }
     }, []);
     useEffect(() => {
+        const handleScroll = () => {
+            // 현재 스크롤 위치
+            const scrollHeight = window.scrollY;
+
+            // 창의 높이
+            const windowHeight = window.innerHeight;
+
+            // 화면 바닥에 도달했을 때 추가 데이터 로드
+            if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
+                if (!isStop) {
+                    dispatch(setPageID(page + 1));
+                }
+            }
+        };
+
         // 스크롤 이벤트 리스너 등록
         window.addEventListener('scroll', handleScroll);
 
@@ -45,36 +65,25 @@ function MainFeed() {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, []);
-    // 스크롤 이벤트 핸들러
-    const handleScroll = _.debounce(() => {
-        // 현재 스크롤 위치
-        const scrollHeight = window.scrollY;
 
-        // 창의 높이
-        const windowHeight = window.innerHeight;
-        // 화면 바닥에 도달했을 때 추가 데이터 로드
-        if (scrollHeight + windowHeight > document.body.offsetHeight - 1) {
-            console.log('바닥');
-            setPage((prevPage) => {
-                const newPage = prevPage + 1; // 예시로 이전 페이지에서 1 증가
-                return newPage; // 새로운 상태를 반환
-            });
-            console.log(page);
-        }
-    }, 100);
+        // isStop이 변경될 때만 리렌더링
+    }, [isStop]);
+
     useEffect(() => {
         console.log(page, 'change');
+        console.log(isStop);
         if (page != 1) {
-            getRecFeed();
+            if (!isStop) {
+                getRecFeed();
+            }
         }
     }, [page]);
     const handleRefresh = () => {
         if (window.scrollY <= 0) {
+            dispatch(resetFeedState());
             window.location.reload();
         }
     };
-
     return (
         <PullToRefresh onRefresh={handleRefresh}>
             <div className={styles.container}>
