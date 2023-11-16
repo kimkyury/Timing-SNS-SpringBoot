@@ -51,6 +51,7 @@ CREATE TABLE challenges (
                             thumbnail_url VARCHAR(255) NOT NULL DEFAULT '/default_thumbnail.png',
                             object_url VARCHAR(255),
                             polygon_url VARCHAR(255),
+                            is_process BOOLEAN NOT NULL DEFAULT FALSE,
                             FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
                             FOREIGN KEY (parent_id) REFERENCES feeds(id)
 );
