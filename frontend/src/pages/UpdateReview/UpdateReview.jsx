@@ -23,8 +23,6 @@ function UpdateReview() {
                 }
             )
             .then(() => {
-                window.history.back();
-
                 // 현재 페이지를 새로고침
                 window.location.reload();
             })
