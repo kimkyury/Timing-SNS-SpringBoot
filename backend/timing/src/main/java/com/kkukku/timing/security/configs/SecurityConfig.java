@@ -55,8 +55,6 @@ public class SecurityConfig {
         "/api/profile",
         "/api/v1/test/**",
         "/actuator/health",
-        "/api/v1/hashtags/autocomplete",
-            "/api/v1/feeds/**"
     };
 
     @Bean
