@@ -29,6 +29,7 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
 
     Optional<FeedEntity> findByIdAndMember_Id(Long id, Integer memberId);
 
-    @Query(value = "SELECT f.* FROM (SELECT *, CalculateFeedScore(?1, id) AS Score FROM feeds WHERE member_id != ?1) AS f ORDER BY f.Score DESC", nativeQuery = true)
+    @Query(value = "SELECT *, CalculateFeedScore(:memberId, id) AS Score FROM feeds WHERE member_id != :memberId", nativeQuery = true)
     Page<FeedEntity> findFeedsWithScore(Integer memberId, Pageable pageable);
+
 }
