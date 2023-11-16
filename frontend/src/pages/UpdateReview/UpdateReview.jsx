@@ -23,7 +23,7 @@ function UpdateReview() {
                 }
             )
             .then(() => {
-                // 현재 페이지를 새로고침
+                navigate(`/detailcomment/${state.id}`, { state });
                 window.location.reload();
             })
             .catch((error) => {
