@@ -33,6 +33,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient.ResponseSpec;
 
@@ -298,15 +300,19 @@ public class FeedService {
             snapshots);
         ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
 
+        ResponseEntity<byte[]> responseEntity = response.toEntity(byte[].class);
         byte[] mp4File = response.body(byte[].class);
+        HttpStatusCode status = responseEntity.getStatusCode();
+        if (status.is4xxClientError()) {
+            challenge.setIsProcess(false);
+            challengeService.saveChallengeByEntity(challenge);
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
         String timelapseUrl = "/" + s3Service.uploadMp4(mp4File,
             "video");
 
-        System.out.println("Result Save Url: " + timelapseUrl);
-
         FeedEntity feed = feedRepository.save(new FeedEntity(challenge, timelapseUrl));
-        System.out.println("CreatedFeedInfo: " + feed);
-
         feed.setRelation(challenge.getParent());
         feedHashTagService.saveHashTagsByFeedId(feed.getId(),
             challengeHashTagService.getHashTagOptionByChallengeId(challengeId));
@@ -420,7 +426,7 @@ public class FeedService {
 
     public List<FeedDetailResponse> getRecommendFeedsByScore(Integer page) {
 
-        Pageable pageable = PageRequest.of(page - 1, 3);
+        Pageable pageable = PageRequest.of(page - 1, 9);
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
 
