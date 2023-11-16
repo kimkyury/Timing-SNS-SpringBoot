@@ -11,6 +11,7 @@ import com.kkukku.timing.apis.challenge.responses.ChallengeResponse;
 import com.kkukku.timing.apis.challenge.responses.ChallengeResponse.Challenge;
 import com.kkukku.timing.apis.challenge.services.ChallengeService;
 import com.kkukku.timing.apis.challenge.services.SnapshotService;
+import com.kkukku.timing.apis.feed.entities.FeedEntity;
 import com.kkukku.timing.apis.feed.repositories.FeedRepository;
 import com.kkukku.timing.apis.feed.services.FeedService;
 import com.kkukku.timing.apis.hashtag.services.FeedHashTagService;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,6 +41,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -233,5 +236,13 @@ public class TestController {
 //        for(TestFeed t : list) {
 //            System.out.println(t);
 //        }
+    }
+
+
+    @GetMapping("/feed/recommend/{member_id}")
+    public ResponseEntity<Page<FeedEntity>> recommendTest(@PathVariable Integer member_id,
+        Pageable pageable) {
+
+        return ApiResponseUtil.success(feedRepository.findFeedsWithScore(member_id, pageable));
     }
 }
