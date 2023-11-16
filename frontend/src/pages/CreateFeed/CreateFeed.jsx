@@ -5,7 +5,7 @@ import Calendar from 'react-calendar';
 import moment from 'moment';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../server';
 import './Calendar.css';
 import { motion } from 'framer-motion';
 function CreateFeed() {

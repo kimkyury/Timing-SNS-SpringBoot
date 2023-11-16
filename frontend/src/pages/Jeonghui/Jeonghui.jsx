@@ -21,9 +21,10 @@ function Jeonghui() {
 
     useEffect(() => {
         const containerInfo = document.querySelector('.' + styles.container);
-        setWidth(containerInfo.getBoundingClientRect().width);
+        setWidth(containerInfo.getBoundingClientRect().width - 3);
         setHeight(containerInfo.getBoundingClientRect().height - 1);
-        setRatio(containerInfo.getBoundingClientRect().width / containerInfo.getBoundingClientRect().height);
+        // setRatio(containerInfo.getBoundingClientRect().width / containerInfo.getBoundingClientRect().height);
+        setRatio(containerInfo.getBoundingClientRect().height / containerInfo.getBoundingClientRect().width);
 
         if (timeLaps.countDays > 0) {
             // 여기서 ploy 가져오는 로직

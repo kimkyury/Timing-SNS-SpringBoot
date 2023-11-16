@@ -202,6 +202,10 @@ function Feed(data) {
         }
     };
 
+    const goToInfluence = () => {
+        navigate('/influence', { state: state.id });
+    };
+
     // const handleDeleteComment = (commentIndex) => {
     //     const commentToDelete = comments[commentIndex];
     //     if (commentToDelete.name === user.id) {
@@ -278,7 +282,7 @@ function Feed(data) {
                         </div>
                         <div className={styles.tagitem}>
                             <div className={styles.tagitemicon}>
-                                <ShareOutlinedIcon style={{ width: '4vw', height: '4vw' }} />
+                                <ShareOutlinedIcon style={{ width: '4vw', height: '4vw' }} onClick={goToInfluence} />
                             </div>
                             <div>{formatK(state.shareCount)}</div>
                         </div>
