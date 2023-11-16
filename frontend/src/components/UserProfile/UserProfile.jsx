@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import SelectMenu from './SelectMenu';
 
 function UserProfile(data) {
+    console.log(data);
     const navigate = useNavigate();
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
     const [info] = useState(data.data);
@@ -51,12 +52,12 @@ function UserProfile(data) {
             });
     };
     useEffect(() => {
-        if (currentUrl == '/profile') {
+        if (location.search == '') {
             getProfile();
         } else {
             getWriterProfile();
         }
-    }, []);
+    }, [location.search]);
     // const goToUpdateprofile = () => {
     //     navigate(`/updateprofile/${state.email}`, { state });
     // };
