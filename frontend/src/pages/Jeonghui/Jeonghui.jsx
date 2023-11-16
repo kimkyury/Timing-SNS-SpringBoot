@@ -20,6 +20,7 @@ function Jeonghui() {
     // const [videoData, setVideoData] = useState(null);
 
     useEffect(() => {
+        setupWebcam();
         const containerInfo = document.querySelector('.' + styles.container);
         setWidth(containerInfo.getBoundingClientRect().width - 3);
         setHeight(containerInfo.getBoundingClientRect().height - 1);
@@ -41,7 +42,33 @@ function Jeonghui() {
                     console.error(error);
                 });
         }
+
+        return closeWebcam();
     }, []);
+
+    const setupWebcam = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoRef.current.srcObject = stream;
+            // 비디오 로딩이 완료된 후에 play()를 호출합니다.
+            videoRef.current.onloadedmetadata = () => {
+                videoRef.current.play();
+            };
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const closeWebcam = () => {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+
+        tracks.forEach(function (track) {
+            track.stop();
+        });
+
+        videoRef.current.srcObject = null;
+    };
 
     const dataURItoBlob = (dataURI) => {
         var byteString = atob(dataURI.split(',')[1]);
@@ -58,9 +85,19 @@ function Jeonghui() {
     const capture = () => {
         console.log('capture');
 
-        const photo = videoRef.current.getScreenshot();
+        const photo = photoRef.current;
+        const video = videoRef.current;
 
-        var blob = dataURItoBlob(photo);
+        photo.width = width;
+        photo.height = height;
+
+        const ctx = photo.getContext('2d');
+        ctx.drawImage(video, 0, 0, photo.width, photo.height);
+
+        // const photo = videoRef.current.getScreenshot();
+
+        var dataUrl = photo.toDataURL('image/jpeg');
+        var blob = dataURItoBlob(dataUrl);
 
         var formData = new FormData();
         formData.append('snapshot', blob);
@@ -135,13 +172,17 @@ function Jeonghui() {
     return (
         <>
             <div className={styles.container}>
-                <Webcam
+                <video
+                    ref={videoRef}
+                    style={{ width: width, height: height, facingMode: 'environment', aspectRatio: ratio }}
+                ></video>
+                {/* <Webcam
                     height={height}
                     width={width}
                     videoConstraints={{ facingMode: 'environment', aspectRatio: ratio }}
                     screenshotFormat="image/jpeg"
                     ref={videoRef}
-                />
+                /> */}
                 <div className={styles.camera} onClick={capture}>
                     <PhotoCameraIcon style={{ width: '13vw', height: '13vw' }} />
                 </div>
