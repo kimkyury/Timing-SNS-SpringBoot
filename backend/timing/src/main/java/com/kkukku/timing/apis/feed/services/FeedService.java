@@ -420,7 +420,7 @@ public class FeedService {
 
     public List<FeedDetailResponse> getRecommendFeedsByScore(Integer page) {
 
-        Pageable pageable = PageRequest.of(page - 1, 3);
+        Pageable pageable = PageRequest.of(page - 1, 9);
 
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
 
