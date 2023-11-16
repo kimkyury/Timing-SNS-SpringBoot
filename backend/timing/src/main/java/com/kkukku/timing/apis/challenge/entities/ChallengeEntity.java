@@ -59,6 +59,9 @@ public class ChallengeEntity {
     @Setter
     private String polygonUrl;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)", insertable = false)
+    @Setter
+    private Boolean isProcess;
 
     private ChallengeEntity(MemberEntity member, LocalDate startedAt, String goalContent) {
         this.member = member;
@@ -66,6 +69,7 @@ public class ChallengeEntity {
         this.goalContent = goalContent;
         this.endedAt = calculateEndedDate(startedAt);
         this.thumbnailUrl = "/default_thumbnail.png";
+        this.isProcess = false;
     }
 
     public static ChallengeEntity of(MemberEntity member,
