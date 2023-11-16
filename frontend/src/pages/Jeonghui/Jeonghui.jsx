@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../../server';
 import styles from './Jeonghui.module.css';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import Webcam from 'react-webcam';
 import { useState } from 'react';
 
 function Jeonghui() {
@@ -17,7 +16,6 @@ function Jeonghui() {
     const [ratio, setRatio] = useState(1);
     const [poly, setPoly] = useState(null);
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
-    const [streamData, setStreamData] = useState(null);
     // const [videoData, setVideoData] = useState(null);
 
     useEffect(() => {
@@ -57,21 +55,20 @@ function Jeonghui() {
             videoRef.current.onloadedmetadata = () => {
                 videoRef.current.play();
             };
-            setStreamData(videoRef.current.srcObject);
         } catch (error) {
             console.log(error);
         }
     };
 
     const closeWebcam = () => {
-        const tracks = streamData.getTracks();
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
 
         tracks.forEach(function (track) {
             track.stop();
         });
 
-        streamData(null);
-        // videoRef.current.srcObject = null;
+        videoRef.current.srcObject = null;
     };
 
     const dataURItoBlob = (dataURI) => {
@@ -119,6 +116,7 @@ function Jeonghui() {
                 })
                 .then((response) => {
                     navigate('/chooseObject', { state: { origin: blob, object: response.data, challenge: timeLaps } });
+                    closeWebcam();
                 })
                 .catch((error) => {
                     console.error(`Error: ${error}`);
@@ -137,6 +135,7 @@ function Jeonghui() {
                         alert('비슷한 객체를 찾지 못했습니다. 다시 사진을 찍어주세요');
                     } else {
                         navigate('/');
+                        closeWebcam();
                     }
                 })
                 .catch((error) => {
