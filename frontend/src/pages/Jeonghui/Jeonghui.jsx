@@ -17,6 +17,7 @@ function Jeonghui() {
     const [ratio, setRatio] = useState(1);
     const [poly, setPoly] = useState(null);
     const [accessToken] = useState(sessionStorage.getItem('accessToken'));
+    const [streamData, setStreamData] = useState(null);
     // const [videoData, setVideoData] = useState(null);
 
     useEffect(() => {
@@ -56,20 +57,21 @@ function Jeonghui() {
             videoRef.current.onloadedmetadata = () => {
                 videoRef.current.play();
             };
+            setStreamData(videoRef.current.srcObject);
         } catch (error) {
             console.log(error);
         }
     };
 
     const closeWebcam = () => {
-        const stream = videoRef.current.srcObject;
-        const tracks = stream.getTracks();
+        const tracks = streamData.getTracks();
 
         tracks.forEach(function (track) {
             track.stop();
         });
 
-        videoRef.current.srcObject = null;
+        streamData(null);
+        // videoRef.current.srcObject = null;
     };
 
     const dataURItoBlob = (dataURI) => {
