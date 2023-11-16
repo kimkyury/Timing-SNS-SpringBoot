@@ -34,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient.ResponseSpec;
 
@@ -291,7 +290,6 @@ public class FeedService {
         ChallengeEntity challenge = challengeService.getChallengeById(challengeId);
 
         // challengeService.checkOwnChallenge(SecurityUtil.getLoggedInMemberPrimaryKey(), challengeId);
-
         // TODO: On Checking, 테스트를 위하여 주석처리
         // challengeService.checkCompletedChallenge(challengeId);
 
@@ -300,20 +298,17 @@ public class FeedService {
             snapshots);
         ResponseSpec response = visionAIService.getMovieBySnapshots(requestBody);
 
-        ResponseEntity<byte[]> responseEntity = response.toEntity(byte[].class);
-        byte[] mp4File = response.body(byte[].class);
-        HttpStatusCode status = responseEntity.getStatusCode();
-        if (status.is4xxClientError()) {
+        response.onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
             challenge.setIsProcess(false);
             challengeService.saveChallengeByEntity(challenge);
             throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
+        });
 
-        String timelapseUrl = "/" + s3Service.uploadMp4(mp4File,
-            "video");
-
+        byte[] mp4File = response.body(byte[].class);
+        String timelapseUrl = "/" + s3Service.uploadMp4(mp4File, "video");
         FeedEntity feed = feedRepository.save(new FeedEntity(challenge, timelapseUrl));
         feed.setRelation(challenge.getParent());
+
         feedHashTagService.saveHashTagsByFeedId(feed.getId(),
             challengeHashTagService.getHashTagOptionByChallengeId(challengeId));
 
