@@ -78,7 +78,7 @@
 
 <a name="systemArchitecture"></a>
 
-아키텍쳐 사진
+![Architecture](./image/architecture.png)
 
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
 
@@ -140,11 +140,9 @@
 
 ## 💾 ERD
 
-### ERD
-
-ERD
-
 <a name="erd"></a>
+
+![ERD](./image/erd.png)
 
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
 
