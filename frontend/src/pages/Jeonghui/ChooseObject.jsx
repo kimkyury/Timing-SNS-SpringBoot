@@ -1,43 +1,40 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axios from '../../server';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './ChooseObject.module.css';
 
-const BASE_HTTP_URL = 'http://localhost:8001';
-
-const email = 'spor1998@naver.com';
-
 function ChooseObject() {
     const [data, setDate] = useState(null);
+    const [polygon, setPolygon] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
     const origin = location.state.origin;
     const object = location.state.object;
     const timeLaps = location.state.challenge;
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
 
     const checkObject = (x, y) => {
         var formData = new FormData();
-        formData.append('img', origin);
+        formData.append('snapshot', origin);
         formData.append('x', y);
         formData.append('y', x);
-        formData.append('challengeId', timeLaps.id + email);
 
         axios
-            .post(`${BASE_HTTP_URL}/objectDetaction/chooseObject`, formData, {
+            .post(`/api/v1/challenges/${timeLaps.id}/snapshots/objects/choose`, formData, {
                 headers: {
-                    accept: '*/*',
+                    accept: 'application/json;charset=UTF-8',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
-                // responseType: 'blob',
+                responseType: 'blob',
             })
             .then((response) => {
-                console.log(response);
-                console.log(response.data);
-                if (response.status == 204) {
+                if (response.status == 400) {
                     setDate(null);
                     alert('객체를 제대로 선택해주세요');
                 } else {
-                    setDate(response.data);
+                    setDate(new Blob([response.data], { type: 'image/png' }));
+                    setPolygon(response.headers.get('Polygon'));
                 }
             })
             .catch((error) => {
@@ -48,27 +45,27 @@ function ChooseObject() {
     const eventListener = (event) => {
         const x = event.clientX - event.target.getBoundingClientRect().left; //x축
         const y = event.clientY - event.target.getBoundingClientRect().top; //y축
-        // console.log('position', x, y);
         checkObject(x, y);
     };
 
     const save = () => {
         var formData = new FormData();
-        formData.append('img', data);
-        formData.append('challengeId', timeLaps.id + email);
+        formData.append('object  ', origin);
+        formData.append('polygon', polygon);
 
         axios
-            .post(`${BASE_HTTP_URL}/objectDetaction/objectSave`, formData, {
+            .post(`/api/v1/challenges/${timeLaps.id}/objects`, formData, {
                 headers: {
                     accept: '*/*',
                     'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
             })
             .then(() => {
                 navigate('/');
             })
             .catch((error) => {
-                console.error(`Error: ${error}`);
+                console.log(`Error: ${error}`);
             });
     };
 
@@ -84,9 +81,6 @@ function ChooseObject() {
                     <img
                         src={URL.createObjectURL(object)}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        // onClick={(event) => {
-                        //     eventListener(event, 'click');
-                        // }}
                     />
                 </div>
             )}

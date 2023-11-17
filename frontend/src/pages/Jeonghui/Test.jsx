@@ -1,13 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../server';
 import styles from './Jeonghui.module.css';
 
-const BASE_HTTP_URL = 'http://localhost:8001';
-
-const challengeId = 'kjh';
-
-function DoChallenge() {
+function Test() {
     const photoRef = useRef(null);
     const videoRef = useRef(null);
     const navigate = useNavigate();
@@ -54,47 +50,48 @@ function DoChallenge() {
 
     const capture = () => {
         console.log('capture');
-        const photo = photoRef.current;
-        const video = videoRef.current;
+        // const photo = photoRef.current;
+        // const video = videoRef.current;
 
-        photo.width = 400;
-        photo.height = 300;
+        // photo.width = 400;
+        // photo.height = 300;
 
-        const ctx = photo.getContext('2d');
-        ctx.drawImage(video, 0, 0, photo.width, photo.height);
+        // const ctx = photo.getContext('2d');
+        // ctx.drawImage(video, 0, 0, photo.width, photo.height);
 
-        var dataUrl = photo.toDataURL('image/jpeg');
-        var blob = dataURItoBlob(dataUrl);
+        // var dataUrl = photo.toDataURL('image/jpeg');
+        // var blob = dataURItoBlob(dataUrl);
 
-        var formData = new FormData();
-        formData.append('img', blob);
-        formData.append('challengeId', challengeId);
+        // var formData = new FormData();
+        // formData.append('img', blob);
+        // formData.append('challengeId', challengeId);
 
-        axios
-            .post(`${BASE_HTTP_URL}/objectDetaction/similarity`, formData, {
-                headers: {
-                    accept: '*/*',
-                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-                },
-            })
-            .then((response) => {
-                console.log(response);
-                if (response.status == 204) {
-                    alert('비슷한 객체를 찾지 못했습니다. 다시 사진을 찍어주세요');
-                } else {
-                    closeWebcam();
-                    navigate('/');
-                }
-            })
-            .catch((error) => {
-                console.error(`Error: ${error}`);
-            });
+        // axios
+        //     .post(`${BASE_HTTP_URL}/objectDetaction/similarity`, formData, {
+        //         headers: {
+        //             accept: '*/*',
+        //             'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+        //         },
+        //     })
+        //     .then((response) => {
+        //         console.log(response);
+        //         if (response.status == 204) {
+        //             alert('비슷한 객체를 찾지 못했습니다. 다시 사진을 찍어주세요');
+        //         } else {
+        //             closeWebcam();
+        //             navigate('/');
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error(`Error: ${error}`);
+        //     });
+        closeWebcam();
     };
 
     return (
         <div className={styles.container}>
             <div className={styles.video}>
-                <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }}></video>
+                <video ref={videoRef} style={{ width: '200px', height: '200px', objectFit: 'cover' }}></video>
             </div>
             <button onClick={capture}>사진 찍기</button>
             <div>
@@ -104,4 +101,4 @@ function DoChallenge() {
     );
 }
 
-export default DoChallenge;
+export default Test;

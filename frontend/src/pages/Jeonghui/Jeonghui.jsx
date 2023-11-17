@@ -1,14 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../server';
 import styles from './Jeonghui.module.css';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import Webcam from 'react-webcam';
 import { useState } from 'react';
-
-const BASE_HTTP_URL = 'http://localhost:8001';
-
-const email = 'spor1998@naver.com';
 
 function Jeonghui() {
     const photoRef = useRef(null);
@@ -20,65 +15,61 @@ function Jeonghui() {
     const [height, setHeight] = useState(100);
     const [ratio, setRatio] = useState(1);
     const [poly, setPoly] = useState(null);
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
+    // const [videoData, setVideoData] = useState(null);
 
     useEffect(() => {
-        // setupWebcam();
-
-        console.log(timeLaps);
-
-        const containerInfo = document.querySelectorAll('div')[4];
-        setWidth(containerInfo.getBoundingClientRect().width);
+        setupWebcam();
+        const containerInfo = document.querySelector('.' + styles.container);
+        setWidth(containerInfo.getBoundingClientRect().width - 3);
         setHeight(containerInfo.getBoundingClientRect().height - 1);
-        setRatio(containerInfo.getBoundingClientRect().width / containerInfo.getBoundingClientRect().height);
+        // setRatio(containerInfo.getBoundingClientRect().width / containerInfo.getBoundingClientRect().height);
+        setRatio(containerInfo.getBoundingClientRect().height / containerInfo.getBoundingClientRect().width);
 
-        if (timeLaps.percent != 0) {
+        if (timeLaps.countDays > 0) {
             // 여기서 ploy 가져오는 로직
             axios
-                .get(`${BASE_HTTP_URL}/objectDetaction/getPoly/${timeLaps.id + email}`, {
+                .get(`/api/v1/challenges/${timeLaps.id}/polygon`, {
                     headers: {
-                        accept: '*/*',
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 })
                 .then((response) => {
-                    console.log(response);
-                    // setPoly(JSON.parse(response.data));
-                    setPoly(response.data);
+                    setPoly(response.data.polygon);
                 })
                 .catch((error) => {
-                    console.error(`Error: ${error}`);
+                    console.error(error);
                 });
         }
+
+        return () => {
+            // closeWebcam();
+        };
     }, []);
 
-    // const setupWebcam = async () => {
-    //     try {
-    //         const stream = await navigator.mediaDevices.getUserMedia({
-    //             video: {
-    //                 // width: 1024,
-    //                 // height: 600, // 해상도 설정
-    //                 facingMode: 'environment', // 셀카카메라 설정. 후면카메라는 "environment"
-    //             },
-    //         });
-    //         videoRef.current.srcObject = stream;
-    //         // 비디오 로딩이 완료된 후에 play()를 호출합니다.
-    //         videoRef.current.onloadedmetadata = () => {
-    //             videoRef.current.play();
-    //         };
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+    const setupWebcam = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            videoRef.current.srcObject = stream;
+            // 비디오 로딩이 완료된 후에 play()를 호출합니다.
+            videoRef.current.onloadedmetadata = () => {
+                videoRef.current.play();
+            };
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-    // const closeWebcam = () => {
-    //     const stream = videoRef.current.srcObject;
-    //     const tracks = stream.getTracks();
+    const closeWebcam = () => {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
 
-    //     tracks.forEach(function (track) {
-    //         track.stop();
-    //     });
+        tracks.forEach(function (track) {
+            track.stop();
+        });
 
-    //     videoRef.current.srcObject = null;
-    // };
+        videoRef.current.srcObject = null;
+    };
 
     const dataURItoBlob = (dataURI) => {
         var byteString = atob(dataURI.split(',')[1]);
@@ -94,58 +85,57 @@ function Jeonghui() {
 
     const capture = () => {
         console.log('capture');
-        // const photo = photoRef.current;
-        // const video = videoRef.current;
 
-        // photo.width = 400;
-        // photo.height = 300;
+        const photo = photoRef.current;
+        const video = videoRef.current;
 
-        // const ctx = photo.getContext('2d');
-        // ctx.drawImage(video, 0, 0, photo.width, photo.height);
+        photo.width = width;
+        photo.height = height;
 
-        const photo = videoRef.current.getScreenshot();
+        const ctx = photo.getContext('2d');
+        ctx.drawImage(video, 0, 0, photo.width, photo.height);
 
-        // var dataUrl = photo.toDataURL('image/jpeg');
-        // console.log(photo);
-        // console.log(dataUrl);
-        var blob = dataURItoBlob(photo);
+        // const photo = videoRef.current.getScreenshot();
+
+        var dataUrl = photo.toDataURL('image/jpeg');
+        var blob = dataURItoBlob(dataUrl);
 
         var formData = new FormData();
-        formData.append('img', blob);
+        formData.append('snapshot', blob);
 
-        if (timeLaps.percent == 0) {
+        if (timeLaps.countDays <= 0) {
+            console.log('객체 인식 실행');
             axios
-                .post(`${BASE_HTTP_URL}/objectDetaction`, formData, {
+                .post(`/api/v1/challenges/${timeLaps.id}/snapshots/objects/detection`, formData, {
                     headers: {
                         accept: '*/*',
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                     responseType: 'blob',
                 })
                 .then((response) => {
-                    // closeWebcam();
                     navigate('/chooseObject', { state: { origin: blob, object: response.data, challenge: timeLaps } });
+                    closeWebcam();
                 })
                 .catch((error) => {
                     console.error(`Error: ${error}`);
                 });
         } else {
-            formData.append('challengeId', timeLaps.id + email);
-
             axios
-                .post(`${BASE_HTTP_URL}/objectDetaction/similarity`, formData, {
+                .post(`/api/v1/challenges/${timeLaps.id}/snapshots`, formData, {
                     headers: {
                         accept: '*/*',
                         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 })
                 .then((response) => {
-                    console.log(response);
-                    if (response.status == 204) {
+                    if (response.status == 400) {
                         alert('비슷한 객체를 찾지 못했습니다. 다시 사진을 찍어주세요');
                     } else {
-                        // closeWebcam();
                         navigate('/');
+                        closeWebcam();
                     }
                 })
                 .catch((error) => {
@@ -154,32 +144,68 @@ function Jeonghui() {
         }
     };
 
+    // const makeVideo = () => {
+    //     console.log('비디오 만들자~~');
+    //     axios
+    //         .post(
+    //             `/objectDetection/makeVideo`,
+    //             {
+    //                 object: 'https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/d21656a4-33dc-43b5-974d-dfb8a89443cb_blob',
+    //                 snapshots:
+    //                     'https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/3c659feb-d64d-4bc4-a613-681933703f24_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/ca4dcc8f-2c12-407a-ac67-71b435ca8881_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/87e6f259-4944-46dc-bbc5-39515baab8e0_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/3c659feb-d64d-4bc4-a613-681933703f24_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/ca4dcc8f-2c12-407a-ac67-71b435ca8881_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/87e6f259-4944-46dc-bbc5-39515baab8e0_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/3c659feb-d64d-4bc4-a613-681933703f24_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/ca4dcc8f-2c12-407a-ac67-71b435ca8881_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/87e6f259-4944-46dc-bbc5-39515baab8e0_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/3c659feb-d64d-4bc4-a613-681933703f24_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/ca4dcc8f-2c12-407a-ac67-71b435ca8881_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/87e6f259-4944-46dc-bbc5-39515baab8e0_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/3c659feb-d64d-4bc4-a613-681933703f24_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/ca4dcc8f-2c12-407a-ac67-71b435ca8881_blob, https://kkukku-timing-21-s3.s3.ap-northeast-2.amazonaws.com/87e6f259-4944-46dc-bbc5-39515baab8e0_blob',
+    //             },
+    //             {
+    //                 headers: {
+    //                     accept: '*/*',
+    //                     Authorization: `Bearer ${accessToken}`,
+    //                 },
+    //                 responseType: 'blob',
+    //             }
+    //         )
+    //         .then((response) => {
+    //             console.log(response);
+    //             const videoUrl = URL.createObjectURL(new Blob([response.data], { type: 'video/mp4' }));
+    //             setVideoData(videoUrl);
+    //         })
+    //         .catch((error) => {
+    //             console.log(`Error: ${error}`);
+    //         });
+    // };
+
     return (
-        <div className={styles.container}>
-            <Webcam
-                height={height}
-                width={width}
-                videoConstraints={{ facingMode: 'environment', aspectRatio: ratio }}
-                screenshotFormat="image/jpeg"
-                ref={videoRef}
-            />
-            {/* <div className={styles.video}>
-                <video ref={videoRef} style={{ width: '100vw', height: '100%', objectFit: 'cover' }}></video>
-            </div> */}
-            <div className={styles.camera} onClick={capture}>
-                <PhotoCameraIcon style={{ width: '13vw', height: '13vw' }} />
-            </div>
-            <div>
-                <canvas ref={photoRef} style={{ display: 'none' }}></canvas>
-            </div>
-            {poly && (
-                <div className={styles.polyContainer}>
-                    <svg height={height} width={width}>
-                        <polyline points={poly} style={{ fill: 'none', stroke: 'yellow', strokeWidth: 4 }} />
-                    </svg>
+        <>
+            <div className={styles.container}>
+                <video ref={videoRef} style={{ width: width, height: height, aspectRatio: ratio }}></video>
+                {/* <Webcam
+                    height={height}
+                    width={width}
+                    videoConstraints={{ facingMode: 'environment', aspectRatio: ratio }}
+                    screenshotFormat="image/jpeg"
+                    ref={videoRef}
+                /> */}
+                <div className={styles.camera} onClick={capture}>
+                    <PhotoCameraIcon style={{ width: '13vw', height: '13vw' }} />
                 </div>
-            )}
-        </div>
+                <div>
+                    <canvas ref={photoRef} style={{ display: 'none' }}></canvas>
+                </div>
+                {poly && (
+                    <div className={styles.polyContainer}>
+                        <svg height={height} width={width}>
+                            <polyline points={poly} style={{ fill: 'none', stroke: 'yellow', strokeWidth: 4 }} />
+                        </svg>
+                    </div>
+                )}
+            </div>
+            {/* {videoData && (
+                <div>
+                    <video muted autoPlay loop>
+                        <source src={videoData} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            )} */}
+        </>
     );
 }
 
