@@ -22,11 +22,15 @@ from IPython.display import Image, display
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rembg import remove
+import random
+import string
+import requests
+from pydantic import BaseModel
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
+    "*"
 ]
 
 app.add_middleware(
@@ -35,10 +39,14 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["poly", "Poly"]
+    expose_headers=["polygon", "Polygon"]
 )
 
 CHANNELS = 3 # number of image channels (RGB)
+
+class Item(BaseModel):
+    object: str
+    snapshots: str 
 
 @app.on_event("startup")
 async def startup():
@@ -50,14 +58,19 @@ async def startup():
     cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # set threshold for this model
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+    cfg.MODEL.DEVICE = "cpu"
     predictor = DefaultPredictor(cfg)
 
     tf.disable_v2_behavior()
     module = hub.load("https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_b0/feature_vector/2")
 
-@app.post("/objectDetaction")
-async def objectDetaction(img: UploadFile):
-    data = await img.read()
+@app.get("/objectDetection/test")
+async def test():
+    return "test"
+
+@app.post("/objectDetection")
+async def objectDetection(snapshot: UploadFile):
+    data = await snapshot.read()
     encoded_img = np.fromstring(data, dtype = np.uint8)
     img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
 
@@ -76,11 +89,11 @@ async def objectDetaction(img: UploadFile):
 
     return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
 
-@app.post("/objectDetaction/chooseObject")
-async def chooseObject(img: UploadFile = Form(), x: float = Form(), y: float = Form(), challengeId: str = Form()):
+@app.post("/objectDetection/chooseObject")
+async def chooseObject(snapshot: UploadFile = Form(), x: float = Form(), y: float = Form()):
     # 원본 이미지랑 x, y 좌표 같이 보내줘야됨
 
-    data = await img.read()
+    data = await snapshot.read()
     encoded_img = np.fromstring(data, dtype = np.uint8)
     img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
 
@@ -90,75 +103,50 @@ async def chooseObject(img: UploadFile = Form(), x: float = Form(), y: float = F
     _, instance_polygons= v.draw_instance_predictions(outputs["instances"].to("cpu"))
 
     idx = -1
-    print(len(outputs["instances"].pred_boxes))
     for i in range(len(outputs["instances"].pred_boxes)):
         if x <= outputs["instances"].pred_boxes.tensor[i][3].item() and x >= outputs["instances"].pred_boxes.tensor[i][1].item() and y <= outputs["instances"].pred_boxes.tensor[i][2].item() and y >= outputs["instances"].pred_boxes.tensor[i][0].item():
             idx = i
             break
-    # idx = 0  # 이거는 나중에 없애주면 됨
 
     if idx == -1:
-        raise HTTPException(status_code=204)
+        raise HTTPException(status_code=400)
 
     x = int(outputs["instances"].pred_boxes.tensor[idx][1].item())
     xx = int(outputs["instances"].pred_boxes.tensor[idx][3].item())
     y = int(outputs["instances"].pred_boxes.tensor[idx][0].item())
     yy= int(outputs["instances"].pred_boxes.tensor[idx][2].item())
 
-    # im_png = remove(img[x:xx, y:yy])
-    # _, im_png = cv2.imencode(".png", im_png)
     _, im_png = cv2.imencode(".png", img[x:xx, y:yy]) 
 
     instance_polygon = instance_polygons[idx]
 
-    file = open(challengeId + "poly.txt", "w")
     vertices = instance_polygon.get_path().vertices
     poly = ''
-    # file.write("[")
-    # 정점 좌표 출력
-    # print("다각형의 점들:")
     for index, vertex in list(enumerate(vertices)):
-        # file.write("[")
-        file.write(str(vertex[0]))
-        file.write(",")
-        file.write(str(vertex[1]))
         poly += str(vertex[0]) + "," + str(vertex[1])
-        # file.write("]")
         if index != len(vertices) - 1:
-            # file.write(", ")
-            file.write(" ")
             poly += " "
-        # print(vertex)
-    # file.write("]")
-    file.close()
-
-    response_data = {
-        "poly": poly,
-        "file": io.BytesIO(im_png.tobytes())
-    }
 
     results = {
-        "poly": poly
+        "polygon": poly
     }
 
-    # return JSONResponse(response_data)
-    # return FileResponse(im_png,headers=poly)
     return Response(content=io.BytesIO(im_png.tobytes()).getvalue(), headers=results)
     # return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png", headers=poly)
 
-@app.post("/objectDetaction/objectSave")
-async def objectSave(img: UploadFile = Form(), challengeId: str = Form()):
-    data = await img.read()
-    encoded_img = np.fromstring(data, dtype = np.uint8)
+# @app.post("/objectDetection/objectSave")
+# async def objectSave(img: UploadFile = Form(), challengeId: str = Form()):
+#     data = await img.read()
+#     encoded_img = np.fromstring(data, dtype = np.uint8)
 
-    img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
+#     img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
     
-    # cv2.imwrite("./test.png", img)
-    # img = remove(img)
+#     # cv2.imwrite("./test.png", img)
+#     # img = remove(img)
 
-    cv2.imwrite("./" + challengeId + ".png", img)
+#     cv2.imwrite("./" + challengeId + ".png", img)
 
-    return "done"
+#     return "done"
 
 def build_graph(hub_module_url, target_image_path):
     # Step 1) Prepare pre-trained model for extracting image features.
@@ -207,20 +195,26 @@ def build_graph(hub_module_url, target_image_path):
 
     return input_byte, similarity
 
-@app.post("/objectDetaction/similarity")
-async def similarity(img: UploadFile = Form(), challengeId: str = Form()):
+@app.post("/objectDetection/similarity")
+async def similarity(snapshot: UploadFile = Form(), objectUrl: str = Form()):
     # 챌린지ID, 선택된 객체 이미지, 새로 찍은 이미지
+
+    print(objectUrl)
+
+    challengeId = "".join([random.choice(string.ascii_letters) for _ in range(15)])
     
-    data = await img.read()
+    data = await snapshot.read()
     encoded_img = np.fromstring(data, dtype = np.uint8)
     img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
+
+    data = np.asarray(bytearray(requests.get(objectUrl).content), dtype=np.uint8)
+    target = cv2.imdecode(data, cv2.IMREAD_COLOR)
+    cv2.imwrite("./" + challengeId + ".png", target)
 
     outputs = predictor(img)
 
     target_img_path = challengeId + '.png'
     input_img_paths = []
-
-    print("객체 찾자잉")
 
     for i in range(len(outputs["instances"].pred_boxes)):
         x = int(outputs["instances"].pred_boxes.tensor[i][1].item())
@@ -253,39 +247,23 @@ async def similarity(img: UploadFile = Form(), challengeId: str = Form()):
     max = 0
     maxIdx = -1
     for similarity, input_img_path in zip(similarities, input_img_paths):
-        print(input_img_path)
         print("- similarity: %.2f" % similarity)
+        
+
         if similarity > max and similarity > 0.6:
             maxIdx = idx
             max = similarity
         os.remove(input_img_path)
         idx+=1
+    os.remove(target_img_path)
 
     if maxIdx == -1:
-        raise HTTPException(status_code=204)
+        raise HTTPException(status_code=400)
     
-    try:
-        if not os.path.exists("./" + challengeId):
-            os.makedirs(challengeId)
-    except OSError:
-        print ('Error: Creating directory. ' +  challengeId)
-
-    
-    cv2.imwrite("./" + challengeId + "/" + challengeId + str(len(os.listdir(challengeId))) + ".png", img)
     return "객체 찾기 완료!!"
 
-@app.get("/objectDetaction/getPoly/{challengeId}")
-async def getPoly(challengeId: str):
-    
-    if os.path.isfile("./" + challengeId + "poly.txt"):
-        f = open("./" + challengeId + "poly.txt", 'r')
-        data = f.read()
-        return data
-        
-    raise HTTPException(status_code=204)
-
-# @app.get("/makeVideo/{challengeId}")
-# async def makeVideo(challengeId: str):
+# @app.get("/objectDetection/getPoly/{challengeId}")
+# async def getPoly(challengeId: str):
     
 #     if os.path.isfile("./" + challengeId + "poly.txt"):
 #         f = open("./" + challengeId + "poly.txt", 'r')
@@ -293,3 +271,138 @@ async def getPoly(challengeId: str):
 #         return data
         
 #     raise HTTPException(status_code=204)
+
+@app.post("/objectDetection/makeVideo")
+async def makeVideo(item: Item):
+
+    object = item.object
+    snapshots = item.snapshots
+
+    print(object)
+    print(snapshots)
+
+    challengeId = "".join([random.choice(string.ascii_letters) for _ in range(15)])
+
+    snapshots = snapshots.split(",")
+
+    data = np.asarray(bytearray(requests.get(object).content), dtype=np.uint8)
+    target = cv2.imdecode(data, cv2.IMREAD_COLOR)
+    cv2.imwrite("./" + challengeId + ".png", target)
+    
+    target_img_path = "./" + challengeId + ".png"
+
+    pathOut = "./" + challengeId + ".mp4"
+    fps = 4
+    frame_array = []
+
+    height, width = 645, 390
+
+    for idx , path in enumerate(snapshots) :
+        # if idx == 2:
+        #     break
+        data = np.asarray(bytearray(requests.get(path).content), dtype=np.uint8)
+        img = cv2.imdecode(data, cv2.IMREAD_COLOR)
+        # img = cv2.imread("./" + challengeId + "/" + path)
+        outputs = predictor(img)
+
+        input_img_paths = []
+
+        for i in range(len(outputs["instances"].pred_boxes)):
+            x = int(outputs["instances"].pred_boxes.tensor[i][1].item())
+            xx = int(outputs["instances"].pred_boxes.tensor[i][3].item())
+            y = int(outputs["instances"].pred_boxes.tensor[i][0].item())
+            yy= int(outputs["instances"].pred_boxes.tensor[i][2].item())
+            
+            # img_remove = remove(img[x:xx, y:yy])
+            # cv2.imwrite("./" + challengeId + str(i) + ".png", img_remove)
+            cv2.imwrite("./" + challengeId + str(i) + ".png", img[x:xx, y:yy])
+            input_img_paths.append(challengeId + str(i) + ".png")
+
+        image_bytes = [tf.gfile.GFile(name, 'rb').read()
+                for name in input_img_paths]
+        
+        hub_module_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_100_96/feature_vector/1" #@param {type:"string"}
+
+        with tf.Graph().as_default():
+            input_byte, similarity_op = build_graph(hub_module_url, target_img_path)
+            # print("build 성공!!!!!")
+
+            with tf.Session() as sess:
+                sess.run(tf.global_variables_initializer())
+                t0 = time.time() # for time check
+                
+                # Inference similarities
+                similarities = sess.run(similarity_op, feed_dict={input_byte: image_bytes})
+
+        idx = 0
+        maxx = 0
+        maxIdx = -1
+        for similarity, input_img_path in zip(similarities, input_img_paths):
+            # print(input_img_path)
+            # print("- similarity: %.2f" % similarity)
+            if similarity > maxx and similarity > 0.6:
+                maxIdx = idx
+                maxx = similarity
+            os.remove(input_img_path)
+            idx+=1
+
+        if maxIdx == -1:
+            continue
+
+        x = int(outputs["instances"].pred_boxes.tensor[i][1].item())
+        xx = int(outputs["instances"].pred_boxes.tensor[i][3].item())
+        y = int(outputs["instances"].pred_boxes.tensor[i][0].item())
+        yy= int(outputs["instances"].pred_boxes.tensor[i][2].item())
+
+        centerX = (xx + x) / 2
+        centerY = (yy - y) / 2
+
+        rows,cols = img.shape[0:2]  # 영상의 크기
+
+        half_width = min(rows - centerX, centerX)
+        half_height = min(cols - centerY, centerY)
+
+        # print(centerX, centerY)
+        # print(rows, cols)
+        # print(half_width, half_height)
+        # print(int(centerX-half_width), int(centerX+half_width), int(centerY-half_height), int(centerY+half_height))
+
+        image_to_insert = img[int(centerX-half_width):int(centerX+half_width), int(centerY-half_height):int(centerY+half_height)]
+        # print(image_to_insert)
+
+        # cv2.imwrite("./test.png", reshape_img)
+
+        if idx == 0:
+            height, width = img.shape[0:2]
+            frame_array.append(img)
+            continue
+        else:
+            blank_image = np.zeros((height, width, 3), np.uint8)
+            # print(image_to_insert.shape[0] / height)
+            # print(image_to_insert.shape[1] / width)
+
+            ratio = max(image_to_insert.shape[0] / height , image_to_insert.shape[1] / width)
+            if ratio > 1:
+                image_to_insert = cv2.resize(image_to_insert, dsize=(int(image_to_insert.shape[1] / ratio) , int(image_to_insert.shape[0] / ratio)), interpolation=cv2.INTER_LINEAR)
+
+            y = int((blank_image.shape[0] - image_to_insert.shape[0]) / 2) 
+            x = int((blank_image.shape[1] - image_to_insert.shape[1]) / 2)
+
+            blank_image[y:y + image_to_insert.shape[0], x:x + image_to_insert.shape[1]] = image_to_insert
+            frame_array.append(blank_image)
+
+    size = (width,height)
+    out = cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'H264'), fps, size)
+    for i in range(len(frame_array)):
+        out.write(frame_array[i])
+    out.release()
+
+    os.remove(target_img_path)
+
+    with open(pathOut, "rb") as video_file:
+        video_data = video_file.read()
+
+    os.remove(pathOut)
+
+    return StreamingResponse(io.BytesIO(video_data), media_type="video/mp4")
+
