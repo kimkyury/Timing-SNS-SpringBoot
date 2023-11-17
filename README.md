@@ -71,6 +71,9 @@
 -   Challenge에 대한 이미지 첨부시, 최초 사진과의 유사성 검사 및 재촬영 안내를 통해 완성 Mp4파일의 품질 향상
 -   Challenge 종료 후 피드 등록시, 첨부된 사진들을 연속시켜 Mp4 파일로 변환
 
+### 그 외
+🔗[Go! Backend ReadMe](./backend)
+
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
 
 <br/>
