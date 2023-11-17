@@ -49,7 +49,7 @@ public class FeedController {
         return ApiResponseUtil.success(feedService.getRecommendFeeds(page));
     }
 
-    @Operation(summary = "추천순 피드 상세 조회", tags = {"0.Test"},
+    @Operation(summary = "추천순 피드 상세 조회", tags = {"3. Feed"},
         description = "챌린지, 피드, 좋아요, 댓글 내용과 해시태그를 정보를 점수화하여 개인별 맞춤 피드를 정렬시켜 보내줍니다. ")
     @GetMapping("/recommended/score")
     public ResponseEntity<List<FeedDetailResponse>> getRecommendFeedsByScore(
