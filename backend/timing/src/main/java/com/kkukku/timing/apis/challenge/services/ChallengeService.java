@@ -93,11 +93,13 @@ public class ChallengeService {
                                    long countDays = diffDay(c.getStartedAt(), LocalDate.now());
                                    long maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
 
+                                   long snapshotCnt = snapshotService.getCntSnapshotByChallenge(
+                                       c.getId());
                                    boolean isUploadToday = isTodayProcessChallenge(c);
                                    boolean isProcess = c.getIsProcess();
 
                                    return new Challenge(id, thumbnailUrl, countDays, maxDays,
-                                       isUploadToday, isProcess);
+                                       isUploadToday, isProcess, snapshotCnt);
                                })
                                .toList());
     }
@@ -245,7 +247,6 @@ public class ChallengeService {
         snapshotService.createSnapshot(challenge, "/" + savedSnapshotUrl);
     }
 
-    @Transactional
     public void setChallengeIsProcess(Long challengeId) {
 
         challengeRepository.findById(challengeId)

@@ -25,6 +25,7 @@ public class ChallengeResponse {
         private Long maxDays;
         private Boolean isUploadToday;
         private Boolean isProcess;
+        private Long snapshotCnt;
 
     }
 
