@@ -191,6 +191,13 @@ public class TestController {
 
         // TODO Convert to Feed START
         challengeService.setChallengeIsProcess(challengeId);
+        System.out.println("-----------Challenge 상태 변경되어야 합니다. ");
+
+        boolean result = challengeRepository.findById(challengeId)
+                                            .get()
+                                            .getIsProcess();
+        System.out.println("-----결과: " + result);
+
         feedService.convertToFeed(challengeId);
         // TODO Convert to Feed END
 
