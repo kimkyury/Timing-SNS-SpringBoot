@@ -29,15 +29,15 @@
 ## 🚀 특징
 <a name="functions"></a>
 - Java 21, SpringBoot 3.2 기반 프로젝트
-- MP4 스트리밍 기능
-- SpringSecurity & KakaoOAuth 구현
+- S3 스트림 다운로드 및 MP4 스트리밍 기능
+- Spring Security Framework를 활용한 Kakao OAuth 2.0, JWT 인증, 인가 시스템 구현
 - 게시글의 Tree 탐색 알고리즘 구현
 - Python AI Server 통신을 위한 Proxy API 구현
-- Junit5 & H2 Database 기반 TestDrivenDevelop
+- JUnit5 & H2 Database 기반 TDD(Test Driven Develop)
 - AWS S3, MariaDB, Redis 외부 저장 환경 구축
-- SwaagerDoc 기반 API Docs 구축
-- ELK 기반 HashTag 검색, 초성 검색 
-- 게시글 작성, 공개/비공개, 공유, 이어가기, 연장하기, 댓글 등에 대한 Rest API 구현
+- SpringDoc 기반 API Docs 구축 (Swagger)
+- ELK 기반 Hashtag 검색, 초성 검색 
+- 게시글 작성, 공개/비공개, 공유, 이어가기, 연장하기, 댓글 등에 대한 REST API 구현
 
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
 
