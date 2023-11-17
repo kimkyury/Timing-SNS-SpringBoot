@@ -321,7 +321,7 @@ function Feed(data) {
                     </div>
 
                     {/* 게시글 시간 정보 */}
-                    <div>{formatT(state.createdAt)}</div>
+                    <div className={styles.datebox}>{formatT(state.createdAt)}</div>
 
                     {/* 게시글 댓글 */}
                     {currentUrl != '/' && comment.length != 0 && (

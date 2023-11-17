@@ -39,7 +39,7 @@ function DetailComment() {
             .catch((error) => {
                 console.error(error);
             });
-    }, [state]);
+    }, []);
 
     return state ? (
         <motion.div
