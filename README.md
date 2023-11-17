@@ -146,6 +146,8 @@ ERD
 
 <a name="erd"></a>
 
+![ERD](./image/erd.png)
+
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
 
 <br/>
