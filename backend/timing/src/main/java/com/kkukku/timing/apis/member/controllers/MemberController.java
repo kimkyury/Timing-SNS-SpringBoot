@@ -22,14 +22,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/members")
-@Tag(name = "1. Member", description = "Member API")
+@Tag(name = "2. Member", description = "Member API")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
     @Operation(summary = "Member 정보 수정", tags = {
-        "1. Member"}, description = "(Only Nickname ||  Only profileImage || Both) 가능합니다. ")
+        "2. Member"}, description = "(Only Nickname ||  Only profileImage || Both) 가능합니다. ")
     @PatchMapping(value = "", consumes = {
         MediaType.APPLICATION_JSON_VALUE,
         MediaType.MULTIPART_FORM_DATA_VALUE
@@ -46,7 +46,7 @@ public class MemberController {
 
 
     @Operation(summary = "Member 조회", tags = {
-        "1. Member"}, description = "Query를 통해 다른 Member의 정보를 조회 가능합니다. (쿼리 없을 시 본인 정보 조회)")
+        "2. Member"}, description = "Query를 통해 다른 Member의 정보를 조회 가능합니다. (쿼리 없을 시 본인 정보 조회)")
     @GetMapping(value = "")
     public ResponseEntity<MemberDetailResponse> getMemberDetail(
         @RequestParam(name = "email", required = false) String otherEmail) {
@@ -61,7 +61,7 @@ public class MemberController {
         return SecurityUtil.getLoggedInMemberEmail();
     }
 
-    @Operation(summary = "Member의 탈퇴(isDelete True)", tags = {"1. Member"})
+    @Operation(summary = "Member의 탈퇴(isDelete True)", tags = {"2. Member"})
     @DeleteMapping(value = "")
     public ResponseEntity<Void> deleteMember() {
 

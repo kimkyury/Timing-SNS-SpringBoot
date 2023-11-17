@@ -34,14 +34,14 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 @RestController
 @RequestMapping("/api/v1/feeds")
-@Tag(name = "3. Feed", description = "Feed API")
+@Tag(name = "4. Feed", description = "Feed API")
 @RequiredArgsConstructor
 public class FeedController {
 
     private final FeedService feedService;
     private final ChallengeService challengeService;
 
-    @Operation(summary = "최신순 피드 상세 조회", tags = {"3. Feed"},
+    @Operation(summary = "최신순 피드 상세 조회", tags = {"4. Feed"},
         description = "현재는 피드 최신 순으로 뽑아옵니다.")
     @GetMapping("/recommended")
     public ResponseEntity<List<FeedDetailResponse>> getRecommendFeeds(
@@ -49,7 +49,7 @@ public class FeedController {
         return ApiResponseUtil.success(feedService.getRecommendFeeds(page));
     }
 
-    @Operation(summary = "추천순 피드 상세 조회", tags = {"3. Feed"},
+    @Operation(summary = "추천순 피드 상세 조회", tags = {"4. Feed"},
         description = "챌린지, 피드, 좋아요, 댓글 내용과 해시태그를 정보를 점수화하여 개인별 맞춤 피드를 정렬시켜 보내줍니다. ")
     @GetMapping("/recommended/score")
     public ResponseEntity<List<FeedDetailResponse>> getRecommendFeedsByScore(
@@ -58,13 +58,13 @@ public class FeedController {
     }
 
     @Operation(summary = "피드 상세 조회", tags = {
-        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
+        "4. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("/{id}")
     public ResponseEntity<FeedDetailResponse> getFeedDetail(@PathVariable Long id) {
         return ApiResponseUtil.success(feedService.getFeedDetail(id));
     }
 
-    @Operation(summary = "피드 요약 조회", tags = {"3. Feed"},
+    @Operation(summary = "피드 요약 조회", tags = {"4. Feed"},
         description = "email이 있으면 다른 사람, email이 없으면 로그인한 유저")
     @GetMapping("")
     public ResponseEntity<?> getSomeoneFeeds(
@@ -76,13 +76,13 @@ public class FeedController {
         return ApiResponseUtil.success(feedService.getOwnSummaryFeedsWithCount());
     }
 
-    @Operation(summary = "피드 삭제", tags = {"3. Feed"})
+    @Operation(summary = "피드 삭제", tags = {"4. Feed"})
     @DeleteMapping("/{id}")
     public void deleteFeed(@PathVariable Long id) {
         feedService.deleteFeed(id);
     }
 
-    @Operation(summary = "피드 업데이트", tags = {"3. Feed"},
+    @Operation(summary = "피드 업데이트", tags = {"4. Feed"},
         description = "review와 isPrivate 둘 중 하나만 있어도 되고, 하나만 있어도 됩니다.")
     @PatchMapping("/{id}")
     public void updateFeed(@PathVariable Long id,
@@ -91,14 +91,14 @@ public class FeedController {
     }
 
     @Operation(summary = "피드가 이어받은 모든 피드 조회 (트리 조회)", tags = {
-        "3. Feed"}, description = "delete 노드와 private 노드는 기본 thumbnail URL로 제공됨")
+        "4. Feed"}, description = "delete 노드와 private 노드는 기본 thumbnail URL로 제공됨")
     @GetMapping("/{id}/influence")
     public ResponseEntity<FeedNodeResponse> getFeedTree(@PathVariable Long id) {
         return ApiResponseUtil.success(feedService.getFeedTree(id));
     }
 
     @Operation(summary = "피드 타임랩스 다운로드", tags = {
-        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
+        "4. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("/{id}/videos")
     public ResponseEntity<?> getFile(@PathVariable Long id) {
         S3Object s3Object = feedService.getTimelapseFileCheckAccess(id);
@@ -112,7 +112,7 @@ public class FeedController {
                              .body(resource);
     }
 
-    @Operation(summary = "피드 스트리밍", tags = {"3. Feed"})
+    @Operation(summary = "피드 스트리밍", tags = {"4. Feed"})
     @GetMapping("/{id}/videos/streaming")
     public ResponseEntity<StreamingResponseBody> timelapseStreaming(@PathVariable Long id,
         @RequestParam(name = "access-token") String accessToken) {
@@ -133,7 +133,7 @@ public class FeedController {
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
-    @Operation(summary = "챌린지 완료, 피드 전환", tags = {"3. Feed"})
+    @Operation(summary = "챌린지 완료, 피드 전환", tags = {"4. Feed"})
     @PostMapping("")
     public void convertToFeed(
         @Valid @RequestBody ChallengeCompleteRequest challengeCompleteRequest) {
@@ -143,7 +143,7 @@ public class FeedController {
     }
 
     @Operation(summary = "피드 댓글 조회", tags = {
-        "3. Feed"}, description = "page 값은 1부터 가능하고, 10개씩 주어집니다. private은 본인만 조회 가능, delete는 조회 불가능")
+        "4. Feed"}, description = "page 값은 1부터 가능하고, 10개씩 주어집니다. private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("/{id}/comments")
     public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long id,
         @RequestParam(name = "page") Integer page) {
@@ -151,7 +151,7 @@ public class FeedController {
     }
 
     @Operation(summary = "피드 댓글 작성", tags = {
-        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
+        "4. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @PostMapping("/{id}/comments")
     public void saveComment(@PathVariable Long id,
         @RequestBody @Valid CommentSaveRequest commentSaveRequest) {
@@ -159,21 +159,21 @@ public class FeedController {
     }
 
     @Operation(summary = "피드 좋아요", tags = {
-        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
+        "4. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @PostMapping("/{id}/likes")
     public void likeFeed(@PathVariable Long id) {
         feedService.saveLike(id);
     }
 
     @Operation(summary = "피드 좋아요 취소", tags = {
-        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
+        "4. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @DeleteMapping("/{id}/likes")
     public void dislikeFeed(@PathVariable Long id) {
         feedService.deleteLike(id);
     }
 
     @Operation(summary = "피드 해시태그 검색", tags = {
-        "3. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
+        "4. Feed"}, description = "private은 본인만 조회 가능, delete는 조회 불가능")
     @GetMapping("{id}/search")
     public ResponseEntity<?> getFeeds(@PathVariable Long id,
         @RequestParam(name = "page") Integer page) {

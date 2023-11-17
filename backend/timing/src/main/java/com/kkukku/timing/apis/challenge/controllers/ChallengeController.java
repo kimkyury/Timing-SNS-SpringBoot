@@ -30,13 +30,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/challenges")
-@Tag(name = "2. Challenge", description = "Challenge API")
+@Tag(name = "3. Challenge", description = "Challenge API")
 @RequiredArgsConstructor
 public class ChallengeController {
 
     private final ChallengeService challengeService;
 
-    @Operation(summary = "본인의 Challenge 생성", tags = {"2. Challenge"},
+    @Operation(summary = "본인의 Challenge 생성", tags = {"3. Challenge"},
         description = "Challenge가 생성 && 새로운 hashTag 생성 && 연관관계 정보 생성 ")
     @PostMapping(value = "")
     public ResponseEntity<Void> createChallenge(
@@ -48,7 +48,7 @@ public class ChallengeController {
         return ApiResponseUtil.success();
     }
 
-    @Operation(summary = "본인의 Challenge 목록 가져오기", tags = {"2. Challenge"},
+    @Operation(summary = "본인의 Challenge 목록 가져오기", tags = {"3. Challenge"},
         description = "Main, Mypage에 사용될 본인 Challenge 목록들입니다. ")
     @GetMapping(value = "")
     public ResponseEntity<ChallengeResponse> getChallenge() {
@@ -60,7 +60,7 @@ public class ChallengeController {
         return ApiResponseUtil.success(challengeResponse);
     }
 
-    @Operation(summary = "본인의 특정 Challenge 삭제하기", tags = {"2. Challenge"},
+    @Operation(summary = "본인의 특정 Challenge 삭제하기", tags = {"3. Challenge"},
         description = "본인의 특정 Challenge를 삭제하며, 관련 Snapshot들도 삭제합니다.  ")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteChallenge(@PathVariable Long id) {
@@ -72,7 +72,7 @@ public class ChallengeController {
         return ApiResponseUtil.success();
     }
 
-    @Operation(summary = "본인의 특정 Challenge 기간 연장하기", tags = {"2. Challenge"},
+    @Operation(summary = "본인의 특정 Challenge 기간 연장하기", tags = {"3. Challenge"},
         description = "본인의 특정 Challenge 완료 후, 21일을 연장할 수 있습니다. ")
     @PatchMapping(value = "/{id}/extension")
     public ResponseEntity<Void> extendChallenge(@PathVariable Long id) {
@@ -84,7 +84,7 @@ public class ChallengeController {
         return ApiResponseUtil.success();
     }
 
-    @Operation(summary = "타 멤버의 특정 Challenge 이어하기", tags = {"2. Challenge"},
+    @Operation(summary = "타 멤버의 특정 Challenge 이어하기", tags = {"3. Challenge"},
         description = "타 회원의 Feed 정보(FeedId를 입력해주세요)를 이어서 본인의 Challenge로 생성합니다. HastTag 정보가 연동됩니다. GoalContent 정보는 연동되지 않습니다.(별도 작성) ")
     @PostMapping(value = "/{id}/relay")
     public ResponseEntity<Void> relayChallenge(@PathVariable Long id,
@@ -98,7 +98,7 @@ public class ChallengeController {
     }
 
     @Operation(summary = "특정 Challenge의 SnapShot 촬영을 위한 Polygon 얻기", tags = {
-        "2. Challenge"},
+        "3. Challenge"},
         description = "SnapShot 촬영 시 가이드 윤곽선을 그리기 위한 Polygon을 String 형태로 받아옵니다. ")
     @GetMapping(value = "/{id}/polygon")
     public ResponseEntity<ChallengePolygonResponse> getSnapshotByChallenge(@PathVariable Long id) {
@@ -112,7 +112,7 @@ public class ChallengeController {
     }
 
     @Operation(summary = "특정 Challenge의 Polygon, Object 사진 저장", tags = {
-        "2. Challenge"},
+        "3. Challenge"},
         description = "특정 Challenge의 Snapshot 최초 등록시, 사진의 객체 최종 확정을 통해 Polygon, Object가 저장됩니다")
     @PostMapping(value = "/{id}/objects", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> savePolygonAndObject(@PathVariable Long id,
@@ -126,7 +126,7 @@ public class ChallengeController {
     }
 
     // 이하로 Python Proxy APIs
-    @Operation(summary = "특정 Challenge의 Snapshot 추가", tags = {"2. Challenge"},
+    @Operation(summary = "특정 Challenge의 Snapshot 추가", tags = {"3. Challenge"},
         description = "특정 Challenge의 Snapshot 추가 시, AI server를 통한 유사도 판정 이후 Snapshot이 저장됩니다."
             + "<br/> *상태코드:400일 시, 객체 유사도가 낮아서 실패한 경우입니다."
             + "<br/> *상태코드:200일 시, snapshot이 저장됩니다."
@@ -142,7 +142,7 @@ public class ChallengeController {
     }
 
     @Operation(summary = "특정 Challenge의 최초 Snapshot 객체 탐지 요청", tags = {
-        "2. Challenge"},
+        "3. Challenge"},
         description =
             "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 객체 탐지를 요청하고 Object 이미지를 리턴합니다. "
                 + "<br/> *상태코드:4xx일 경우, 객체를 발견하지 못한 것입니다"
@@ -163,7 +163,7 @@ public class ChallengeController {
     }
 
     @Operation(summary = "특정 Challenge의 최초 Snapshot추가 시, 객체 선택 및 좌표 유효성 검사", tags = {
-        "2. Challenge"},
+        "3. Challenge"},
         description =
             "특정 Challenge의 최초 Snapshot 추가 시, AI Server로 현재 좌표의 유효성을 요청합니다. "
                 + "<br/> *상태코드:400일 경우, 올바르지 않은 좌표값입니다."
