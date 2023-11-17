@@ -146,8 +146,6 @@ ERD
 
 <a name="erd"></a>
 
-![ERD](./image/erd.png)
-
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
 
 <br/>
@@ -203,7 +201,7 @@ Python FastAPI, Detectron을 통한 객체 인식 및 유사도 판별 진행
 |  **Name**  |김정희 |정영빈  |하성호 |신현탁 | 이동규 | 김규리 |
 | :-----------: | :-----: | :-------: | :------: | :-----: | :------: | :------: |
 |  **역할**   |풀스택 | 풀스택| 풀스택 | 프론트엔드 | 풀스택 | 풀스택 |
-| **profile** | ![김정희](https://github.com/tunkcalb/shinhan-solup/assets/95354899/2c6fa00f-b5aa-4a86-a8c6-1a4e166f6b0e) | ![정영빈](https://github.com/tunkcalb/shinhan-solup/assets/95354899/60bd0105-1716-49a5-b29a-54f8344ebd41) | ![하성호](https://github.com/tunkcalb/shinhan-solup/assets/95354899/503fc614-d2b0-439c-bc67-502a50c29665) | ![신현탁](https://github.com/tunkcalb/shinhan-solup/assets/95354899/8ac0a59e-96b3-423d-ad2d-ce1f7c1fe801) | ![이동규](./image/DongKyu.png)  |  ![김규리](./image/KyuRi.png)  |
+| **profile** |<img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/2c6fa00f-b5aa-4a86-a8c6-1a4e166f6b0e"  width="150" height="150"/>  | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/60bd0105-1716-49a5-b29a-54f8344ebd41"  width="150" height="150"/> | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/503fc614-d2b0-439c-bc67-502a50c29665"  width="150" height="150"/> | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/8ac0a59e-96b3-423d-ad2d-ce1f7c1fe801"  width="150" height="150"/> | <img src="./image/DongKyu.png"  width="150" height="150"/> | <img src="./image/KyuRi.png"  width="150" height="150"/>|
 |  **전공**   | 컴퓨터공학과, 수학통계학과 |  컴퓨터공학과 |  수산경영학과,컴퓨터공학과     |  기계공학과 |  컴퓨터공학과|  컴퓨터공학과|
 
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
