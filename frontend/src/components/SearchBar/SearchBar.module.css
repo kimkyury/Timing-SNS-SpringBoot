@@ -61,3 +61,7 @@
     font-weight: bold;
     color: #7c8c9b;
 }
+
+.searchResult {
+    margin-top: 30px;
+}

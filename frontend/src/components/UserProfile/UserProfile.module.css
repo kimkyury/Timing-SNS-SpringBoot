@@ -1,4 +1,59 @@
 .container {
+    margin: 3% 4%;
+    display: flex;
+    align-items: center;
+}
+
+.imageContainer {
+    height: 22vw;
+    width: 22vw;
+    border-radius: 50px;
+}
+
+.infoContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 2%;
+    /* justify-content: space-between; */
+}
+
+.box {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.emailBox {
+    font-size: 4.5vw;
+    color: #7c8c9b;
+    font-weight: bold;
+}
+
+.countBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.text {
+    font-size: 4.5vw;
+    color: #7c8c9b;
+    font-weight: bold;
+}
+
+.contribute {
+    margin-left: 4%;
+}
+
+/* .containerBox {
+    width: 100%;
     display: flex;
 }
 
@@ -11,10 +66,12 @@
 .mainContainer {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .upper {
     display: flex;
+    width: 100%;
 }
 
 .lower {
@@ -30,9 +87,15 @@
     font-size: 20px;
     text-align: center;
     align-self: center;
+    font-weight: bold;
 }
 .name {
-    font-weight: bold;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    justify-content: space-between;
+    align-items: center;
 }
 .btnbox {
     width: 180px;
@@ -55,4 +118,4 @@
     margin-right: 10px;
     font-family: 'Dancing Script', cursive;
     font-size: 20px;
-}
+} */

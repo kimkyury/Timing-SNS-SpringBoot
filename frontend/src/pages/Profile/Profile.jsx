@@ -1,64 +1,94 @@
-import TimeLapse from "../../components/TimeLapse/TimeLapse";
-import styles from "./Profile.module.css";
-import UserProfile from "../../components/UserProfile/USerProfile";
-import MyFeed from "../../components/Feed/FeedList";
-import dog from "../../assets/dog.jpg";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-function Profile() {
-  const BASE_URL = `http://k9e203.p.ssafy.io`;
-  const [accessToken, setAccessToken] = useState(
-    sessionStorage.getItem("accessToken")
-  );
-  const [state, setState] = useState([]);
-  const getChallenge = () => {
-    axios
-      .get(`${BASE_URL}/api/v1/feeds`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setState(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-  useEffect(() => {
-    getChallenge();
-  }, []);
+import TimeLapse from '../../components/TimeLapse/TimeLapse';
+import styles from './Profile.module.css';
+import UserProfile from '../../components/UserProfile/UserProfile';
+import MyFeed from '../../components/Feed/FeedList';
+import { useEffect, useState } from 'react';
+import axios from '../../server';
+import { useSearchParams, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.user_info}>
-        <UserProfile />
-      </div>
-      <div className={styles.proccessing_timelapse}>
-        <div className={styles.timeContainerName}>진행중인 타입랩스</div>
-        <TimeLapse />
-      </div>
-      {state.length != 0 ? (
-        <div className={styles.my_timelapse}>
-          <div className={styles.timeContainerName}>공개 타입랩스</div>
-          <MyFeed
-            state={state.filter((content) => content.isPublic == false)}
-          />
-        </div>
-      ) : (
+function Profile() {
+    const location = useLocation();
+    const currentUrl = location.pathname;
+    const [searchParams] = useSearchParams();
+    const email = searchParams.get('email');
+    const [accessToken] = useState(sessionStorage.getItem('accessToken'));
+    const [state, setState] = useState([]);
+
+    useEffect(() => {
+        console.log(location);
+        console.log(location.search == '' ? true : false);
+        if (location.search == '') {
+            getFeed();
+        } else {
+            getWriterFeed();
+        }
+    }, [location.search]);
+
+    const getFeed = () => {
+        axios
+            .get(`/api/v1/feeds`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((response) => {
+                console.log(response.data);
+                setState(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+    const getWriterFeed = () => {
+        axios
+            .get(`/api/v1/feeds?email=${email}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((response) => {
+                setState(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+    console.log(state);
+    return state.length != 0 ? (
+        <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.4 }}
+            className={styles.container}
+        >
+            <div className={styles.user_info}>
+                <UserProfile data={state} />
+            </div>
+
+            {location.search == '' ? <div className={styles.timeContainerName}>진행중인 타입랩스</div> : <></>}
+            {location.search == '' ? <TimeLapse /> : <></>}
+            <div className={styles.timeContainerName}>공개 타입랩스</div>
+            {state.feeds.length != 0 ? (
+                <div className={styles.my_timelapse}>
+                    <MyFeed state={state.feeds.filter((content) => content.isPrivate == false)} />
+                </div>
+            ) : (
+                <div className={styles.emptybox}>피드가 없어요</div>
+            )}
+            <div className={styles.timeContainerName}>비공개 타입랩스</div>
+            {state.feeds.length != 0 ? (
+                <div className={styles.my_timelapse}>
+                    <MyFeed state={state.feeds.filter((content) => content.isPrivate == true)} />
+                </div>
+            ) : (
+                <div className={styles.emptybox}>피드가 없어요</div>
+            )}
+        </motion.div>
+    ) : (
         <></>
-      )}
-      {state.length != 0 ? (
-        <div className={styles.my_timelapse}>
-          <div className={styles.timeContainerName}>비공개 타입랩스</div>
-          <MyFeed state={state.filter((content) => content.isPublic == true)} />
-        </div>
-      ) : (
-        <></>
-      )}
-    </div>
-  );
+    );
 }
 
 export default Profile;

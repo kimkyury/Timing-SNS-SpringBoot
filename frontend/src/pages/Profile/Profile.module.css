@@ -1,13 +1,35 @@
 .container {
-  margin: 0 4%;
-  margin-top: 10px;
+    /* margin: 0 4%;
+    margin-top: 10px; */
+    display: flex;
+    flex-direction: column;
 }
 
 .box {
-  margin: 3% 0;
+    margin: 3% 0;
 }
 
 .timeContainerName {
-  font-size: 5vw;
-  font-weight: bold;
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.emptybox {
+    height: 28vw;
+    font-size: 4vw;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.user_info {
+  height: 25%;
+  margin-top: 30px;
+}
+
+.proccessing_timelapse {
+  height: 25%;
+}
+.my_timelapse {
+  height: fit-content;
+  margin-bottom: 3%;
 }
