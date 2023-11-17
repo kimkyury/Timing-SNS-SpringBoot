@@ -52,6 +52,7 @@ public class ChallengeController {
         description = "Main, Mypage에 사용될 본인 Challenge 목록들입니다. ")
     @GetMapping(value = "")
     public ResponseEntity<ChallengeResponse> getChallenge() {
+
         Integer memberId = SecurityUtil.getLoggedInMemberPrimaryKey();
 
         ChallengeResponse challengeResponse = challengeService.getChallenge(memberId);

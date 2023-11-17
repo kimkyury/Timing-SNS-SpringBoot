@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SnapshotService {
 
-
     private final SnapshotRepository snapshotRepository;
-
 
     public List<SnapshotEntity> getAllSnapshotByChallenge(Long challengeId) {
         return snapshotRepository.findAllByChallengeId(challengeId);

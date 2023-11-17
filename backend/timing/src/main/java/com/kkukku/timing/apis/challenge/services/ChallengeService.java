@@ -88,13 +88,11 @@ public class ChallengeService {
                                .stream()
                                .map(c -> {
                                    long id = c.getId();
-                                   String thumbnailUrl =
-                                       s3Service.getS3StartUrl() + c.getThumbnailUrl();
+                                   String thumbnailUrl = s3Service.getS3StartUrl()
+                                       + c.getThumbnailUrl();
                                    long countDays = diffDay(c.getStartedAt(), LocalDate.now());
                                    long maxDays = diffDay(c.getStartedAt(), c.getEndedAt());
-
-                                   long snapshotCnt = snapshotService.getCntSnapshotByChallenge(
-                                       c.getId());
+                                   long snapshotCnt = snapshotService.getCntSnapshotByChallenge(c.getId());
                                    boolean isUploadToday = isTodayProcessChallenge(c);
                                    boolean isProcess = c.getIsProcess();
 
@@ -223,12 +221,12 @@ public class ChallengeService {
 
         checkOwnChallenge(memberId, challengeId);
 
+        // TODO: On Code
 //        if (challenge.getStartedAt()
 //                     .isAfter(LocalDate.now())) {
 //            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
 //        }
 
-        // TODO: On checking (더미 데이터 생성을 위해 삭제함)
 //        if (isTodayProcessChallenge(challenge)) {
 //            throw new CustomException(ErrorCode.PROCESSED_CHALLENGE);
 //        }
