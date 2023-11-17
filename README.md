@@ -4,7 +4,7 @@
 <br/>
 
 <div align="center">
-  [title](./image/timing_logo.png)   
+  ![title](./image/Timing_logo.png)   
   <h3>당신의 순간이 습관이 되도록</h3>
 </div>
 
@@ -35,10 +35,12 @@
 <a name="subject"></a>
 
 ### 배경
-<img src="./image/caffein.gif"  width="350" />
+
 타임랩스는 일련의 시간에 걸친 변화를 한눈에 보여줍니다. 우리는 이를 통해 누군가의 성장과 변화를 짧은 시간 안에 목격하며, 그들의 여정에서 영감을 얻거나 경외감을 느낍니다.
 
 ### 기대효과
+
+<img src="./image/caffein.gif"  height="200" />
 
 습관 형성의 최소 기준인 21일 동안의 사진을 모으면 타임랩스화하여 해당 변화를 미디어 형식으로 조회하고, 이러한 컨텐츠를 공유하고 조회하며 본인의 도전의 동기부여를 받을 수 있습니다.
 
