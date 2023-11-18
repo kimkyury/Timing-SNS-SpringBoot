@@ -48,40 +48,50 @@
 <a name="advantages"></a>
 
 ### ✔️ Java 21와 가상스레드 적용
+---
 
 Java 21 적용을 통하여 I/O블락킹 상황에서의 1.5배의 성능 향상 달성
 
-<img src="./image/tech_java21.png">
+<img src="./image/tech_java21.png" width = "300">
 
-<img src="./image/tech_java21_2.png">
+<img src="./image/tech_java21_2.png" width ="700">
+
+<br/>
 
 ### ✔️ ELK, 초성 검색
+---
 
 ELK를 통하여 검색 기능 구현, 초성 검색 지원
 
-<img src="./image/tech_hashtag.gif">
+<img src="./image/tech_hashtag.gif" width = "250">
 
 
 ### ✔️ Feed(게시글)의 Tree 탐색 알고리즘
+---
 
 UnionFind와 Map자료구조를 통한 탐색 효율 향상
 
-<img src="./image/tech_Tree.png">
+<img src="./image/tech_Tree.png" width="500">
 
+<br/>
 
 ### ✔️ 메인 화면의 Feed(게시글) 추천순 제공
+---
 
 사용자의 행동 정보(챌린지, 피드, 좋아요, 댓글 이력 등)기반으로 메인화면의 맞춤형 피드 추천순을 제공
 
-<img src="./image/tech_Recommend.png">
+<img src="./image/tech_Recommend.png" width= "500">
 
+<br/>
 
 ### ✔️ Python Vision AI 서버와의 통신
+---
 
 SpringBoot를 Proxy서버로 하여 이미지 객체인식/유사도 판별 요청을 Python서버로 전달
 
-<img src="./image/tech_Proxy.png">
+<img src="./image/tech_Proxy.png" width="500">
 
+<br/>
 
 ## 🎞️ CI/CD 파이프라인 구조도
 
@@ -344,6 +354,7 @@ Entity 기준의 폴더 세분화 방식 관리
 ```
 
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
+
 <br/>
 
 ## 💾 Swagger API docs
