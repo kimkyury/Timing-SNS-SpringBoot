@@ -21,7 +21,6 @@
 1. <a href="#pipeline">🎞️ CI/CD 파이프라인 구조도</a>
 1. <a href="#skills">🛠️ 기술 스택</a>
 1. <a href="#directories">🗂️ 파일 구조</a>
-1. <a href="#erd">💾 ERD</a>
 1. <a href="#swagger">💾 Swagger API docs</a>
 
 <br/>
