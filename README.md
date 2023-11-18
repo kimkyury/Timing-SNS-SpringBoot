@@ -71,7 +71,7 @@
 -   Challenge에 대한 이미지 첨부시, 최초 사진과의 유사성 검사 및 재촬영 안내를 통해 완성 Mp4파일의 품질 향상
 -   Challenge 종료 후 피드 등록시, 첨부된 사진들을 연속시켜 Mp4 파일로 변환
 
-### 그 외
+### 그 외, 백엔드 상세 기능 목록
 🔗[Go! Backend ReadMe](./backend)
 
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
@@ -196,11 +196,10 @@
 
 ---
 
-<!-- - [포팅메뉴얼] -->
+<!-- - [결과물들] -->
+🔗[Go! Porting Guide](./exec)
+🔗[Go! Presentation](./exec/Timing_PPT.pdf)
 
--   [중간발표자료] 발표자료
--   [최종발표자료] 발표자료
-<!-- - [최종발표자료] -->
 
 <!------- 팀원 소개 시작 -------->
 
@@ -211,7 +210,7 @@
 |  **Name**  |김정희 |정영빈  |하성호 |신현탁 | 이동규 | 김규리 |
 | :-----------: | :-----: | :-------: | :------: | :-----: | :------: | :------: |
 |  **역할**   |풀스택 | 풀스택| 풀스택 | 프론트엔드 | 풀스택 | 풀스택 |
-| **profile** |<img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/2c6fa00f-b5aa-4a86-a8c6-1a4e166f6b0e"  width="150" height="170"/>  | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/60bd0105-1716-49a5-b29a-54f8344ebd41"  width="150" height="170"/> | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/503fc614-d2b0-439c-bc67-502a50c29665"  width="150" height="170"/> | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/8ac0a59e-96b3-423d-ad2d-ce1f7c1fe801"  width="150" height="170"/> | <img src="./image/DongKyu.png"  width="150" height="170"/> | <img src="./image/KyuRi.png"  width="150" height="170"/>|
+| **profile** |<img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/2c6fa00f-b5aa-4a86-a8c6-1a4e166f6b0e"  width="150" height="180"/>  | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/60bd0105-1716-49a5-b29a-54f8344ebd41"  width="150" height="180"/> | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/503fc614-d2b0-439c-bc67-502a50c29665"  width="150" height="180"/> | <img src="https://github.com/tunkcalb/shinhan-solup/assets/95354899/8ac0a59e-96b3-423d-ad2d-ce1f7c1fe801"  width="150" height="180"/> | <img src="./image/DongKyu.png"  width="150" height="180"/> | <img src="./image/KyuRi.png"  width="150" height="180"/>|
 |  **전공**   | 컴퓨터공학과, 수학통계학과 |  컴퓨터공학과 |  수산경영학과,컴퓨터공학과     |  기계공학과 |  컴퓨터공학과|  컴퓨터공학과|
 
 <div align="right"><a href="#tableContents">목차로 이동</a></div>
