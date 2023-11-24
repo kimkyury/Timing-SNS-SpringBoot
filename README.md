@@ -4,7 +4,7 @@
 <br/>
 
 <div align="center">
-  ![title](./image/Timing_logo.png)   
+  <img src="./image/Timing_logo.png"  height="200" /> 
   <h3>당신의 순간이 습관이 되도록</h3>
 </div>
 
